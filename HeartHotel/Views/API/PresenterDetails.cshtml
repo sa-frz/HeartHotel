@@ -1,0 +1,80 @@
+﻿@model IEnumerable< HeartHotel.Models.EventsPerson>
+
+@{
+
+
+}
+<div class="d-flex flex-wrap justify-content-center">
+    @foreach (var item in Model)
+    {
+        <div class="card ms-2 me-2 mb-3" style="width: 18rem;">
+            <img src="@(item.Person!.Image != null ? "https://eventis.ir/files/" + item.Person!.Image : "/img/noperson.jpg")"
+                class="card-img-top" alt="@item.Person.Name">
+            <div class="card-body">
+                <h5 class="card-title">@item.Person.Name</h5>
+                <p class="card-text">
+                <div class="mt-2">
+                    روز
+                    <select class="form-select" id="select@(item.Id)"></select>
+                </div>
+                <div class="mt-2">
+                    ساعت
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            از
+                            <input type="time" class="form-control ltr" id="timepickerAz@(item.Id)" />
+                        </div>
+                        <div>
+                            تا
+                            <input type="time" class="form-control ltr" id="timepickerTa@(item.Id)" />
+                        </div>
+                    </div>
+                    <input type="text" class="form-control mt-2" id="txt@(item.Id)" placeholder="توضیحات" />
+                </div>
+                <div class="mt-2 d-flex justify-content-between gap-2">
+                    <button class="btn btn-primary w-100" id="save@(item.Id)" onclick="saveTime('@item.Id')"><i class="fa fa-save"></i> ثبت</button>
+                    <button class="btn btn-secondary w-100" id="history@(item.Id)" onclick="detailsTime('@item.Id')"><i class="fa fa-list"></i> جزییات</button>
+                </div>
+                </p>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $.ajax({
+        url: "/api/event/days/?id=@Model.FirstOrDefault().EventsId",
+        type: "GET",
+        contentType: "text/plain; charset=utf-8",
+        beforeSend: function () {
+            @* $('#days').html($('#loader').html()); *@
+                },
+        success: function (data) {
+            let days = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
+            // let months = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+            // let year = new Date().getFullYear();
+            // let month = new Date().getMonth() + 1;
+            // let day = new Date().getDate();
+            // let hour = new Date().getHours();
+            // let minute = new Date().getMinutes();
+            // let second = new Date().getSeconds();
+            // let date = new Date(year, month - 1, day, hour, minute, second);
+            // let dayOfWeek = date.getDay();
+            // let dayOfWeekName = days[dayOfWeek];
+            // let monthName = months[month - 1];
+            // let dayOfWeekName = days[dayOfWeek];
+
+            $('.form-select').html('');
+            $.each(data, function (index, value) {
+                $('.form-select').append('<option value="' + value.id + '">' + days[value.roozehafte] + ' ' + value.rooz + '</option>');
+            });
+
+        },
+        error: function (response) {
+            window.location.href = "/NotFound";
+        },
+        failure: function (response) {
+            window.location.href = "/NotFound"
+        }
+    });
+</script>

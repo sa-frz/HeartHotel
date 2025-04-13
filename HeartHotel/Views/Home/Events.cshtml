@@ -1,0 +1,202 @@
+﻿@using X.PagedList.Mvc.Core
+@using X.PagedList
+
+@model IPagedList<HeartHotel.Models.Event>
+@* @using Eventis.Classes *@
+
+@{
+    ViewData["Title"] = "ایونت‌ها";
+    ViewData["menu"] = "all";
+    ViewData["Login"] = Convert.ToString(ViewBag.UID != 0);
+    int i = 0;
+    string day = "", saT = "", saaz = "";
+}
+
+<h4 class="section-title">
+    @ViewData["Title"]
+</h4>
+
+<div class="bg-light container py-3 mb-4 rounded-3 shadow-sm">
+    <form method="get" action="Events" class="input-group justify-content-center">
+        <input type="text" class="form-control" name="k" value="@(ViewBag.srch ?? "")" placeholder="جستجو...">
+        <button class="input-group-text" type="submit">
+            <i class="fa fa-magnifying-glass"></i>
+        </button>
+    </form>
+</div>
+
+@if (Model.Count() == 0)
+{
+    <div id="content" class="mb-5">
+        <div class="text-center">اطلاعاتی برای نمایش وجود ندارد.</div>
+    </div>
+}
+else
+{
+    <div class="table-container">
+        <table class="table table-striped">
+            <thead style="white-space: nowrap;">
+                <tr>
+                    <th>
+                        ردیف
+                    </th>
+                    <th>
+                        تاریخ
+                    </th>
+                    <th>
+                        ساعت
+                    </th>
+                    <th>
+                        عنوان
+                    </th>
+                    <th>
+                        برگزارکننده
+                    </th>
+                    <th>
+                        موضوع
+                    </th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    i += 1;
+                    var t = item.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault();
+                    var t2 = item.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).LastOrDefault();
+                    switch (t.Roozehafte)
+                    {
+                        case 0:
+                            day = "شنبه";
+                            break;
+                        case 1:
+                            day = "یکشنبه";
+                            break;
+                        case 2:
+                            day = "دوشنبه";
+                            break;
+                        case 3:
+                            day = "سه شنبه";
+                            break;
+                        case 4:
+                            day = "چهارشنبه";
+                            break;
+                        case 5:
+                            day = "پنجشنبه";
+                            break;
+                        case 6:
+                            day = "جمعه";
+                            break;
+                    }
+                    string okDate = t.Rooz;
+
+                    saaz = t.SaatAz;
+                    if (Convert.ToDateTime(t.SaatAz) < Convert.ToDateTime("06:00"))
+                    {
+                        saT = "بامداد";
+                    }
+                    else if ((Convert.ToDateTime(t.SaatAz) >= Convert.ToDateTime("06:00") && Convert.ToDateTime(t.SaatAz) <= Convert.ToDateTime("11:59")) && !(t.ShowSaatTa.HasValue && t.ShowSaatTa.Value && (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("06:01") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("11:59"))))
+                    {
+                        saT = "صبح";
+                    }
+                    else if (Convert.ToDateTime(t.SaatAz) >= Convert.ToDateTime("12:00") && Convert.ToDateTime(t.SaatAz) <= Convert.ToDateTime("12:59"))
+                    {
+                        saT = "ظهر";
+                    }
+                    else
+                    {
+                        saT = "";
+                    }
+
+                    if (t.ShowSaatTa.HasValue && t.ShowSaatTa.Value)
+                    {
+                        saT += " تا " + t.SaatTa + " ";
+                        if (Convert.ToDateTime(t.SaatTa) < Convert.ToDateTime("06:00"))
+                        {
+                            saT += "بامداد";
+                        }
+                        else if (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("06:00") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("11:59"))
+                        {
+                            saT += "صبح";
+                        }
+                        else if (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("12:00") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("12:59"))
+                        {
+                            saT = "ظهر";
+                        }
+                        else
+                        {
+                            saT += "";
+                        }
+                    }
+                    <tr onclick="window.location.href ='/Presenters/@item.Id'">
+                        <td>
+                            @(((ViewBag.page * 25) - 25) + i)
+                        </td>
+                        <td>
+                            @day
+                            @t.Rooz
+                            @(t.Rooz == t2.RoozTa ? "" : " تا " + t2.RoozTa)
+                        </td>
+                        <td>
+                            از ساعت
+                            @saaz
+                            @saT
+                        </td>
+                        <td>
+                            @item.Title
+                            @if (item.MainText != null)
+                            {
+                                try
+                                {
+                                    if (item.MainText.IndexOf("#") > -1)
+                                    {
+                                        string l = item.MainText.Substring(0, item.MainText.IndexOf("#"));
+                                        string r = item.MainText.Replace(l, "");
+                                        string hashtag = r.Replace(Environment.NewLine, " ").Replace("<", " ").Split(" ")[0];
+                                        r = r.Replace(hashtag, "");
+                                        string m = "<span onclick=\"searchTags('" + hashtag.Replace("#", "") + "')\" style=\"cursor: pointer; color: #0d6efd;\">" + hashtag + "</span>";
+                                        item.MainText = l + m + r;
+                                        <input type="hidden" value="@hashtag" safrz-type="hashtag" />
+                                    }
+                                }
+                                catch { }
+
+                                <div class="d-none">
+                                    @Html.Raw(item.MainText.ToLinkURLs().Replace(Environment.NewLine, "<br>"))
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            @item.Organizer.Name
+                        </td>
+                        <td>
+                            @if (item.SubjectsId != null)
+                            {
+                                @item.Subjects.Name
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @* <div>
+           @Html.PagedListPager(Model, page => Url.Action("Events", new { page, k=ViewBag.srch }))
+    </div> *@
+
+    <div class="d-flex justify-content-center mt-2">
+    @Html.PagedListPager(Model, page => Url.Action("Events", new { page, k=ViewBag.srch }), new PagedListRenderOptions
+    {
+        UlElementClasses = new[] { "pagination" },
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+        DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        MaximumPageNumbersToDisplay = 5
+    })
+</div>
+}
+

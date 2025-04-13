@@ -1,0 +1,803 @@
+﻿@model HeartHotel.Models.Event
+@* @using Eventis.Classes *@
+
+@{
+
+    string day = "", col = "", saT = "";
+}
+
+@if (ViewBag.Err == "False")
+{
+    if (!(Model.ImageAdr == null || Model.ImageAdr == "-" || Model.ImageAdr == ""))
+    {
+        col = "col-12";
+        <div class="col-12" style="align-items: center; margin: auto;">
+            @if (Model.ImageAdr.isImage())
+            {
+                <img src="/Files/@(Model.ImageAdr)" style="width: 100%;" class="rounded mx-auto d-block">
+            }
+            else
+            {
+                <video style="width: 100%;" class="rounded mx-auto d-block" controls>
+                    <source src="/Files/@(Model.ImageAdr)" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            }
+        </div>
+
+    }
+    else
+    {
+        col = "col-12";
+    }
+
+    <div class="@(col) p-4 d-flex flex-column position-static">
+        <div id="tg@(Model.Id)">
+            @if (Model.MainText != null)
+            {
+                <div>
+                    @Html.Raw(Model.MainText.ToLinkURLs().Replace(Environment.NewLine, "<br>"))
+                </div>
+            }
+
+            @if (Model.Ads == false || Model.Ads == null)
+            {
+                <div class="mb-1 text-muted">
+
+                    <br />
+
+                    <div style="color:#3399ff;">
+                        @{
+                            var ttimes = 1;
+                            var iRooz = 0;
+                            DateTime rcurrent = Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().Rooz.ToGregorianDate();
+                            foreach (var idate in Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz))
+                            {
+                                if (rcurrent.AddDays(1) < idate.Rooz.ToGregorianDate())
+                                {
+                                    ttimes = 2;
+                                    break;
+                                }
+                                else
+                                {
+                                    rcurrent = idate.Rooz.ToGregorianDate();
+                                }
+                                iRooz += 1;
+                            }
+
+                            if (ttimes == 1 && Model.Times.Count() > 1 && Model.Times.Select(s => s.Rooz).Distinct().Count() == 1)
+                            {
+                                ttimes = 2;
+                            }
+                            else if (ttimes == 1 && Model.Times.Count() > 1 && Model.Times.Select(s => s.SaatAz).Distinct().Count() > 1)
+                            {
+                                ttimes = 2;
+                            }
+                        }
+                        @if (ttimes > 1)
+                        {
+                            @*ساعت نامنظم*@
+                            string saaz = "";
+                            int times_count = Model.Times.Select(s => new { s.SaatAz, s.SaatTa }).Distinct().Count();
+                            string okDate_first = Model.Times.FirstOrDefault().Rooz;
+                            foreach (var t in Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz))
+                            {
+                                switch (t.Roozehafte)
+                                {
+                                    case 0:
+                                        day = "شنبه";
+                                        break;
+                                    case 1:
+                                        day = "یکشنبه";
+                                        break;
+                                    case 2:
+                                        day = "دوشنبه";
+                                        break;
+                                    case 3:
+                                        day = "سه شنبه";
+                                        break;
+                                    case 4:
+                                        day = "چهارشنبه";
+                                        break;
+                                    case 5:
+                                        day = "پنجشنبه";
+                                        break;
+                                    case 6:
+                                        day = "جمعه";
+                                        break;
+                                }
+                                string okDate = t.Rooz;
+
+                                saaz = t.SaatAz;
+                                if (Convert.ToDateTime(t.SaatAz) < Convert.ToDateTime("06:00"))
+                                {
+                                    saT = "بامداد";
+                                }
+                                else if ((Convert.ToDateTime(t.SaatAz) >= Convert.ToDateTime("06:00") && Convert.ToDateTime(t.SaatAz) <= Convert.ToDateTime("11:59")) && !(t.ShowSaatTa.HasValue && (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("06:01") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("11:59"))))
+                                {
+                                    saT = "صبح";
+                                }
+                                else if (Convert.ToDateTime(t.SaatAz) >= Convert.ToDateTime("12:00") && Convert.ToDateTime(t.SaatAz) <= Convert.ToDateTime("12:59"))
+                                {
+                                    saT = "ظهر";
+                                }
+                                else
+                                {
+                                    saT = "";
+                                }
+
+                                if (t.ShowSaatTa.HasValue)
+                                {
+                                    saT += " تا " + t.SaatTa + " ";
+                                    if (Convert.ToDateTime(t.SaatTa) < Convert.ToDateTime("06:00"))
+                                    {
+                                        saT += "بامداد";
+                                    }
+                                    else if (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("06:00") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("11:59"))
+                                    {
+                                        saT += "صبح";
+                                    }
+                                    else if (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("12:00") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("12:59"))
+                                    {
+                                        saT = "ظهر";
+                                    }
+                                    else
+                                    {
+                                        saT += "";
+                                    }
+                                }
+
+                                <spam>
+                                    🔔
+                                    @day
+                                    @okDate
+                                    @if (times_count > 1)
+                                    {
+                                        <span>
+                                            &emsp;⏰ از ساعت
+                                            @saaz
+                                            @saT
+                                            @t.Description
+                                            <a class="btn-sm btn-warning pb-0 m-2" tabindex="0" role="button" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-title="@okDate.ToGregorian() - @okDate.ToGregorianDate().ToArabic()" data-bs-content="times" frz-date="@okDate.ToGregorian()" frz-time="@saaz">🌏</a>
+                                        </span>
+                                    }
+                                </spam>
+                                <br />
+                            }
+
+                            if (times_count <= 1)
+                            {
+                                <span>
+                                    ⏰ از ساعت
+                                    @saaz
+                                    @saT
+                                    @Model.Times.FirstOrDefault().Description
+                                    <a class="btn-sm btn-warning pb-0 m-2" tabindex="0" role="button" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-title="@okDate_first.ToGregorian() - @okDate_first.ToGregorianDate().ToArabic()" data-bs-content="times" frz-date="@okDate_first.ToGregorian()" frz-time="@saaz">🌏</a>
+                                </span>
+                            }
+                        }
+                        else
+                        {
+                            if (Model.Times.Count() > 3)
+                            {
+                                switch (Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().Roozehafte)
+                                {
+                                    case 0:
+                                        day = "شنبه";
+                                        break;
+                                    case 1:
+                                        day = "یکشنبه";
+                                        break;
+                                    case 2:
+                                        day = "دوشنبه";
+                                        break;
+                                    case 3:
+                                        day = "سه شنبه";
+                                        break;
+                                    case 4:
+                                        day = "چهارشنبه";
+                                        break;
+                                    case 5:
+                                        day = "پنجشنبه";
+                                        break;
+                                    case 6:
+                                        day = "جمعه";
+                                        break;
+                                }
+                                string okDate = Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().Rooz;
+                                <span>
+                                    🔔 از
+                                    @day
+                                    @okDate به مدت
+                                    @Model.Times.Count()
+                                    @(Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz) >= Convert.ToDateTime("04:30") && Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz) <= Convert.ToDateTime(DateTime.Now.NightTime()) ? "روز" : "شب")
+                                    <br /> ⏰ از ساعت
+                                    @Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz
+                                    @if (Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz) < Convert.ToDateTime("06:00"))
+                                    {
+                                        saT = "بامداد";
+                                    }
+                                    else if ((Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz) >= Convert.ToDateTime("06:00") && Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz) <= Convert.ToDateTime("11:59")) && !(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().ShowSaatTa.Value && (Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatTa) >= Convert.ToDateTime("06:01") && Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatTa) <= Convert.ToDateTime("11:59"))))
+                                    {
+                                        saT = "صبح";
+                                    }
+                                    else if (Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz) >= Convert.ToDateTime("12:00") && Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz) <= Convert.ToDateTime("12:59"))
+                                    {
+                                        saT = "ظهر";
+                                    }
+                                    else
+                                    {
+                                        saT = "";
+                                    }
+
+                                    @if (Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().ShowSaatTa.HasValue)
+                                    {
+                                        saT += " تا " + Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatTa + " ";
+                                        if (Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatTa) < Convert.ToDateTime("06:00"))
+                                        {
+                                            saT += "بامداد";
+                                        }
+                                        else if (Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatTa) >= Convert.ToDateTime("06:00") && Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatTa) <= Convert.ToDateTime("11:59"))
+                                        {
+                                            saT += "صبح";
+                                        }
+                                        else if (Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatTa) >= Convert.ToDateTime("12:00") && Convert.ToDateTime(Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatTa) <= Convert.ToDateTime("12:59"))
+                                        {
+                                            saT = "ظهر";
+                                        }
+                                        else
+                                        {
+                                            saT += "";
+                                        }
+                                    }
+                                    @saT
+                                    @Model.Times.FirstOrDefault().Description
+                                    <a class="btn-sm btn-warning pb-0 m-2" tabindex="0" role="button" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-title="@okDate.ToGregorian() - @okDate.ToGregorianDate().ToArabic()" data-bs-content="times" frz-date="@okDate.ToGregorian()" frz-time="@Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz).FirstOrDefault().SaatAz">🌏</a>
+                                </span>
+                            }
+                            else
+                            {
+                                string saaz = "";
+                                int loop = 0;
+                                string okDate1 = "";
+                                @foreach (var t in Model.Times.OrderBy(o => o.Rooz).ThenBy(o => o.SaatAz))
+                                {
+                                    loop += 1;
+                                    switch (t.Roozehafte)
+                                    {
+                                        case 0:
+                                            day = "شنبه";
+                                            break;
+                                        case 1:
+                                            day = "یکشنبه";
+                                            break;
+                                        case 2:
+                                            day = "دوشنبه";
+                                            break;
+                                        case 3:
+                                            day = "سه شنبه";
+                                            break;
+                                        case 4:
+                                            day = "چهارشنبه";
+                                            break;
+                                        case 5:
+                                            day = "پنجشنبه";
+                                            break;
+                                        case 6:
+                                            day = "جمعه";
+                                            break;
+                                    }
+                                    string okDate = t.Rooz;
+                                    <spam>
+                                        🔔
+                                        @day
+                                        @okDate
+                                    </spam>
+                                    <br />
+
+                                    if (loop == 1)
+                                    {
+                                        okDate1 = okDate;
+                                        saaz = t.SaatAz;
+                                        if (Convert.ToDateTime(t.SaatAz) < Convert.ToDateTime("06:00"))
+                                        {
+                                            saT = "بامداد";
+                                        }
+                                        else if ((Convert.ToDateTime(t.SaatAz) >= Convert.ToDateTime("06:00") && Convert.ToDateTime(t.SaatAz) <= Convert.ToDateTime("11:59")) && !(t.ShowSaatTa.Value && (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("06:01") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("11:59"))))
+                                        {
+                                            saT = "صبح";
+                                        }
+                                        else if (Convert.ToDateTime(t.SaatAz) >= Convert.ToDateTime("12:00") && Convert.ToDateTime(t.SaatAz) <= Convert.ToDateTime("12:59"))
+                                        {
+                                            saT = "ظهر";
+                                        }
+                                        else
+                                        {
+                                            saT = "";
+                                        }
+
+                                        if (t.ShowSaatTa.HasValue)
+                                        {
+                                            saT += " تا " + t.SaatTa + " ";
+                                            if (Convert.ToDateTime(t.SaatTa) < Convert.ToDateTime("06:00"))
+                                            {
+                                                saT += "بامداد";
+                                            }
+                                            else if (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("06:00") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("11:59"))
+                                            {
+                                                saT += "صبح";
+                                            }
+                                            else if (Convert.ToDateTime(t.SaatTa) >= Convert.ToDateTime("12:00") && Convert.ToDateTime(t.SaatTa) <= Convert.ToDateTime("12:59"))
+                                            {
+                                                saT += "ظهر";
+                                            }
+                                            else
+                                            {
+                                                saT += "";
+                                            }
+                                        }
+                                    }
+                                }
+
+                                <span>
+                                    ⏰ از ساعت
+                                    @saaz
+                                    @saT
+                                    @Model.Times.FirstOrDefault().Description
+                                    <a class="btn-sm btn-warning pb-0 m-2" tabindex="0" role="button" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="focus" data-bs-title="@okDate1.ToGregorian() - @okDate1.ToGregorianDate().ToArabic()" data-bs-content="times" frz-date="@okDate1.ToGregorian()" frz-time="@saaz">🌏</a>
+                                </span>
+                                <br />
+
+                            }
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Kondactor))
+                    {
+                        <br />
+                        @*@Model.Kondactor*@
+                        @Html.Raw(Model.Kondactor.Replace(Environment.NewLine, "<br>"))
+                        <br />
+                    }
+                </div>
+            }
+
+            <div>
+                @if (Model.EventsPeople != null)
+                {
+                    string[] icn = { "🎙", "🎤", "✳️", "✳️", "✳️", "✳️", "✳️", "✳️", "🎙" };
+                    int idx = -1;
+                    <div>
+                        @foreach (var iitem in Model.EventsPeople)
+                        {
+                            if (idx != iitem.Type.Value - 1)
+                            {
+                                idx = iitem.Type.Value - 1;
+                                <br />
+                                int iiddxx = Array.IndexOf(ViewBag.CatalogID, Convert.ToInt32(iitem.Type));
+                                if (iiddxx > 8 || idx > icn.Length - 1)
+                                {
+                                    idx = 2;
+                                }
+                                @(icn[idx])
+                                idx = iitem.Type.Value - 1;
+                                <span>&nbsp;</span>
+                                @(ViewBag.Catalog[iiddxx])
+                                <br />
+                            }
+                            <a style="color:green;" href="/?pid=@iitem.PersonId">@iitem.Person.Name</a>
+                            <br />
+                        }
+                    </div>
+                }
+            </div>
+
+            @*<div>
+            @if (Model.MajlesPeople.Where(w => w.Type == 5).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />✳️ قاری قرآن:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 5))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+
+            @if (Model.MajlesPeople.Where(w => w.Type == 8).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />✳️ قرائت دعا / زیارت:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 8))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+
+            @if (Model.MajlesPeople.Where(w => w.Type == 3).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />✳️ مجری:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 3))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+
+            @if (Model.MajlesPeople.Where(w => w.Type == 9).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />🎙 پیش منبر:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 9))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+
+            @if (Model.MajlesPeople.Where(w => w.Type == 1).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />🎙 سخنران:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 1))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+
+            @if (Model.MajlesPeople.Where(w => w.Type == 2).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />🎤 مداح:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 2))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+
+            @if (Model.MajlesPeople.Where(w => w.Type == 6).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />✳️ مهمان:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 6))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+
+            @if (Model.MajlesPeople.Where(w => w.Type == 7).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />✳️ کارشناس:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 7))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+
+            @if (Model.MajlesPeople.Where(w => w.Type == 4).Select(s => s.Person.Name).FirstOrDefault() != null)
+            {
+                <div>
+                    <br />✳️ دکلمه و شعرخوانی:<br />
+                    @foreach (var iModel in Model.MajlesPeople.Where(w => w.Type == 4))
+                    {
+                        <a style="color:green;" href="/?pid=@iModel.PersonId">@iModel.Person.Name</a>
+                        <br />
+                    }
+                </div>
+            }
+        </div>*@
+
+            @if (Model.AghayanBanovan < 3)
+            {
+                <div style="color:#cc0000;">
+                    <br />
+                    @switch (Model.AghayanBanovan)
+                    {
+                        case 1:
+                            <span>توجه: ایونت فقط مختص بانوان است.</span>
+                            break;
+                        case 2:
+                            <span>آقایان و بانوان</span>
+                            break;
+                        case 0:
+                            <span>توجه: ایونت فقط مختص آقایان است</span>
+                            break;
+                    }
+                    <br />
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Address))
+            {
+                <br />
+                @Html.Raw(Model.Address.Replace(Environment.NewLine, "<br>"))
+                @*@Model.Address*@
+                <br />
+            }
+
+            @if (Model.Lat > 0)
+            {
+                @*<br><span>📍 </span><a href="https://balad.ir/location?latitude=@(Model.Lat)&longitude=@(Model.Lon)&zoom=17.000000" target="_blank">مسیریابی از طریق نشان یا بلد</a>
+            <br><span>📍 </span><a href="https://www.google.com/maps/search/?api=1&query=@(Model.Lat),@(Model.Lon)" target="_blank">مسیریابی از طریق Google Map</a>
+            <br><span>📍 </span><a href="https://waze.com/live-map/directions?to=ll.@(Model.Lat)%2C@(Model.Lon)" target="_blank">مسیریابی از طریق Waze</a>
+            <br>*@
+                <br />
+                <span>
+                    📍 مسیریابی از طریق:
+                    &nbsp;
+                    <a href="https://neshan.org/maps/@(Model.Lat.Value.ToString("00.000000")),@(Model.Lon.Value.ToString("00.000000")),17.0z,0.0p/routing/car/origin/@(Model.Lat.Value.ToString("00.000000")),@(Model.Lon.Value.ToString("00.000000"))/destination/@(Model.Lat.Value.ToString("00.000000")),@(Model.Lon.Value.ToString("00.000000")),15.0z,0.0p" target="_blank">
+                        <img src="/img/neshan.png" style="width: 1.3rem; margin-left: .2rem;">نشان
+                    </a>
+                    &nbsp;
+                    |
+                    &nbsp;
+                    <a href="https://balad.ir/location?latitude=@(Model.Lat)&longitude=@(Model.Lon)&zoom=17.000000" target="_blank">
+                        <img src="/img/balad.png" style="width: 1.3rem; margin-left: .2rem; border-radius: .2rem;">بلد
+                    </a>
+                    &nbsp;
+                    |
+                    &nbsp;
+                    <a href="https://www.google.com/maps/search/?api=1&query=@(Model.Lat),@(Model.Lon)" target="_blank">
+                        <img src="/img/google.png" style="width: 1.4rem; margin-left: .2rem; margin-top: -.2rem;">گوگل
+                    </a>
+                    &nbsp;
+                    |
+                    &nbsp;
+                    <a href="https://waze.com/live-map/directions?to=ll.@(Model.Lat)%2C@(Model.Lon)" target="_blank">
+                        <img src="/img/waze.png" style="width: 1.3rem; margin-left: .2rem; border-radius: .2rem;">ویز
+                    </a>
+                </span>
+                <br />
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Link1) || !string.IsNullOrWhiteSpace(Model.Link2) || !string.IsNullOrWhiteSpace(Model.Link3) || !string.IsNullOrWhiteSpace(Model.Link4) || !string.IsNullOrWhiteSpace(Model.Link5))
+            {
+                <div>
+                    <br />🎥 پخش زنده:
+                    @if (!string.IsNullOrWhiteSpace(Model.Link1))
+                    {
+                        <p dir="ltr" align="left">
+                            @*▪️*@
+                            @if (Model.Link1.IndexOf("aparat.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/aparat.png">
+                            }
+                            else if (Model.Link1.IndexOf("instagram.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/instagram.png">
+                            }
+                            else
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/live.png">
+                            }
+                            <a href="@(Model.Link1.ToStandardURL())" target="_blank" style="color:blue">@(Model.Link1.ToStandardURL())</a>
+                            <br />
+                        </p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Link2))
+                    {
+                        <p dir="ltr" align="left">
+                            @*▪️*@
+                            @if (Model.Link2.IndexOf("aparat.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/aparat.png">
+                            }
+                            else if (Model.Link2.IndexOf("instagram.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/instagram.png">
+                            }
+                            else
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/live.png">
+                            }
+                            <a href="@(Model.Link2.ToStandardURL())" target="_blank" style="color:blue">@(Model.Link2.ToStandardURL())</a>
+                            <br />
+                        </p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Link3))
+                    {
+                        <p dir="ltr" align="left">
+                            @*▪️*@
+                            @if (Model.Link3.IndexOf("aparat.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/aparat.png">
+                            }
+                            else if (Model.Link3.IndexOf("instagram.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/instagram.png">
+                            }
+                            else
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/live.png">
+                            }
+                            <a href="@(Model.Link3.ToStandardURL())" target="_blank" style="color:blue">@(Model.Link3.ToStandardURL())</a>
+                            <br />
+                        </p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Link4))
+                    {
+                        <p dir="ltr" align="left">
+                            @*▪️*@
+                            @if (Model.Link4.IndexOf("aparat.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/aparat.png">
+                            }
+                            else if (Model.Link4.IndexOf("instagram.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/instagram.png">
+                            }
+                            else
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/live.png">
+                            }
+                            <a href="@(Model.Link4.ToStandardURL())" target="_blank" style="color:blue">@(Model.Link4.ToStandardURL())</a>
+                            <br />
+                        </p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.Link5))
+                    {
+                        <p dir="ltr" align="left">
+                            @*▪️*@
+                            @if (Model.Link5.IndexOf("aparat.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/aparat.png">
+                            }
+                            else if (Model.Link5.IndexOf("instagram.com") > -1)
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/instagram.png">
+                            }
+                            else
+                            {
+                                <img style="margin-right: .5rem !important;" src="/img/live.png">
+                            }
+                            <a href="@(Model.Link5.ToStandardURL())" target="_blank" style="color:blue">@(Model.Link5.ToStandardURL())</a>
+                            <br />
+                        </p>
+                    }
+                </div>
+            }
+
+            @if (Model.ZirNevis != null)
+            {
+                <div>
+                    <br />
+                    @Html.Raw(Model.ZirNevis.ToLinkURLs().Replace(Environment.NewLine, "<br>"))
+                </div>
+            }
+
+            @if (Model.OrganizerId != null)
+            {
+                @*<div>
+                    @if (!string.IsNullOrEmpty(Model.Organizer.Website))
+                    {
+                        <span> ▪️ </span>
+                        <a href="http://@Model.Organizer.Website">وب سایت</a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Organizer.TelegramId))
+                    {
+                        <span> ▪️ </span>
+                        <a href="https://t.me/@Model.Organizer.TelegramId">تلگرام</a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Organizer.InstagramId))
+                    {
+                        <span> ▪️ </span>
+                        <a href="https://www.instagram.com/@Model.Organizer.InstagramId">اینستاگرام</a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Organizer.AparatId))
+                    {
+                        <span> ▪️ </span>
+                        <a href="https://aparat.com/@Model.Organizer.AparatId">آپارات</a>
+                    }
+                </div>*@
+                <div class="wow fadeInUp m-auto" data-wow-delay="0.1s">
+                    <div class="team-item position-relative">
+                        <div class="position-relative">
+                            <div class="organizer-logo">
+                                @if (Model.Organizer.P1 != null)
+                                {
+                                    <img src="/Files/@(Model.Organizer.P1)" style="max-height: 250px; max-width: 100%;" class="rounded mx-auto" id="img">
+                                }
+                                else
+                                {
+                                    <img src="/img/logo.png" style="width: 150px;" class="rounded-3 mx-auto" />
+                                }
+                            </div>
+                            @{
+                                string telegram, instagram, aparat, website;
+                                if (string.IsNullOrEmpty(Model.Organizer.Website))
+                                {
+                                    website = "";
+                                }
+                                else
+                                {
+                                    website = (Model.Organizer.Website.Substring(0, 4).ToLower() != "http" ? "http://" : "") + Model.Organizer.Website;
+                                }
+                                if (string.IsNullOrEmpty(Model.Organizer.TelegramId))
+                                {
+                                    telegram = "";
+                                }
+                                else
+                                {
+                                    telegram = (Model.Organizer.TelegramId.Substring(0, 4).ToLower() != "http" ? "http://" : "") + Model.Organizer.TelegramId;
+                                }
+                                if (string.IsNullOrEmpty(Model.Organizer.InstagramId))
+                                {
+                                    instagram = "";
+                                }
+                                else
+                                {
+                                    instagram = (Model.Organizer.InstagramId.Substring(0, 4).ToLower() != "http" ? "http://" : "") + Model.Organizer.InstagramId;
+                                }
+                                if (string.IsNullOrEmpty(Model.Organizer.AparatId))
+                                {
+                                    aparat = "";
+                                }
+                                else
+                                {
+                                    aparat = (Model.Organizer.AparatId.Substring(0, 4).ToLower() != "http" ? "http://" : "") + Model.Organizer.AparatId;
+                                }
+                            }
+                            <div class="team-social text-center">
+                                <a class="btn btn-square @(string.IsNullOrEmpty(Model.Organizer.Website) ? "d-none" : "")" href="@website"><i class="fal fa-spider-web"></i></a>
+                                <a class="btn btn-square @(string.IsNullOrEmpty(Model.Organizer.TelegramId) ? "d-none" : "")" href="@telegram"><i class="fab fa-telegram"></i></a>
+                                <a class="btn btn-square @(string.IsNullOrEmpty(Model.Organizer.InstagramId) ? "d-none" : "")" href="@instagram"><i class="fab fa-instagram"></i></a>
+                                <a class="btn btn-square @(string.IsNullOrEmpty(Model.Organizer.AparatId) ? "d-none" : "")" href="@aparat"><img src="/img/aparat.png" class="w-50" /></a>
+                            </div>
+                        </div>
+                        <div class="bg-light text-center p-4">
+                            <h3 class="mt-2 text-truncate">@Model.Organizer.Name</h3>
+                            <p>سال تأسیس: @Model.Organizer.EstablishedYear</p>
+                            <span class="text-primary">رویدادهای برگزارشده: @Model.Organizer.Events.Count()</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    if (!(ViewBag.Lat == "0.0000000000000000" || string.IsNullOrWhiteSpace(ViewBag.Lat) || ViewBag.Lat == ""))
+    {
+        <div id="map" style="width: 100%; height: 400px; border: 1px solid #ccc; text-align: center;">
+        </div>
+    }
+
+    <script>
+    var lat = @(ViewBag.Lat ?? 0);
+    var lon = @(ViewBag.Lon ?? 0);
+    $(document).ready(function () {
+        var latlng = new L.LatLng(lat, lon);
+
+        var map = new L.Map('map', {
+            key: 'web.oDXSlzJIuahjtB28nYwFKmUawgcw3DR81LJF4N40',
+            maptype: 'dreamy',
+            center: latlng,
+            zoom: 17,
+            poi: true,
+            onPoiLayerSwitched: function (state) {
+                console.log(state);
+            }
+        });
+
+        var marker = L.marker(latlng).addTo(map);
+    });
+    </script>
+}
+else
+{
+    <div class="d-none">Err</div>
+}

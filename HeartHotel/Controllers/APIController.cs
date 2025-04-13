@@ -1,0 +1,224 @@
+
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using HeartHotel.Models;
+using Microsoft.EntityFrameworkCore;
+using Firoozi.Helper;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace HeartHotel.Controllers;
+
+public class APIController : Controller
+{
+    private readonly EventisContext _context;
+
+    public APIController(EventisContext context)
+    {
+        _context = context;
+    }
+
+    [Route("/api/sms/send")]
+    [HttpPost]
+    public async Task<IActionResult> smsSend(string Mobile)
+    {
+        try
+        {
+            var login = await _context.Users.Where(w => w.Mobile == Mobile && w.Id < 11).FirstOrDefaultAsync();
+            if (login == null)
+            {
+                return NotFound();
+            }
+
+            var delOTP = await _context.Otps.Where(w => w.Mobile == Mobile).ToListAsync();
+            _context.RemoveRange(delOTP);
+            _context.SaveChanges();
+
+            int code = Helper.GenerateCode();
+
+            Otp otp = new Otp();
+            otp.Code = code;
+            otp.Mobile = Mobile;
+            _context.Add(otp);
+            await _context.SaveChangesAsync();
+
+            Kavenegar.KavenegarApi api = new Kavenegar.KavenegarApi("686C384161674F6F396D347279346D346B48307A413341337841676D6631485A715A7867765149507035513D");
+            var result = await api.VerifyLookup(Mobile, code.ToString(), "EventisOTP");
+
+            var user = new User()
+            {
+                Mobile = Mobile
+            };
+            _context.Add(user);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Route("/api/sms/code")]
+    [HttpPost]
+    public async Task<IActionResult> CheckCode(string Mobile, int Code)
+    {
+        var otp = await _context.Otps.Where(w => w.Mobile == Mobile && w.Code == Code).FirstOrDefaultAsync();
+        if (otp != null)
+        {
+            var login = await _context.Users.Where(w => w.Mobile == Mobile).FirstOrDefaultAsync();
+
+            if (login == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                HttpContext.Session.SetString("userid", login.Id.ToString());
+            }
+            return Ok();
+        }
+
+        return NotFound();
+    }
+
+    [Route("/api/event/{id?}")]
+    public PartialViewResult ShowDetails(int? id, bool admin = false, bool preview = false)
+    {
+        bool nf = false;
+        Event majles;
+
+        if (admin)
+        {
+            majles = _context.Events
+                .Include(t => t.Times)
+                .Include(m => m.Organizer)
+                .Include(p => p.EventsPeople)
+                .ThenInclude(i => i.Person)
+                .Include(m => m.RegisterUserNavigation).FirstOrDefault(m => m.Id == id);
+        }
+        else
+        {
+            if (!preview)
+            {
+                majles = _context.Events
+                .Include(t => t.Times)
+                .Include(m => m.Organizer)
+                .Include(p => p.EventsPeople)
+                .ThenInclude(i => i.Person)
+                .Include(m => m.RegisterUserNavigation).FirstOrDefault(m => m.Id == id && m.IsOk > 0);
+            }
+            else
+            {
+                majles = _context.Events
+                .Include(t => t.Times)
+                .Include(m => m.Organizer)
+                .Include(p => p.EventsPeople)
+                .ThenInclude(i => i.Person)
+                .Include(m => m.RegisterUserNavigation).FirstOrDefault(m => m.Id == id && m.IsOk == null);
+            }
+        }
+
+        ViewBag.Catalog = _context.Catalogs.Where(w => w.TypeId == 1).Select(s => s.Value).ToArray();
+        ViewBag.CatalogID = _context.Catalogs.Where(w => w.TypeId == 1).Select(s => s.Id).ToArray();
+        ViewBag.UID = "0";
+        int UserId = 0;
+        try
+        {
+            ViewBag.UID = HttpContext.Session.GetString("userid");
+            UserId = Convert.ToInt32(HttpContext.Session.GetString("userid"));
+        }
+        catch { }
+
+        if (majles == null)
+        {
+            nf = true;
+        }
+
+        //try
+        //{
+        //    if (!admin && !preview)
+        //    {
+        //        DateTime d = DateTime.Now.AddDays(-8);
+        //        bool error = true;
+        //        foreach (var item in majles.Times.OrderBy(o => o.Rooz))
+        //        {
+        //            DateTime rooz = item.Rooz.ToGregorianDate();
+        //            if (rooz > d)
+        //            {
+        //                error = false;
+        //                break;
+        //            }
+        //        }
+
+        //        nf = error;
+        //    }
+        //}
+        //catch { }
+
+        ViewBag.Lat = "0.0000000000000000";
+        ViewBag.Lon = "0.0000000000000000";
+
+        try
+        {
+            ViewBag.Lat = majles.Lat.ToString().Replace("/", ".");
+            ViewBag.Lon = majles.Lon.ToString().Replace("/", ".");
+        }
+        catch { }
+
+        ViewBag.Err = nf.ToString();
+
+        return PartialView(majles);
+    }
+
+    [Route("/api/event/presenters/{id?}")]
+    public async Task<PartialViewResult> Presenters(int? id)
+    {
+        var presenters = await _context.EventsPeople
+            .Include(m => m.Person)
+            .Where(w => w.EventsId == id).ToListAsync();
+
+        return PartialView(presenters);
+    }
+
+    [Route("/api/event/presenter/details/{id?}")]
+    public async Task<PartialViewResult> PresenterDetails(int? id)
+    {
+        var presenters = await _context.EventsPeople
+            .Include(m => m.Person)
+            .Where(w => w.EventsId == id).ToListAsync();
+
+        return PartialView(presenters);
+    }
+
+    [Route("/api/event/presenter/lecture/create")]
+    [HttpPost]
+    public async Task<IActionResult> CreateLecture(int eventsPersonId, int timesId, string saatAz, string saatTa, string text)
+    {
+        try
+        {
+            var lecture = new Lecture()
+            {
+                EventsPersonId = eventsPersonId,
+                TimesId = timesId,
+                SaatAz = saatAz,
+                SaatTa = saatTa,
+                Text = text,
+            };
+            _context.Add(lecture);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Route("/api/event/days/{id?}")]
+    public async Task<IActionResult> eventDays(int? id)
+    {
+        var eventDays = await _context.Times
+            .Where(w => w.EventsId == id).ToListAsync();
+
+        return Json(eventDays);
+    }
+}

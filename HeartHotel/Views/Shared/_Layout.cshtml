@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HeartHotel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.rtl.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HeartHotel.styles.css" asp-append-version="true" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/site.webmanifest">
+    @await RenderSectionAsync("styles", required: false)
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/img/HH.png"
+                        draggable="false" /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
+                                asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @*Confirm*@
+    <div class="modal fade" tabindex="-1" id="iOSConfirm" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">خطا</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-text">شما با خطا مواجه شدید.</div>
+                </div>
+                <div class="modal-footer">
+                    <span data-bs-dismiss="modal">بله</span>
+                    <span data-bs-dismiss="modal">خیر</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Alert*@
+    <div class="modal fade" tabindex="-1" id="iOSAlert" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <i class="fa-solid fa-triangle-exclamation text-warning" style="font-size: 4rem;"></i>
+                    <h5 class="modal-title">خطا</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-text">شما با خطا مواجه شدید.</div>
+                </div>
+                <div class="modal-footer">
+                    <span class="w-100" data-bs-dismiss="modal">متوجه شدم</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal*@
+    <div class="modal fade" tabindex="-1" id="iOSModal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title">خطا</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-text">شما با خطا مواجه شدید.</div>
+                </div>
+                <div class="modal-footer">
+                    <span class="w-100" data-bs-dismiss="modal">بازگشت</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Preloader*@
+    <div class="modal fade" tabindex="-1" id="Preloader" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-text text-center mb-4">
+                        <img src="/img/HHicon.png" draggable="false" style="width: 4rem;" class="mb-2">
+                        <div class="loader">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Screen Preloader*@
+    <div class="loading" style="display: none;">
+        @* <span class="preloader m-auto"></span> *@
+        <i class="heello-full-logo"></i>
+        <div class="loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    @*upload*@
+    <div class="modal fade" tabindex="-1" id="fileUpload" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title layout-0"></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-text text-center mb-4">
+                        @* <div class="preloader"></div> *@
+                        <i class="heello-full-logo"></i>
+                        <div class="loader">
+                            <div class="loader__dot"></div>
+                            <div class="loader__dot"></div>
+                            <div class="loader__dot"></div>
+                        </div>
+                        <div class="statustxt mt-4">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - HeartHotel - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/modal.js" asp-append-version="true"></script>
+
+    <script id="loader" type="text/template">
+        <div class="loader">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
