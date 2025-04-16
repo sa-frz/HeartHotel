@@ -63,6 +63,10 @@ public partial class EventisContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<Venue> Venues { get; set; }
+
+    public virtual DbSet<VenueHall> VenueHalls { get; set; }
+
     public virtual DbSet<ViewParticipant> ViewParticipants { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -527,6 +531,27 @@ public partial class EventisContext : DbContext
             entity.Property(e => e.UpdateDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("smalldatetime");
+        });
+
+        modelBuilder.Entity<Venue>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Venues__3214EC278E34B089");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Lat).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.Lon).HasColumnType("decimal(18, 0)");
+        });
+
+        modelBuilder.Entity<VenueHall>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__VenueHal__3214EC2770528EF8");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.VenueId).HasColumnName("VenueID");
+
+            entity.HasOne(d => d.Venue).WithMany(p => p.VenueHalls)
+                .HasForeignKey(d => d.VenueId)
+                .HasConstraintName("FK_VenueHalls_Venues");
         });
 
         modelBuilder.Entity<ViewParticipant>(entity =>
