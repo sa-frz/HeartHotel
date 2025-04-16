@@ -176,6 +176,15 @@ public class APIController : Controller
             .Include(m => m.Person)
             .Where(w => w.EventsId == id).ToListAsync();
 
+        ViewBag.venueHalls = await _context.VenueHalls
+                    .Include(v => v.Venue)
+                    .Select(s => new SelectListItem()
+                    {
+                        Value = s.Id.ToString(),
+                        Text = s.Venue.Title + " - " + s.Title
+                    })
+                    .ToListAsync();
+
         return PartialView(presenters);
     }
 
@@ -191,7 +200,7 @@ public class APIController : Controller
 
     [Route("/api/event/presenter/lecture/create")]
     [HttpPost]
-    public async Task<IActionResult> CreateLecture(int eventsPersonId, int timesId, string saatAz, string saatTa, string text)
+    public async Task<IActionResult> CreateLecture(int eventsPersonId, int timesId, string saatAz, string saatTa, string text, int venueHallId)
     {
         try
         {
@@ -202,6 +211,7 @@ public class APIController : Controller
                 SaatAz = saatAz,
                 SaatTa = saatTa,
                 Text = text,
+                VenueHallId = venueHallId
             };
             _context.Add(lecture);
             await _context.SaveChangesAsync();
@@ -210,6 +220,36 @@ public class APIController : Controller
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
+        }
+    }
+
+    [Route("/api/event/presenter/lecture/list")]
+    [HttpPost]
+    public async Task<PartialViewResult> Lectures(int eventsPersonId)
+    {
+        try
+        {
+            ViewBag.lectures = await _context.Lectures
+                .Include(m => m.EventsPerson)
+                .Include(m => m.Times)
+                .Include(m => m.VenueHall)
+                .ThenInclude(m => m.Venue)
+                .Where(w => w.EventsPersonId == eventsPersonId)
+                .Select(s => new
+                {
+                    Person = s.EventsPerson.Person,
+                    VenueHall = s.VenueHall.Title,
+                    Venue = s.VenueHall.Venue.Title,
+                    Rooz = s.Times.Rooz,
+                    Roozehafte = s.Times.Roozehafte,
+                    Text = s.Text,
+                }).ToListAsync();
+
+                return PartialView();
+        }
+        catch 
+        {
+            return PartialView();
         }
     }
 

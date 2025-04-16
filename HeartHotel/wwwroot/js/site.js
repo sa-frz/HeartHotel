@@ -63,8 +63,8 @@ async function checkCode(mobile, code) {
     }
 }
 
-async function lectureCreate(eventsPersonId, timesId, az, ta, txt) {
-    const response = await fetch(`/api/event/presenter/lecture/create?eventsPersonId=${eventsPersonId}&timesId=${timesId}&saatAz=${az}&saatTa=${ta}&text=${txt}`, {
+async function lectureCreate(eventsPersonId, timesId, az, ta, txt, venueHall) {
+    const response = await fetch(`/api/event/presenter/lecture/create?eventsPersonId=${eventsPersonId}&timesId=${timesId}&saatAz=${az}&saatTa=${ta}&text=${txt}&venueHallId=${venueHall}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -74,7 +74,8 @@ async function lectureCreate(eventsPersonId, timesId, az, ta, txt) {
             timesId: timesId,
             saatAz: az,
             saatTa: ta,
-            text: txt
+            text: txt,
+            venueHallId: venueHall
         })
     });
 

@@ -260,6 +260,7 @@ public partial class EventisContext : DbContext
                 .IsFixedLength();
             entity.Property(e => e.Text).HasDefaultValueSql("(NULL)");
             entity.Property(e => e.TimesId).HasColumnName("TimesID");
+            entity.Property(e => e.VenueHallId).HasColumnName("VenueHallID");
 
             entity.HasOne(d => d.EventsPerson).WithMany(p => p.Lectures)
                 .HasForeignKey(d => d.EventsPersonId)
@@ -270,6 +271,10 @@ public partial class EventisContext : DbContext
                 .HasForeignKey(d => d.TimesId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Lectures_Times");
+
+            entity.HasOne(d => d.VenueHall).WithMany(p => p.Lectures)
+                .HasForeignKey(d => d.VenueHallId)
+                .HasConstraintName("FK_Lectures_VenueHalls");
         });
 
         modelBuilder.Entity<Organizer>(entity =>

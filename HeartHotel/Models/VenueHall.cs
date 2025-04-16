@@ -13,5 +13,7 @@ public partial class VenueHall
 
     public string? Address { get; set; }
 
+    public virtual ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
+
     public virtual Venue Venue { get; set; } = null!;
 }

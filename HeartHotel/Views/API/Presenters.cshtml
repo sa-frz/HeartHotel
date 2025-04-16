@@ -18,6 +18,12 @@
                     <select class="form-select" id="select@(item.Id)"></select>
                 </div>
                 <div class="mt-2">
+                    سالن برگزاری
+                    <select asp-items="@(ViewBag.VenueHalls)" class="form-control" id="venueHall@(item.Id)">
+                        <option value="">انتخاب کنید...</option>
+                    </select>
+                </div>
+                <div class="mt-2">
                     ساعت
                     <div class="d-flex justify-content-between">
                         <div>
@@ -32,8 +38,10 @@
                     <input type="text" class="form-control mt-2" id="txt@(item.Id)" placeholder="توضیحات" />
                 </div>
                 <div class="mt-2 d-flex justify-content-between gap-2">
-                    <button class="btn btn-primary w-100" id="save@(item.Id)" onclick="saveTime('@item.Id')"><i class="fa fa-save"></i> ثبت</button>
-                    <button class="btn btn-secondary w-100" id="history@(item.Id)" onclick="detailsTime('@item.Id')"><i class="fa fa-list"></i> جزییات</button>
+                    <button class="btn btn-primary w-100" id="save@(item.Id)" onclick="saveTime('@item.Id')"><i
+                            class="fa fa-save"></i> ثبت</button>
+                    <button class="btn btn-secondary w-100" id="history@(item.Id)" onclick="detailsTime('@item.Id')"><i
+                            class="fa fa-list"></i> جزییات</button>
                 </div>
                 </p>
             </div>

@@ -17,7 +17,11 @@ public partial class Lecture
 
     public string? Text { get; set; }
 
+    public int VenueHallId { get; set; }
+
     public virtual EventsPerson EventsPerson { get; set; } = null!;
 
     public virtual Time Times { get; set; } = null!;
+
+    public virtual VenueHall VenueHall { get; set; } = null!;
 }

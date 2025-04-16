@@ -82,9 +82,10 @@
             let az = $('#timepickerAz' + id).val();
             let ta = $('#timepickerTa' + id).val();
             let txt = $('#txt' + id).val();
+            let venueHallId = $('#venueHall' + id).val();
 
             $.showPreloader();
-            let isCreate = await lectureCreate(id, timesId, az, ta, txt);
+            let isCreate = await lectureCreate(id, timesId, az, ta, txt, venueHallId);
             if (isCreate) {
                 $.hidePreloader();
                 $.alert('زمان با موفقیت ثبت شد.', 'عملیات موفق');
