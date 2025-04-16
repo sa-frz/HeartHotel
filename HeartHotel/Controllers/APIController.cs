@@ -224,12 +224,11 @@ public class APIController : Controller
     }
 
     [Route("/api/event/presenter/lecture/list")]
-    [HttpPost]
     public async Task<PartialViewResult> Lectures(int eventsPersonId)
     {
         try
         {
-            ViewBag.lectures = await _context.Lectures
+            ViewBag.Lecture = await _context.Lectures
                 .Include(m => m.EventsPerson)
                 .Include(m => m.Times)
                 .Include(m => m.VenueHall)
@@ -237,7 +236,7 @@ public class APIController : Controller
                 .Where(w => w.EventsPersonId == eventsPersonId)
                 .Select(s => new
                 {
-                    Person = s.EventsPerson.Person,
+                    Person = s.EventsPerson.Person.Name,
                     VenueHall = s.VenueHall.Title,
                     Venue = s.VenueHall.Venue.Title,
                     Rooz = s.Times.Rooz,

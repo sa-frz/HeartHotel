@@ -56,7 +56,7 @@
 
         function detailsTime(id) {
             $.ajax({
-                url: "/api/event/presenter/details/?id=" + id,
+                url: "/api/event/presenter/lecture/list/?eventsPersonId=" + id,
                 type: "GET",
                 contentType: "text/plain; charset=utf-8",
                 beforeSend: function () {
@@ -69,10 +69,10 @@
                 },
                 error: function (response) {
                     @* window.location.href = "/NotFound"; *@
-                                                    },
+                                                        },
                 failure: function (response) {
                     @* window.location.href = "/NotFound" *@
-                                                    }
+                                                        }
             });
         }
 

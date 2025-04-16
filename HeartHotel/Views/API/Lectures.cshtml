@@ -1,0 +1,17 @@
+﻿@{
+    string[] day = new string[] { "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه" };
+}
+
+<ul class="list-group">
+
+    @foreach (var lecture in ViewBag.Lecture)
+    {
+        <li class="list-group-item">@lecture.Person</li>
+        <li class="list-group-item">@lecture.VenueHall</li>
+        <li class="list-group-item">@lecture.Venue</li>
+        <li class="list-group-item">@lecture.Rooz</li>
+        <li class="list-group-item">@day[lecture.Roozehafte]</li>
+        <li class="list-group-item">@lecture.Text</li>
+    }
+
+</ul>
