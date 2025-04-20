@@ -1,0 +1,46 @@
+@model HeartHotel.Models.Lecture
+@{
+    ViewData["Title"] = "Lecture Details";
+}
+<div class="w-100 d-flex justify-content-center align-items-center bg-primary position-absolute end-0 top-0 vh-100"
+    style="z-index: 1;">
+    <div class="lecture-container">
+        <div class="lecture-details">
+            <h1 class="lecture-title">@Model.EventsPerson.Events?.Title</h1>
+            <div class="fs-2 text-center mb-3">@Model.EventsPerson.Person?.Name</div>
+            <p><strong>زمان باقیمانده:</strong> <span id="time"></span></p>
+            <p class="text-justify">@Model.Text</p>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            let timeLeft = 120; // 2 minutes in seconds
+            let currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            //let currentDate = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            //console.log(currentTime, currentDate);
+            let time1 = '@Model.SaatAz';
+            let time2 = '@Model.SaatTa';
+            timeLeft = Math.abs(new Date(`1970-01-01T${currentTime}Z`) - new Date(`1970-01-01T${time1}:00Z`)) / 1000;
+            //timeLeft = Math.abs(new Date(`1970-01-01T${time2}:00Z`) - new Date(`1970-01-01T${time1}:00Z`)) / 1000;
+            const timerElement = document.getElementById('time');
+
+            function updateTimer() {
+                const hours = Math.floor(timeLeft / 3600);
+                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                timeLeft--;
+
+                if (timeLeft < 0) {
+                    clearInterval(timerInterval);
+                    $.alert('زمان به پایان رسید!');
+                }
+            }
+
+            const timerInterval = setInterval(updateTimer, 1000);
+        });
+    </script>
+}

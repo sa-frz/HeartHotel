@@ -1,0 +1,56 @@
+﻿@model IEnumerable< HeartHotel.Models.Lecture>
+
+@{
+    string[] day = new string[] { "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه" };
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center my-3">
+        <strong>هیچ موردی یافت نشد.</strong>
+    </div>
+    return;
+}
+
+<input type="hidden" id="lectureId" value="@Model.FirstOrDefault()?.Id" />
+<div class="fw-bold fs-5 my-3">@Model.FirstOrDefault()?.EventsPerson?.Events?.Title</div>
+
+<table class="table table-striped">
+    <thead style="white-space: nowrap;">
+        <tr>
+            <th>اجرا</th>
+            <th>ساعت</th>
+            <th>توضیحات</th>
+            @* <th>Actions</th> *@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var lecture in Model)
+        {
+            <tr>
+                <td>@lecture.EventsPerson?.Person?.Name</td>
+                <td>@lecture.SaatAz - @lecture.SaatTa</td>
+                <td>@lecture.Text</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex flex-wrap gap-2 mt-3">
+    @for (int i = 1; i <= 11; i++)
+    {
+        <div class="border rounded-3">
+            <input type="radio" id="option-@i" name="options" value="@i" class="form-check-input me-2 d-none" />
+            <label for="option-@i" class="form-check-label p-5">@i</label>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[name="options"]').on('change', function () {
+            $(this).parent().addClass('border-primary');
+            $('[name="options"]').not(this).parent().removeClass('border-primary');
+        });
+    });
+</script>

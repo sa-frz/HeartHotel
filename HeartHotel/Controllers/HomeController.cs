@@ -25,7 +25,7 @@ public class HomeController : Controller
         return View();
     }
 
-    [Route("/events")]
+    [Route("/Events")]
     public IActionResult Events(int? page = 1, string k = "", int pageSize = 25)
     {
         var UserId = Helper.getUserId(HttpContext);
@@ -40,6 +40,21 @@ public class HomeController : Controller
         ViewBag.page = page;
 
         return View(Events.ToPagedList(page ?? 1, pageSize));
+    }
+
+    [Route("/Halls")]
+    public async Task<IActionResult> Halls()
+    {
+        ViewBag.venueHalls = await _context.VenueHalls
+                    .Include(v => v.Venue)
+                    .Select(s => new
+                    {
+                        Id = s.Id.ToString(),
+                        VenueTitle = s.Venue.Title,
+                        VenueHall = s.Title
+                    })
+                    .ToListAsync();
+        return View();
     }
 
     public IOrderedQueryable<Event> ShowEvent(int id, int admin, int live, string pid, string srch, string asearch, bool offline, string ab)

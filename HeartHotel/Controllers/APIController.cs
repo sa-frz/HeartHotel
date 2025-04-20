@@ -242,11 +242,13 @@ public class APIController : Controller
                     Rooz = s.Times.Rooz,
                     Roozehafte = s.Times.Roozehafte,
                     Text = s.Text,
+                    SaatAz = s.SaatAz,
+                    SaatTa = s.SaatTa,
                 }).ToListAsync();
 
-                return PartialView();
+            return PartialView();
         }
-        catch 
+        catch
         {
             return PartialView();
         }
@@ -259,5 +261,20 @@ public class APIController : Controller
             .Where(w => w.EventsId == id).ToListAsync();
 
         return Json(eventDays);
+    }
+
+    [Route("/api/program/hall/{VenueHall}")]
+    public async Task<PartialViewResult> Program(int VenueHall, string Date)
+    {
+        var program = await _context.Lectures
+            .Include(m => m.EventsPerson)
+            .ThenInclude(m => m.Person)
+            .Include(m => m.EventsPerson)
+            .ThenInclude(m => m.Events)
+            .Include(m => m.Times)
+            .Include(m => m.VenueHall)
+            .Where(w => w.VenueHallId == VenueHall && w.Times.Rooz == Date).ToListAsync();
+
+        return PartialView(program);
     }
 }

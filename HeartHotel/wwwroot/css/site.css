@@ -20,10 +20,9 @@ html {
 
 button,
 .btn,
-input,
+input[text],
 select,
 textarea {
-  font-family: 'Yekan Bakh';
   font-family: 'Yekan Bakh';
   -moz-font-feature-settings: 'ss01';
   -webkit-font-feature-settings: 'ss01';
@@ -313,11 +312,11 @@ body {
   position: relative;
 }
 
-.table-container table {
+table {
   border-collapse: collapse;
 }
 
-.table-container thead {
+thead {
   position: sticky;
   top: 0;
   z-index: 3;
@@ -326,11 +325,36 @@ body {
   background-color: var(--bs-secondary);
 }
 
-.table-container tbody,
-.table-container td,
-.table-container tfoot,
-.table-container th,
-.table-container thead,
-.table-container tr {
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
   border-style: none !important;
+}
+
+.lecture-container {
+  margin: 50px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* max-width: 600px; */
+}
+
+.lecture-title {
+  font-size: 2em;
+  color: #333;
+}
+
+.lecture-details {
+  margin-top: 20px;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.text-justify {
+  text-align: justify !important;
+  text-justify: inter-word !important;
 }

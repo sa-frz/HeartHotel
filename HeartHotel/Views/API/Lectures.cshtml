@@ -2,16 +2,29 @@
     string[] day = new string[] { "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه" };
 }
 
-<ul class="list-group">
-
-    @foreach (var lecture in ViewBag.Lecture)
-    {
-        <li class="list-group-item">@lecture.Person</li>
-        <li class="list-group-item">@lecture.VenueHall</li>
-        <li class="list-group-item">@lecture.Venue</li>
-        <li class="list-group-item">@lecture.Rooz</li>
-        <li class="list-group-item">@day[lecture.Roozehafte]</li>
-        <li class="list-group-item">@lecture.Text</li>
-    }
-
-</ul>
+<table class="table table-responsive table-bordered">
+    <thead>
+        <tr>
+            <th>سالن</th>
+            <th>روز</th>
+            <th>ساعت</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var lecture in ViewBag.Lecture)
+        {
+            <tr>
+                <td>@lecture.VenueHall</td>
+                <td>@day[lecture.Roozehafte] @lecture.Rooz</td>
+                <td>@lecture.SaatAz - @lecture.SaatTa</td>
+                <td>
+                    @* <form asp-action="DeleteLecture" method="post">
+                        <input type="hidden" name="id" value="@lecture.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
