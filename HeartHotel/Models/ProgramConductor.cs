@@ -15,7 +15,7 @@ public partial class ProgramConductor
 
     public string SaatAz { get; set; } = null!;
 
-    public int SaatTa { get; set; }
+    public string SaatTa { get; set; } = null!;
 
     public virtual Program Program { get; set; } = null!;
 }

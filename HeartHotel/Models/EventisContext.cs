@@ -420,6 +420,10 @@ public partial class EventisContext : DbContext
                 .HasMaxLength(5)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.SaatTa)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .IsFixedLength();
 
             entity.HasOne(d => d.Program).WithMany(p => p.ProgramConductors)
                 .HasForeignKey(d => d.ProgramId)
