@@ -141,8 +141,12 @@
             $(document).ready(function () {
                 const dtp1 = new mds.MdsPersianDateTimePicker(document.getElementById('dtp1'), {
                     targetTextSelector: '[data-name="dtp1-text"]',
-                    modalMode: false,
+                    modalMode: false
                 });
+
+                let currentDate = mds.MdsPersianDateTimePicker.convertDateToJalali(new Date());
+                let currentDateString = `${currentDate.year}/${currentDate.month.toString().padStart(2, '0')}/${currentDate.day.toString().padStart(2, '0')}`;
+                $('[data-name="dtp1-text"]').html(currentDateString);
 
                 $('[name="theme"]').on('change', function () {
                     $(this).parent().addClass('border-primary');
@@ -160,6 +164,12 @@
                 $('#btn1').html($('#loader').html()).attr('disabled', true);
                 $.get(`/api/program/halls?date=${selectedDate}`)
                     .done(function (data) {
+                        if ($.trim(data) === '') {
+                            $.alert('هیچ ایونتی برای این روز ثبت نشده است');
+                            $('#btn1').html('ادامه').removeAttr('disabled');
+                            return;
+                        }
+
                         $('#step2 .content').html(data);
                         $('#step1, #step2').toggleClass('d-none');
                         $('#line-0, #step-1').toggleClass('active');
@@ -167,8 +177,9 @@
                         showAllProgram();
                     })
                     .fail(function (xhr, status, error) {
-                        $.alert('خطا در بارگذاری اطلاعات. لطفا دوباره تلاش کنید.');
-                        console.error(error);
+                        $.alert('هیچ ایونتی برای این روز ثبت نشده است.');
+                        $('#btn1').html('ادامه').removeAttr('disabled');
+                        console.error(xhr, status, error);
                     });
             });
 
@@ -212,11 +223,11 @@
                     return;
                 }
                 let tr = ` <tr>
-                                                                                                                        <td>${$('#txtName').val()}</td>
-                                                                                                                        <td>${$('#timepickerAz').val()} - ${$('#timepickerTa').val()}</td>
-                                                                                                                        <td>${$('#txtDescription').val()}</td>
-                                                                                                                        <td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>
-                                                                                                                    </tr>`;
+                                                                                                                                                <td>${$('#txtName').val()}</td>
+                                                                                                                                                <td>${$('#timepickerAz').val()} - ${$('#timepickerTa').val()}</td>
+                                                                                                                                                <td>${$('#txtDescription').val()}</td>
+                                                                                                                                                <td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>
+                                                                                                                                            </tr>`;
                 $('#step3 .content table tbody').append(tr);
                 $('#txtName').val('');
                 $('#timepickerAz').val('');
@@ -367,11 +378,11 @@
                         success: function (data) {
                             $($this).html(data);
                             @* $($this).append('<div class="mt-3 d-flex align-items-center gap-2"><button type="button" class="btn btn-primary w-100" onclick="goNext()">ادامه</button><button type="button" class="btn btn-secondary w-100" onclick="ret()">بازگشت</button></div>'); *@
-                                                                                                                    },
+                                                                                                                                            },
                         error: function (xhr, status, error) {
                             console.error(error);
                             @* $.alert('خطا در بارگذاری برنامه‌ها.'); *@
-                                                                                                                    }
+                                                                                                                                            }
                     });
                 });
             }

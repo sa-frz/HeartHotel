@@ -290,6 +290,7 @@ public class APIController : Controller
             Rooz = s.Times.Rooz,
             Roozehafte = s.Times.Roozehafte
         })
+        .Where(w => w.Rooz == Date)
         .Distinct()
        .ToListAsync();
         ViewBag.lecture = lecture;
@@ -319,7 +320,7 @@ public class APIController : Controller
                 programData.Add(conductor);
             }
 
-             var program = new Programs()
+            var program = new Programs()
             {
                 Date = model.Date,
                 ShowDate = model.ShowDate,
