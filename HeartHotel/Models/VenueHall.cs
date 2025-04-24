@@ -15,5 +15,7 @@ public partial class VenueHall
 
     public virtual ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
 
+    public virtual ICollection<Program> Programs { get; set; } = new List<Program>();
+
     public virtual Venue Venue { get; set; } = null!;
 }

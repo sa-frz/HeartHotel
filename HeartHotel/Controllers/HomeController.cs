@@ -43,17 +43,20 @@ public class HomeController : Controller
     }
 
     [Route("/Halls")]
-    public async Task<IActionResult> Halls()
+    public IActionResult Halls()
     {
-        ViewBag.venueHalls = await _context.VenueHalls
-                    .Include(v => v.Venue)
-                    .Select(s => new
-                    {
-                        Id = s.Id.ToString(),
-                        VenueTitle = s.Venue.Title,
-                        VenueHall = s.Title
-                    })
-                    .ToListAsync();
+        // ViewBag.venueHalls = await _context.VenueHalls
+        //             .Include(v => v.Venue)
+        //             .Select(s => new
+        //             {
+        //                 Id = s.Id.ToString(),
+        //                 VenueTitle = s.Venue.Title,
+        //                 VenueHall = s.Title
+        //             })
+        //             .ToListAsync();
+
+        
+
         return View();
     }
 

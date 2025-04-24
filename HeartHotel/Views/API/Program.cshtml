@@ -12,8 +12,12 @@
     return;
 }
 
-<input type="hidden" id="lectureId" value="@Model.FirstOrDefault()?.Id" />
-<div class="fw-bold fs-5 my-3">@Model.FirstOrDefault()?.EventsPerson?.Events?.Title</div>
+@* <input type="hidden" id="lectureId" value="@Model.FirstOrDefault()?.Id" /> *@
+<div class="mt-2"></div>
+    <input type="radio" id="option-@Model.FirstOrDefault()?.Id" name="options" value="@Model.FirstOrDefault()?.Id" class="form-check-input me-2" />
+    <label for="option-@Model.FirstOrDefault()?.Id" class="form-check-label fw-bold fs-5 text-primary">@Model.FirstOrDefault()?.EventsPerson?.Events?.Title</label>
+</div>
+@* <div class="fw-bold mt-2 fs-5 text-primary">@Model.FirstOrDefault()?.EventsPerson?.Events?.Title</div> *@
 
 <table class="table table-striped">
     <thead style="white-space: nowrap;">
@@ -21,7 +25,6 @@
             <th>اجرا</th>
             <th>ساعت</th>
             <th>توضیحات</th>
-            @* <th>Actions</th> *@
         </tr>
     </thead>
     <tbody>
@@ -36,7 +39,7 @@
     </tbody>
 </table>
 
-<div class="d-flex flex-wrap gap-2 mt-3">
+@* <div class="d-flex flex-wrap gap-2 mt-3">
     @for (int i = 1; i <= 11; i++)
     {
         <div class="border rounded-3">
@@ -53,4 +56,4 @@
             $('[name="options"]').not(this).parent().removeClass('border-primary');
         });
     });
-</script>
+</script> *@

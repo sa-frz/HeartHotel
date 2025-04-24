@@ -43,6 +43,10 @@ public partial class EventisContext : DbContext
 
     public virtual DbSet<Person> People { get; set; }
 
+    public virtual DbSet<Program> Programs { get; set; }
+
+    public virtual DbSet<ProgramConductor> ProgramConductors { get; set; }
+
     public virtual DbSet<PublishLog> PublishLogs { get; set; }
 
     public virtual DbSet<Service> Services { get; set; }
@@ -392,6 +396,34 @@ public partial class EventisContext : DbContext
                 .HasColumnName("CV");
             entity.Property(e => e.Image).HasDefaultValueSql("(NULL)");
             entity.Property(e => e.Name).HasComment("");
+        });
+
+        modelBuilder.Entity<Program>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Programs__3214EC27543800D6");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Date).HasMaxLength(10);
+
+            entity.HasOne(d => d.VenueHall).WithMany(p => p.Programs)
+                .HasForeignKey(d => d.VenueHallId)
+                .HasConstraintName("FK_Programs_VenueHalls");
+        });
+
+        modelBuilder.Entity<ProgramConductor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ProgramC__3214EC274B7B6484");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Description).HasDefaultValueSql("(NULL)");
+            entity.Property(e => e.SaatAz)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .IsFixedLength();
+
+            entity.HasOne(d => d.Program).WithMany(p => p.ProgramConductors)
+                .HasForeignKey(d => d.ProgramId)
+                .HasConstraintName("FK_ProgramConductors_Programs");
         });
 
         modelBuilder.Entity<PublishLog>(entity =>

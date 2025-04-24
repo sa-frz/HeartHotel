@@ -1,0 +1,28 @@
+﻿@model IEnumerable< HeartHotel.Models.Lecture>
+
+@{
+    string[] day = new string[] { "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه" };
+    var Model = ViewBag.lecture;
+    var Halls = ViewBag.venueHalls;
+}
+
+@foreach (var item in Model)
+{
+    <div class="fw-bold bg-primary rounded-3 p-2 text-white fs-5 d-flex justify-content-between align-items-center">
+        <div>@day[item.Roozehafte]</div>
+        <div>@item.Rooz</div>
+    </div>
+    @foreach (var hall in Halls)
+    {
+        <div class="hall-container">
+            <div class="fw-bold bg-light rounded-3 p-2 text-dark fs-5">@hall.Title</div>
+            <div frz-VenueHall="@hall.Id" frz-Date="@item.Rooz">
+                <div class="loader">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+    }
+}

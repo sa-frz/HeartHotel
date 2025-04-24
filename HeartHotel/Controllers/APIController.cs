@@ -277,4 +277,42 @@ public class APIController : Controller
 
         return PartialView(program);
     }
+
+    [Route("/api/program/halls")]
+    public async Task<PartialViewResult> Halls(string Date)
+    {
+        var lecture = await _context.Lectures
+        .Include(e => e.Times)
+        .Select(s => new
+        {
+            // VenueHallId = s.VenueHallId,
+            TimesId = s.TimesId,
+            Rooz = s.Times.Rooz,
+            Roozehafte = s.Times.Roozehafte
+        })
+        .Distinct()
+       .ToListAsync();
+        ViewBag.lecture = lecture;
+
+        var halls = await _context.VenueHalls.ToListAsync();
+        ViewBag.venueHalls = halls;
+
+        return PartialView();
+    }
+
+    [Route("/api/program/create")]
+    [HttpPost]
+    public async Task<IActionResult> CreateProgram(ProgramViewModel model)
+    {
+        try
+        {
+            
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 }
