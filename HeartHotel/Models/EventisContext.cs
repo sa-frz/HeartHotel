@@ -43,7 +43,7 @@ public partial class EventisContext : DbContext
 
     public virtual DbSet<Person> People { get; set; }
 
-    public virtual DbSet<Program> Programs { get; set; }
+    public virtual DbSet<Programs> Programs { get; set; }
 
     public virtual DbSet<ProgramConductor> ProgramConductors { get; set; }
 
@@ -398,7 +398,7 @@ public partial class EventisContext : DbContext
             entity.Property(e => e.Name).HasComment("");
         });
 
-        modelBuilder.Entity<Program>(entity =>
+        modelBuilder.Entity<Programs>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Programs__3214EC27543800D6");
 

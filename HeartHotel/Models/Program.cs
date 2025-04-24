@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HeartHotel.Models;
 
-public partial class Program
+public partial class Programs
 {
     public int Id { get; set; }
 

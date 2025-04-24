@@ -302,11 +302,34 @@ public class APIController : Controller
 
     [Route("/api/program/create")]
     [HttpPost]
-    public async Task<IActionResult> CreateProgram(ProgramViewModel model)
+    public async Task<IActionResult> CreateProgram([FromBody] ProgramViewModel model)
     {
         try
         {
-            
+            var programData = new List<ProgramConductor>();
+            foreach (var item in model.ProgramData)
+            {
+                var conductor = new ProgramConductor()
+                {
+                    Name = item.Name,
+                    Description = item.Description,
+                    SaatAz = item.Time.Split("-")[0].Trim(),
+                    SaatTa = item.Time.Split("-")[1].Trim(),
+                };
+                programData.Add(conductor);
+            }
+
+             var program = new Programs()
+            {
+                Date = model.Date,
+                ShowDate = model.ShowDate,
+                Name = model.ProgramName,
+                VenueHallId = model.VenueHallId,
+                ThemeId = model.ThemeId,
+                ProgramConductors = programData
+            };
+            _context.Add(program);
+            await _context.SaveChangesAsync();
             return Ok();
         }
         catch (Exception ex)
