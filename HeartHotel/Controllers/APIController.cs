@@ -339,4 +339,22 @@ public class APIController : Controller
         }
     }
 
+    [Route("/api/program/get")]
+    [HttpPost]
+    public async Task<PartialViewResult> GetProgram([FromBody] GetProgram model)
+    { 
+        try
+        {
+            var program = await _context.Programs
+                .Include(m => m.ProgramConductors)
+                .Where(w => w.Date == model.Date && w.VenueHallId == model.VenueHallId).ToListAsync();
+
+            return PartialView(program);
+        }
+        catch (Exception ex)
+        {
+            return PartialView(ex.Message);
+        }
+    }
+
 }

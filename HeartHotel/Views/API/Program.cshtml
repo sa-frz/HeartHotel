@@ -13,9 +13,11 @@
 }
 
 @* <input type="hidden" id="lectureId" value="@Model.FirstOrDefault()?.Id" /> *@
-<div class="mt-2"></div>
-    <input type="radio" id="option-@Model.FirstOrDefault()?.Id" name="options" value="@Model.FirstOrDefault()?.Id" class="form-check-input me-2" />
-    <label for="option-@Model.FirstOrDefault()?.Id" class="form-check-label fw-bold fs-5 text-primary">@Model.FirstOrDefault()?.EventsPerson?.Events?.Title</label>
+<div class="mt-2">
+    <input type="radio" id="option-@Model.FirstOrDefault()?.Id" name="options" value="@Model.FirstOrDefault()?.Id"
+        class="form-check-input me-2" />
+    <label for="option-@Model.FirstOrDefault()?.Id"
+        class="form-check-label fw-bold fs-5 text-primary">@Model.FirstOrDefault()?.EventsPerson?.Events?.Title</label>
 </div>
 @* <div class="fw-bold mt-2 fs-5 text-primary">@Model.FirstOrDefault()?.EventsPerson?.Events?.Title</div> *@
 

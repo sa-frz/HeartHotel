@@ -16,4 +16,10 @@ namespace HeartHotel.Models
         public string? Description { get; set; }
         public string? Time { get; set; }
     }
+
+    public class GetProgram
+    {
+        public string? Date { get; set; }
+        public int VenueHallId { get; set; }
+    }
 }

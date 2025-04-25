@@ -1,0 +1,99 @@
+﻿@{
+    string[] day = new string[] { "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه" };
+}
+
+<h4 class="section-title">
+    @ViewBag.title
+</h4>
+
+<div id="step1">
+    <div class="d-flex align-items-center justify-content-between mb-3 gap-2">
+        <div class="text-nowrap fw-bold">انتخاب روز</div>
+        <div class="input-group border rounded-2" style="flex-wrap: initial; height: 38px;">
+            <span id="dtp1" class="border-0 input-group-text cursor-pointer"
+                style="border-radius: 4px; padding: 0 !important;">
+                <span class="fa-regular fa-calendar d-flex align-items-center px-3"></span>
+            </span>
+            <span data-name="dtp1-text" class="border-0 form-control d-flex align-items-center" />
+        </div>
+    </div>
+
+    <button class="btn btn-secondary w-100" id="btn1">ادامه</button>
+</div>
+
+<div id="program" class="d-none">
+    <div class="content">
+        <div class="loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+    <button class="btn btn-secondary w-100 d-none" id="btn2">بازگشت</button>
+</div>
+
+@section styles {
+    <link href="~/lib/datetimepicker 4.1.1/mds.bs.datetimepicker.style.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="~/lib/datetimepicker 4.1.1/mds.bs.datetimepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            const dtp1 = new mds.MdsPersianDateTimePicker(document.getElementById('dtp1'), {
+                targetTextSelector: '[data-name="dtp1-text"]',
+                modalMode: false
+            });
+
+            let currentDate = mds.MdsPersianDateTimePicker.convertDateToJalali(new Date());
+            let currentDateString = `${currentDate.year}/${currentDate.month.toString().padStart(2, '0')}/${currentDate.day.toString().padStart(2, '0')}`;
+            $('[data-name="dtp1-text"]').html(currentDateString);
+        });
+
+        $('#btn1').on('click', function () {
+            let selectedDate = $.trim($('[data-name="dtp1-text"]').html());
+
+            if (!selectedDate) {
+                $.alert('لطفا یک تاریخ انتخاب کنید');
+                return;
+            }
+
+            $('#program .content').html($('#loader').html())
+            $('#program').removeClass('d-none');
+            $('#step1').addClass('d-none');
+            $.ajax({
+                url: '/api/program/get',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    date: selectedDate,
+                    venueHallID: '@ViewBag.VenueHallID',
+                }),
+                success: function (response) {
+                    if (response == null || response.length == 0 || $.trim(response) == '') {
+                        $.alert('هیچ ایونتی برای این روز ثبت نشده است');
+                        $('#program .content').html('');
+                        $('#program, #step1').toggleClass('d-none');
+                        return;
+                    }
+                    $('#program .content').html(response);
+                    $('#btn2').removeClass('d-none');
+                },
+                error: function (xhr, status, error) {
+                    $.alert('هیچ ایونتی برای این روز ثبت نشده است');
+                    $('#program .content').html('');
+                    $('#program, #step1').toggleClass('d-none');
+                    console.log('Error:', error);
+                    console.log('Status:', status);
+                    console.log('Response:', xhr.responseText);
+                }
+            });
+        });
+
+        $('#btn2').on('click', function () {
+            $('#program').addClass('d-none');
+            $('#step1').removeClass('d-none');
+            $(this).addClass('d-none');
+        });
+    </script>
+}

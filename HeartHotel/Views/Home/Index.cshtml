@@ -1,155 +1,21 @@
 ﻿@{
-    ViewData["Title"] = "ورود";
+    ViewData["Title"] = "هتل قلب"; // Set the title of the page
 }
 
-<div class="w-100 d-flex justify-content-center align-items-center bg-primary position-absolute end-0 top-0 vh-100"
+<div class="w-100 bg-primary position-absolute end-0 top-0 vh-100 d-flex flex-column justify-content-center align-items-center"
     style="z-index: 1;">
-    <div class="border rounded-3 shadow-sm p-3 bg-white rounded" style="max-width: 100%; width: 400px;">
-        <div class="text-center mb-3">
-            <img src="/img/HH.png" alt="هتل قلب" draggable="false" style="max-height: 100px;" />
-        </div>
-
-        <h2 class="text-center mb-5">ورود به حساب کاربری</h2>
-        <div class="my-5">
-            <div id="p1">
-                <p>لطفا شماره همراه خود را وارد کنید.</p>
-                <input type="text" class="form-control ltr" id="mobile" placeholder="09---------" />
-                <p id="message" class="small mt-2"></p>
-            </div>
-            <div id="p2" class="d-none">
-                <p>لطفا کد تایید را وارد کنید.</p>
-                <p class="d-flex justify-content-between align-items-center">
-                    <span>کد تایید به شماره <span id="mobileNumber"></span> ارسال شد.</span>
-                    <i class="fa-light fa-pen-line text-primary ms-2" role="button" id="editMobile"></i>
-                </p>
-                <input type="text" class="form-control ltr mb-3" id="code" placeholder="● ● ● ● ● ● " />
-                <p class="small text-center text-secondary">زمان باقیمانده تا ارسال مجدد <span id="timer">02:00</span>
-                    <i class="fa-light fa-clock"></i>
-                </p>
-                <p class="small d-none text-center"><a role="button" id="resendCode" class="text-primary">ارسال مجدد</a>
-                </p>
-            </div>
-        </div>
-        <button type="button" class="btn btn-secondary w-100" id="mobileForm">ادامه</button>
-        <input type="hidden" id="mobileHidden" name="mobileHidden" value="1" />
+    <img src="/img/HH.png" alt="هتل قلب" draggable="false" style="max-height: 100px;" />
+    <div class="text-center mb-3 fs-4 text-white">
+        مدیریت سالن‌ها و ایونت‌ها
+    </div>
+    <div class="d-flex justify-content-center align-items-center gap-3">
+        <a class="lecture-container text-decoration-none text-center" href="/Login">
+            <i class="fa fa-user-tie fs-1 text-primary"></i>
+            <div class="fs-5">ورود مدیر سیستم</div>
+        </a>
+        <a class="lecture-container text-decoration-none text-center" href="/Halls">
+            <i class="fa fa-door-open fs-1 text-primary"></i>
+            <div class="fs-5">ورود مدیر سالن</div>
+        </a>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            $('#mobileHidden').val(1);
-
-            $('#mobile').on('input', function () {
-                let mobileInput = $(this).val().toEnglishNumbers();
-                if (persianMobileRegex.test(mobileInput)) {
-                    $('#message').text('شماره موبایل معتبر است!').css('color', 'green');
-                } else {
-                    $('#message').text('شماره موبایل نامعتبر است. لطفا یک شماره معتبر وارد کنید.').css('color', 'red');
-                }
-            });
-
-            $('#mobileForm').on('click', async function () {
-                let mobileInput = $('#mobile').val().toEnglishNumbers();
-
-                if ($('#mobileHidden').val() == 1) {
-                    if (persianMobileRegex.test(mobileInput)) {
-                        $(this).html($('#loader').html()).attr('disabled', true);
-                        let smsSended = await sendSMS(mobileInput);
-                        if (!smsSended) {
-                            $(this).html('ادامه').removeAttr('disabled');
-                            $.alert('لطفا دوباره تلاش کنید.', 'خطا در ارسال کد تایید', function () {
-                                $('#mobile').focus();
-                            });
-                        } else {
-                            $('#mobileHidden').val(2);
-                            $('#p1').addClass('d-none');
-                            $('#p2').removeClass('d-none');
-                            $(this).html('ادامه').removeAttr('disabled');
-                            $('#code').focus();
-                            startCountdown();
-                            $('#mobileNumber').html(mobileInput);
-                        }
-                    } else {
-                        $.alert('لطفا یک شماره معتبر وارد کنید.', 'شماره موبایل نامعتبر است', function () {
-                            $('#mobile').focus();
-                        });
-                    }
-                } else {
-                    let codeInput = $('#code').val().toEnglishNumbers();
-                    if (codeInput.length < 6 || codeInput.length > 6) {
-                        $.alert('لطفا کد تایید را به درستی وارد کنید.', 'کد تایید نامعتبر است', function () {
-                            $('#code').focus();
-                        });
-                        return;
-                    }
-                    
-                    $(this).html($('#loader').html()).attr('disabled', true);
-
-                    let isCodeTrue = await checkCode(mobileInput, codeInput);
-                    if (!isCodeTrue) {
-                        $(this).html('ادامه').removeAttr('disabled');
-                        $.alert('لطفا دوباره تلاش کنید.', 'خطا در تایید کد', function () {
-                            $('#code').focus();
-                        });
-                    }
-                    else {
-                        window.location.href = '/Events';
-                    }
-                }
-            });
-
-            $('#editMobile').on('click', function () {
-                $('#p1, #p2').toggleClass('d-none');
-                $('#mobileHidden').val(1);
-            });
-
-            $('#resendCode').on('click', async function () {
-                $(this).html($('#loader').html()).attr('disabled', true);
-                let smsSended = await sendSMS(mobileInput);
-                if (!smsSended) {
-                    // $(this).html('ارسال مجدد کد تایید').removeAttr('disabled');
-                    $.alert('لطفا دوباره تلاش کنید.', 'خطا در ارسال کد تایید', function () {
-                        $('#code').focus();
-                    });
-                } else {
-                    startCountdown();
-                }
-            });
-
-            function startCountdown() {
-                let timerElement = $('#timer');
-                let timerDuration = 120; // 2 minutes in seconds
-                timerElement.html('02:00').parent().removeClass('d-none');
-                $('#resendCode').parent().addClass('d-none');
-                let interval
-                clearInterval(interval);
-
-                interval = setInterval(function () {
-                    let minutes = Math.floor(timerDuration / 60);
-                    let seconds = timerDuration % 60;
-
-                    // Format the time as MM:SS
-                    let formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    timerElement.html(formattedTime);
-
-                    if (timerDuration <= 0) {
-                        clearInterval(interval);
-                        timerElement.html('00:00').parent().addClass('d-none');
-                        $('#resendCode').parent().removeClass('d-none');
-                    }
-
-                    timerDuration--;
-                }, 1000);
-            }
-
-            $('#mobile, #code').on('keypress', function (e) {
-                if (e.which === 13) { // Enter key
-                    $('#mobileForm').click();
-                }
-            });
-
-        });
-
-    </script>
-}

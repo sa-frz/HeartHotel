@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Firoozi.Helper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using X.PagedList.Extensions;
+using System.Threading.Tasks;
 
 namespace HeartHotel.Controllers;
 
@@ -20,46 +21,32 @@ public class ScreenController : Controller
         _logger = logger;
     }
 
-    public IActionResult Show1(int? id)
+    public async Task<IActionResult> Show1(int? id)
     {
         if (id == null)
         {
             return NotFound();
         }
 
-        var lecture = _context.Lectures
-        .Include(m => m.EventsPerson)
-        .ThenInclude(m => m.Events)
-        .Include(m => m.EventsPerson)
-        .ThenInclude(m => m.Person)
-        .FirstOrDefault(x => x.Id == id);
-        if (lecture == null)
-        {
-            return NotFound();
-        }
+        var program = await _context.Programs
+            .Include(m => m.ProgramConductors)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
-        return View(lecture);
+        return View(program);
     }
 
-    public IActionResult Show2(int? id)
+    public async Task<IActionResult> Show2(int? id)
     {
         if (id == null)
         {
             return NotFound();
         }
 
-        var lecture = _context.Lectures
-        .Include(m => m.EventsPerson)
-        .ThenInclude(m => m.Events)
-        .Include(m => m.EventsPerson)
-        .ThenInclude(m => m.Person)
-        .FirstOrDefault(x => x.Id == id);
-        if (lecture == null)
-        {
-            return NotFound();
-        }
+        var program = await _context.Programs
+            .Include(m => m.ProgramConductors)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
-        return View(lecture);
+        return View(program);
     }
 
 

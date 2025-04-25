@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Firoozi.Helper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using X.PagedList.Extensions;
+using System.Threading.Tasks;
 
 namespace HeartHotel.Controllers;
 
@@ -24,6 +25,12 @@ public class HomeController : Controller
     {
         return View();
     }
+    
+    [Route("/Login")]
+    public IActionResult Login()
+    {
+        return View();
+    }
 
     [Route("/Events")]
     public IActionResult Events(int? page = 1, string k = "", int pageSize = 25)
@@ -31,7 +38,7 @@ public class HomeController : Controller
         var UserId = Helper.getUserId(HttpContext);
         if (UserId == 0)
         {
-            // return RedirectToAction(nameof(Index));
+            return Redirect("/Login");
         }
         ViewBag.UID = UserId;
 
@@ -43,19 +50,36 @@ public class HomeController : Controller
     }
 
     [Route("/Halls")]
-    public IActionResult Halls()
+    public async Task<IActionResult> Halls()
     {
-        // ViewBag.venueHalls = await _context.VenueHalls
-        //             .Include(v => v.Venue)
-        //             .Select(s => new
-        //             {
-        //                 Id = s.Id.ToString(),
-        //                 VenueTitle = s.Venue.Title,
-        //                 VenueHall = s.Title
-        //             })
-        //             .ToListAsync();
+       var halls = await _context.VenueHalls.ToListAsync();
+        return View(halls);
+    }
 
-        
+    [Route("/Hall/{id?}/{title}")]
+    public IActionResult Hall(int? id, string title)
+    {
+        if (id == null || _context.VenueHalls == null)
+        {
+            return NotFound();
+        }
+
+        ViewBag.Title = title;
+        ViewBag.VenueHallID = id;
+
+        return View();
+    }
+    
+
+    [Route("/Conductors")]
+    public IActionResult Conductors()
+    {
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
 
         return View();
     }
@@ -273,6 +297,13 @@ public class HomeController : Controller
             return NotFound();
         }
 
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
+
         var eventi = await _context.Events
             //.Include(e => e.Organizer)
             //.Include(e => e.RegisterUserNavigation)
@@ -295,6 +326,13 @@ public class HomeController : Controller
             return NotFound();
         }
 
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
+
         var eventi = await _context.Events
             //.Include(e => e.Organizer)
             //.Include(e => e.RegisterUserNavigation)
@@ -308,15 +346,6 @@ public class HomeController : Controller
         ViewBag.Title = eventi.Title;
         ViewBag.ID = id;
 
-        int UserId = 0;
-        try
-        {
-            UserId = Convert.ToInt32(HttpContext.Session.GetString("userid"));
-        }
-        catch { }
-
-        ViewBag.UID = UserId;
-
         return View();
     }
 
@@ -328,6 +357,13 @@ public class HomeController : Controller
             return NotFound();
         }
 
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
+
         var eventi = await _context.Events
             .FirstOrDefaultAsync(m => m.Id == id);
         if (eventi == null)
@@ -338,15 +374,6 @@ public class HomeController : Controller
         ViewBag.img = (eventi.ImageAdr != null && eventi.ImageAdr.Trim() != "-") ? eventi.ImageAdr : null;
         ViewBag.Title = eventi.Title;
         ViewBag.ID = id;
-
-        int UserId = 0;
-        try
-        {
-            UserId = Convert.ToInt32(HttpContext.Session.GetString("userid"));
-        }
-        catch { }
-
-        ViewBag.UID = UserId;
 
         return View();
     }
