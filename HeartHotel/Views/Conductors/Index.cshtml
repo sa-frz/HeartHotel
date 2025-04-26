@@ -224,11 +224,11 @@
                     return;
                 }
                 let tr = ` <tr>
-                                                                                                                                                <td>${$('#txtName').val()}</td>
-                                                                                                                                                <td>${$('#timepickerAz').val()} - ${$('#timepickerTa').val()}</td>
-                                                                                                                                                <td>${$('#txtDescription').val()}</td>
-                                                                                                                                                <td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>
-                                                                                                                                            </tr>`;
+                                <td>${$('#txtName').val()}</td>
+                                <td>${$('#timepickerAz').val()} - ${$('#timepickerTa').val()}</td>
+                                <td>${$('#txtDescription').val()}</td>
+                                <td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>
+                            </tr>`;
                 $('#step3 .content table tbody').append(tr);
                 $('#txtName').val('');
                 $('#timepickerAz').val('');

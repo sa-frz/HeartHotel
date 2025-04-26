@@ -28,7 +28,8 @@ namespace HeartHotel.Models
         public string? ShowDate { get; set; }
         public string? ProgramName { get; set; }
         public IEnumerable<ProgramDataViewModel>? ProgramData { get; set; }
-        public int VenueHallId { get; set; }
+        public int? ProgramId { get; set; }
+        public int? VenueHallId { get; set; }
         public int ThemeId { get; set; }
     }
 

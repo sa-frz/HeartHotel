@@ -325,7 +325,7 @@ public class APIController : Controller
                 Date = model.Date,
                 ShowDate = model.ShowDate,
                 Name = model.ProgramName,
-                VenueHallId = model.VenueHallId,
+                VenueHallId = model.VenueHallId.Value,
                 ThemeId = model.ThemeId,
                 ProgramConductors = programData
             };
@@ -339,10 +339,55 @@ public class APIController : Controller
         }
     }
 
+
+    [Route("/api/program/edit")]
+    [HttpPost]
+    public async Task<IActionResult> EditProgram([FromBody] ProgramViewModel model)
+    {
+        try
+        {
+            var program = await _context.Programs
+                .FirstOrDefaultAsync(m => m.Id == model.ProgramId);
+            program.ShowDate = model.ShowDate;
+            program.Name = model.ProgramName;
+            program.ThemeId = model.ThemeId;
+
+            _context.Update(program);
+            await _context.SaveChangesAsync();
+
+            var programData = await _context.ProgramConductors
+                            .Where(w => w.ProgramId == model.ProgramId).ToListAsync();
+            _context.ProgramConductors.RemoveRange(programData);
+            await _context.SaveChangesAsync();
+
+            var programConductors = new List<ProgramConductor>();
+            foreach (var item in model.ProgramData)
+            {
+                var conductor = new ProgramConductor()
+                {
+                    Name = item.Name,
+                    Description = item.Description,
+                    SaatAz = item.Time.Split("-")[0].Trim(),
+                    SaatTa = item.Time.Split("-")[1].Trim(),
+                    ProgramId = model.ProgramId.Value
+                };
+                programConductors.Add(conductor);
+            }
+            _context.AddRange(programConductors);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [Route("/api/program/get")]
     [HttpPost]
     public async Task<PartialViewResult> GetProgram([FromBody] GetProgram model)
-    { 
+    {
         try
         {
             var program = await _context.Programs
