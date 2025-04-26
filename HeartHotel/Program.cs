@@ -1,12 +1,20 @@
 using HeartHotel.Models;
 using Microsoft.EntityFrameworkCore;
+using HeartHotel.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register SignalRHub
+builder.Services.AddSingleton<SignalRHub>();
+
 builder.Services.AddDbContext<EventisContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EventisContext")));
+
+builder.Services.AddSignalR();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromDays(3); // Set session timeout to 3 days
@@ -28,6 +36,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession(); // Enable session middleware
+
+app.MapHub<HeartHotel.Hubs.SignalRHub>("/signalrHub");
 
 app.UseAuthorization();
 

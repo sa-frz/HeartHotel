@@ -5,16 +5,20 @@ using HeartHotel.Models;
 using Microsoft.EntityFrameworkCore;
 using Firoozi.Helper;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using HeartHotel.Hubs;
 
 namespace HeartHotel.Controllers;
 
 public class APIController : Controller
 {
     private readonly EventisContext _context;
+    private readonly SignalRHub _signalRHub;
+    // private readonly IHubContext<NotificationHub> _hubContext;
 
-    public APIController(EventisContext context)
+    public APIController(EventisContext context, SignalRHub signalRHub)
     {
         _context = context;
+        _signalRHub = signalRHub;
     }
 
     [Route("/api/sms/send")]
@@ -400,6 +404,22 @@ public class APIController : Controller
         {
             return PartialView(ex.Message);
         }
+    }
+
+    [Route("/api/send/notification")]
+    // [HttpPost] 
+    public async Task<IActionResult> SendNotification()
+    {
+        await _signalRHub.NotifyAllClients("ReceiveNotification");
+        return Ok();
+    }
+
+    [Route("/api/send/notification/{id}")]
+    // [HttpPost] 
+    public async Task<IActionResult> SendNotification(string id)
+    {
+        await _signalRHub.NotifyClient(id, "برای شما یک رویداد جدید ثبت شده است.");
+        return Ok();
     }
 
 }
