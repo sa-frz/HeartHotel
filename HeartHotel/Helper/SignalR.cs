@@ -23,9 +23,10 @@ namespace HeartHotel.Hubs
         }
 
         // Event for adding a client to a group
-        public async Task AddToGroup(string groupName)
+        public async Task AddToGroup(string connectionId, string groupName)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            // await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            await Groups.AddToGroupAsync(connectionId, groupName);
         }
 
         // Event for removing a client from a group

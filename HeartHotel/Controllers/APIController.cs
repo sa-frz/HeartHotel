@@ -350,10 +350,15 @@ public class APIController : Controller
     {
         try
         {
+
             var program = await _context.Programs
                 .FirstOrDefaultAsync(m => m.Id == model.ProgramId);
-            program.ShowDate = model.ShowDate;
-            program.Name = model.ProgramName;
+
+            var programThemeId = program!.ThemeId;
+            var isNeedRedirect = (programThemeId != model.ThemeId);
+
+            program.ShowDate = model.ShowDate!;
+            program.Name = model.ProgramName!;
             program.ThemeId = model.ThemeId;
 
             _context.Update(program);
@@ -379,6 +384,25 @@ public class APIController : Controller
             }
             _context.AddRange(programConductors);
             await _context.SaveChangesAsync();
+
+            try
+            {
+                await _signalRHub.NotifyGroup("Show", "Reload");
+            }
+            catch { }
+
+            try
+            {
+                if (isNeedRedirect)
+                {
+                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}", $"/Screen/Show{model.ThemeId.ToString().Trim()}/?id={model.ProgramId.ToString()!.Trim()}");
+                }
+                else
+                {
+                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}", "Reload");
+                }
+            }
+            catch { }
 
             return Ok();
         }
@@ -406,19 +430,11 @@ public class APIController : Controller
         }
     }
 
-    [Route("/api/send/notification")]
-    // [HttpPost] 
-    public async Task<IActionResult> SendNotification()
+    [Route("/api/SignalR/group/add/{connectionId}/{groupName}")]
+    [HttpPost]
+    public async Task<IActionResult> GroupAdd(string connectionId, string groupName)
     {
-        await _signalRHub.NotifyAllClients("ReceiveNotification");
-        return Ok();
-    }
-
-    [Route("/api/send/notification/{id}")]
-    // [HttpPost] 
-    public async Task<IActionResult> SendNotification(string id)
-    {
-        await _signalRHub.NotifyClient(id, "برای شما یک رویداد جدید ثبت شده است.");
+        await _signalRHub.AddToGroup(connectionId, groupName);
         return Ok();
     }
 
