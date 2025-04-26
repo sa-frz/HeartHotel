@@ -21,6 +21,108 @@ public class ScreenController : Controller
         _logger = logger;
     }
 
+    public async Task<dynamic> Content(int ProgramId, bool showAll = false)
+    {
+        var program = await _context.Programs
+            .Include(m => m.ProgramConductors)
+            .FirstOrDefaultAsync(x => x.Id == ProgramId);
+
+        var ProgramConductorsId = 0;
+        if (!showAll)
+        {
+            foreach (var conductor in program.ProgramConductors)
+            {
+                if (conductor.SaatAz == null || conductor.SaatTa == null)
+                {
+                    continue;
+                }
+                var startTime = DateTime.Parse(conductor.SaatAz.ToString());
+                var endTime = DateTime.Parse(conductor.SaatTa.ToString());
+                var currentTime = DateTime.Now;
+
+                if (currentTime >= startTime && currentTime <= endTime)
+                {
+                    ProgramConductorsId = conductor.Id;
+                    break;
+                }
+            }
+        }
+
+        var ProgramConductors = program.ProgramConductors.Where(x => x.Id >= ProgramConductorsId).OrderBy(x =>
+        x.Id).Select(s => new
+        {
+            Id = s.Id,
+            Name = s.Name,
+            Description = s.Description,
+            SaatAz = s.SaatAz,
+            SaatTa = s.SaatTa
+        }).ToList();
+
+        var result = new
+        {
+            ProgramName = program.Name,
+            ProgramConductorsId = ProgramConductorsId,
+            ProgramConductors = ProgramConductors
+        };
+        return Json(result);
+    }
+
+    public async Task<IActionResult> Show(string? date = "1403/08/16")
+    {
+        var halls = await _context.Programs
+            .Include(m => m.VenueHall)
+            .Where(x => x.Date == date)
+            .Select(s => new
+            {
+                Id = s.Id,
+                VenueHallId = s.VenueHallId,
+                Name = s.VenueHall.Title,
+                Address = s.VenueHall.Address
+            })
+            .ToListAsync();
+
+        var gregorianDate = date.ToGregorianDate();
+        // var dayOfWeekName = gregorianDate.ToString("dddd", new System.Globalization.CultureInfo("en-US"));
+        var dayOfWeekNumber = (int)gregorianDate.DayOfWeek;
+        var dayOfWeek = new Dictionary<int, string>
+        {
+            { 0, "یکشنبه" },
+            { 1, "دوشنبه" },
+            { 2, "سه‌شنبه" },
+            { 3, "چهارشنبه" },
+            { 4, "پنج‌شنبه" },
+            { 5, "جمعه" },
+            { 6, "شنبه" },
+        };
+        ViewBag.DayOfWeek = dayOfWeek[dayOfWeekNumber];
+        // ViewBag.DayOfWeekName = dayOfWeekName;
+        ViewBag.date = date;
+
+        var programs = new List<ProgramHallsViewModel>();
+        foreach (var hall in halls)
+        {
+            var result = await Content(hall.Id, true);
+            var jsonResult = result as JsonResult;
+            var data = jsonResult?.Value as dynamic;
+            var program = new ProgramHallsViewModel();
+            program.VenueHallName = hall.Name;
+            program.VenueHallAddress = hall.Address;
+            program.ProgramName = data.ProgramName;
+            program.ProgramConductorsId = data.ProgramConductorsId;
+            program.ProgramConductors = ((IEnumerable<dynamic>)data.ProgramConductors).Select(c => new ProgramConductorViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                SaatAz = c.SaatAz,
+                SaatTa = c.SaatTa
+            }).ToList();
+
+            programs.Add(program);
+        }
+        return View(programs);
+    }
+
     public async Task<IActionResult> Show1(int? id)
     {
         if (id == null)
@@ -28,11 +130,13 @@ public class ScreenController : Controller
             return NotFound();
         }
 
-        var program = await _context.Programs
-            .Include(m => m.ProgramConductors)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var result = await Content(id.Value);
 
-        return View(program);
+        ViewBag.ProgramName = result.Value.ProgramName;
+        ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
+        ViewBag.ProgramConductors = result.Value.ProgramConductors;
+
+        return View();
     }
 
     public async Task<IActionResult> Show2(int? id)
@@ -42,11 +146,13 @@ public class ScreenController : Controller
             return NotFound();
         }
 
-        var program = await _context.Programs
-            .Include(m => m.ProgramConductors)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var result = await Content(id.Value);
 
-        return View(program);
+        ViewBag.ProgramName = result.Value.ProgramName;
+        ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
+        ViewBag.ProgramConductors = result.Value.ProgramConductors;
+
+        return View();
     }
 
 

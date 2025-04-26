@@ -1,0 +1,56 @@
+@model IEnumerable<HeartHotel.Models.ProgramHallsViewModel>
+@{
+    ViewData["Title"] = "سالن‌های برگزاری";
+}
+
+<div class="w-100 d-flex flex-column justify-content-center align-items-center bg-white position-absolute end-0 top-0 vh-100"
+    style="z-index: 1;">
+    <div class="container">
+        <div class="text-center mb-3 fs-4 text-primary">
+            <img src="/img/HH.png" alt="هتل قلب" draggable="false" style="max-height: 100px;" />
+            <div>
+                برنامه سالن‌ها
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-around w-100 bg-warning mb-3 rounded-3 p-2">
+            <div>
+                @ViewBag.DayOfWeek
+            </div>
+            <div>@ViewBag.date</div>
+        </div>
+        @foreach (var item in Model)
+        {
+            <div class="hall-container">
+                <div class="fw-bold fs-5 bg-primary text-white rounded-3 p-2">
+                    @item.VenueHallName
+                    <div class="fw-normal small">
+                        @item.VenueHallAddress
+                    </div>
+                </div>
+                <div class="fw-bold fs-5 text-primary text-center my-2">
+                    @item.ProgramName
+                </div>
+
+                <table class="table table-striped">
+                    <thead style="white-space: nowrap;">
+                        <tr>
+                            <th>اجرا</th>
+                            <th>ساعت</th>
+                            <th>توضیحات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var conductor in item.ProgramConductors)
+                        {
+                            <tr>
+                                <td>@conductor.Name</td>
+                                <td>@conductor.SaatAz - @conductor.SaatTa</td>
+                                <td>@conductor.Description</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

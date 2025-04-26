@@ -1,95 +1,36 @@
-@model HeartHotel.Models.Programs
 @{
-    ViewData["Title"] = Model.Name;
-
-    var ProgramConductorsId = 0;
-    foreach (var conductor in Model.ProgramConductors)
-    {
-        if (conductor.SaatAz == null || conductor.SaatTa == null)
-        {
-            continue;
-        }
-        var startTime = DateTime.Parse(conductor.SaatAz.ToString());
-        var endTime = DateTime.Parse(conductor.SaatTa.ToString());
-        var currentTime = DateTime.Now;
-
-        if (currentTime >= startTime && currentTime <= endTime)
-        {
-            ProgramConductorsId = conductor.Id;
-            break;
-        }
-    }
-
-    var ProgramConductors = Model.ProgramConductors.Where(x => x.Id >= ProgramConductorsId).OrderBy(x =>
-    x.Id).Select(s => new
-    {
-        Id = s.Id,
-        Name = s.Name,
-        Description = s.Description,
-        SaatAz = s.SaatAz,
-        SaatTa = s.SaatTa,
-    }).ToList();
+    ViewData["Title"] = ViewBag.ProgramName;
+    var ProgramConductors = ViewBag.ProgramConductors;
+    var ProgramConductorsId = ViewBag.ProgramConductorsId;
+    var pc = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ProgramConductors, new
+    System.Text.Json.JsonSerializerOptions
+    { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve }));
 }
 
 
 <div class="w-100 d-flex justify-content-center align-items-center bg-primary position-absolute end-0 top-0 vh-100"
     style="z-index: 1;">
-    <div class="lecture-container">
-        <div class="lecture-details">
-            <h1 class="lecture-title">@Model.Name</h1>
-            <div class="fs-2 text-center mb-3" id="Name"></div>
-            <p><strong>زمان باقیمانده:</strong> <span id="time"></span></p>
-            <p class="text-justify" id="Description"></p>
+    <div class="container">
+        <div class="lecture-container">
+            <div class="lecture-details">
+                <h1 class="lecture-title">@ViewBag.ProgramName</h1>
+                <div class="fs-2 text-center mb-3" id="Name"></div>
+                <p><strong>زمان باقیمانده:</strong> <span id="time"></span></p>
+                <p class="text-justify" id="Description"></p>
+            </div>
         </div>
     </div>
 </div>
 
 @section scripts {
+    <script src="~/js/show.js"></script>
     <script>
-        let index = 0;
-        let programConductors;
-        let timerInterval;
-        let timeLeft;
         $(document).ready(function () {
-            if('@(ProgramConductorsId == 0)' == 'True') {
+            if ('@(ProgramConductorsId == 0)' == 'True') {
                 $.alert('زمان برگزاری به پایان رسیده است!');
                 return;
             }
-            programConductors = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ProgramConductors, new System.Text.Json.JsonSerializerOptions
-                { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve }));
-            setTime();
+            getProgramConductors(@pc);
         });
-
-        const timerElement = document.getElementById('time');
-        function updateTimer() {
-            const hours = Math.floor(timeLeft / 3600);
-            const minutes = Math.floor((timeLeft % 3600) / 60);
-            const seconds = timeLeft % 60;
-            timerElement.textContent = `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            timeLeft--;
-
-            if (timeLeft < 0) {
-                clearInterval(timerInterval);
-                //$.alert('زمان به پایان رسید!');
-                setTime();
-            }
-        }
-
-        function setTime() {
-            let currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            let time1 = programConductors.$values[index].SaatAz;
-            let time2 = programConductors.$values[index].SaatTa;
-            $('#Name').text(programConductors.$values[index].Name);
-            $('#Description').text(programConductors.$values[index].Description);
-            timeLeft = Math.abs(new Date(`1970-01-01T${time2}:00Z`) - new Date(`1970-01-01T${currentTime}Z`)) / 1000;
-            if (index >= programConductors.$values.length) {
-                index = 0;
-                return;
-            }
-            index++;
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-
     </script>
 }

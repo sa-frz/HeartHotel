@@ -1,50 +1,37 @@
-@model HeartHotel.Models.Lecture
 @{
-    ViewData["Title"] = "Lecture Details";
+    ViewData["Title"] = ViewBag.ProgramName;
+    var ProgramConductors = ViewBag.ProgramConductors;
+    var ProgramConductorsId = ViewBag.ProgramConductorsId;
+    var pc = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ProgramConductors, new
+    System.Text.Json.JsonSerializerOptions
+    { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve }));
 }
+
 <div class="w-100 d-flex justify-content-center align-items-center bg-white position-absolute end-0 top-0 vh-100"
     style="z-index: 1;">
-    <div>
-        <h1 class="lecture-title text-primary">@Model.EventsPerson.Events?.Title</h1>
+    <div class="container">
+        <h1 class="lecture-title text-primary">@ViewBag.ProgramName</h1>
         <div class="lecture-container">
             <div class="lecture-details">
-                 <img src="@(Model.EventsPerson.Person?.Image != null ? "https://eventis.ir/files/" + Model.EventsPerson.Person?.Image : "/img/noperson.jpg")"
-                class="card-img-top" alt="@Model.EventsPerson.Person?.Name">
-                <div class="fs-2 text-center">@Model.EventsPerson.Person?.Name</div>
+                @* <img src="@(Model.EventsPerson.Person?.Image != null ? "https://eventis.ir/files/" + Model.EventsPerson.Person?.Image : "/img/noperson.jpg")"
+                class="card-img-top"> *@
+                <div class="fs-2 text-center" id="Name"></div>
             </div>
         </div>
-        <p class="text-justify">@Model.Text</p>
+        <p class="text-justify" id="Description"></p>
         <p><strong>زمان باقیمانده:</strong> <span id="time"></span></p>
     </div>
 </div>
 
 @section scripts {
+    <script src="~/js/show.js"></script>
     <script>
         $(document).ready(function () {
-            let timeLeft = 120; // 2 minutes in seconds
-            let currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            //let currentDate = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
-            //console.log(currentTime, currentDate);
-            let time1 = '@Model.SaatAz';
-            let time2 = '@Model.SaatTa';
-            timeLeft = Math.abs(new Date(`1970-01-01T${currentTime}Z`) - new Date(`1970-01-01T${time1}:00Z`)) / 1000;
-            //timeLeft = Math.abs(new Date(`1970-01-01T${time2}:00Z`) - new Date(`1970-01-01T${time1}:00Z`)) / 1000;
-            const timerElement = document.getElementById('time');
-
-            function updateTimer() {
-                const hours = Math.floor(timeLeft / 3600);
-                const minutes = Math.floor((timeLeft % 3600) / 60);
-                const seconds = timeLeft % 60;
-                timerElement.textContent = `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                timeLeft--;
-
-                if (timeLeft < 0) {
-                    clearInterval(timerInterval);
-                    $.alert('زمان به پایان رسید!');
-                }
+            if ('@(ProgramConductorsId == 0)' == 'True') {
+                $.alert('زمان برگزاری به پایان رسیده است!');
+                return;
             }
-
-            const timerInterval = setInterval(updateTimer, 1000);
+            getProgramConductors(@pc);
         });
     </script>
 }

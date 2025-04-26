@@ -6,12 +6,28 @@
 
 <div class="w-100 bg-primary position-absolute end-0 top-0 vh-100 d-flex flex-column justify-content-center align-items-center"
     style="z-index: 1;">
+
     <img src="/img/HH.png" alt="هتل قلب" draggable="false" style="max-height: 100px;" />
     <div class="text-center mb-3 fs-4 text-white">
-        انتخاب سالن‌ها
+        انتخاب سالن
     </div>
 
     <div class="d-flex justify-content-center align-items-center gap-3 flex-column">
+        <span class="lecture-container text-decoration-none text-center w-100">
+            <i class="fa fa-door-open fs-1 text-primary"></i>
+            <div class="fs-5">برنامه سالن‌ها</div>
+            <div class="d-flex align-items-center justify-content-between mb-3 gap-2">
+                <div class="text-nowrap fw-bold">انتخاب روز</div>
+                <div class="input-group border rounded-2" style="flex-wrap: initial; height: 38px;">
+                    <span id="dtp1" class="border-0 input-group-text cursor-pointer"
+                        style="border-radius: 4px; padding: 0 !important;">
+                        <span class="fa-regular fa-calendar d-flex align-items-center px-3"></span>
+                    </span>
+                    <span data-name="dtp1-text" class="border-0 form-control d-flex align-items-center" />
+                </div>
+            </div>
+            <button class="btn btn-secondary w-100" id="btn1">ادامه</button>
+        </span>
         @foreach (var hall in Model)
         {
             <a class="lecture-container text-decoration-none text-center w-100" href="/Hall/@hall.Id/@hall.Title">
@@ -21,3 +37,33 @@
         }
     </div>
 </div>
+
+@section styles {
+    <link href="~/lib/datetimepicker 4.1.1/mds.bs.datetimepicker.style.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="~/lib/datetimepicker 4.1.1/mds.bs.datetimepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            const dtp1 = new mds.MdsPersianDateTimePicker(document.getElementById('dtp1'), {
+                targetTextSelector: '[data-name="dtp1-text"]',
+                modalMode: false
+            });
+
+            let currentDate = mds.MdsPersianDateTimePicker.convertDateToJalali(new Date());
+            let currentDateString = `${currentDate.year}/${currentDate.month.toString().padStart(2, '0')}/${currentDate.day.toString().padStart(2, '0')}`;
+            $('[data-name="dtp1-text"]').html(currentDateString);
+        });
+        $('#btn1').on('click', function () {
+            let selectedDate = $.trim($('[data-name="dtp1-text"]').html());
+
+            if (!selectedDate) {
+                $.alert('لطفا یک تاریخ انتخاب کنید');
+                return;
+            }
+
+            window.location.href = 'Screen/Show/?date=' + selectedDate;
+        });
+    </script>
+}

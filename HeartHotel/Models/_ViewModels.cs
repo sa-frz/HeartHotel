@@ -1,5 +1,27 @@
 namespace HeartHotel.Models
 {
+    public class ProgramHallsViewModel
+    {
+        public string? VenueHallName { get; set; }
+        public string? VenueHallAddress { get; set; }
+        public string? ProgramName { get; set; }
+        public int ProgramConductorsId { get; set; }
+        public IEnumerable<ProgramConductorViewModel>? ProgramConductors { get; set; }
+    }
+
+    public partial class ProgramConductorViewModel
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; } = null!;
+
+        public string? Description { get; set; }
+
+        public string SaatAz { get; set; } = null!;
+
+        public string SaatTa { get; set; } = null!;
+    }
+
     public class ProgramViewModel
     {
         public string? Date { get; set; }
