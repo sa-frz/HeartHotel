@@ -70,20 +70,6 @@ public class HomeController : Controller
         return View();
     }
     
-
-    [Route("/Conductors")]
-    public IActionResult Conductors()
-    {
-        var UserId = Helper.getUserId(HttpContext);
-        if (UserId == 0)
-        {
-            return Redirect("/Login");
-        }
-        ViewBag.UID = UserId;
-
-        return View();
-    }
-
     public IOrderedQueryable<Event> ShowEvent(int id, int admin, int live, string pid, string srch, string asearch, bool offline, string ab)
     {
         ViewBag.Catalog = _context.Catalogs.Where(w => w.TypeId == 1).Select(s => s.Value).ToArray();
