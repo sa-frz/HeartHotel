@@ -11,7 +11,7 @@ public class ConductorsController : Controller
         _context = context;
     }
 
-    public IActionResult index()
+    public IActionResult Index()
     {
         // var UserId = Helper.getUserId(HttpContext);
         // if (UserId == 0)
