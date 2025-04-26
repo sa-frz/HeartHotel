@@ -7,7 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<EventisContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EventisContext")));
-builder.Services.AddSession(); // Add session services
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromDays(3); // Set session timeout to 3 days
+});
 
 var app = builder.Build();
 
