@@ -7,23 +7,23 @@
     { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve }));
 }
 
-<div class="w-100 d-flex justify-content-center align-items-center bg-white position-absolute end-0 top-0 vh-100"
-    style="z-index: 1;">
-    <div class="container">
-        <h1 class="lecture-title text-primary">@ViewBag.ProgramName</h1>
-        <div class="lecture-container">
-            <div class="lecture-details">
-                @* <img src="@(Model.EventsPerson.Person?.Image != null ? "https://eventis.ir/files/" + Model.EventsPerson.Person?.Image : "/img/noperson.jpg")"
+<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-flex justify-content-center align-items-center" style="z-index: 1;">
+    <div class="m-4 w-100 text-center">
+        <h1 class="lecture-title text-primary d-none">@ViewBag.ProgramName</h1>
+        <div class="">
+
+            @* <img src="@(Model.EventsPerson.Person?.Image != null ? "https://eventis.ir/files/" + Model.EventsPerson.Person?.Image : "/img/noperson.jpg")"
                 class="card-img-top"> *@
-                <div class="fs-2 text-center" id="Name"></div>
-            </div>
+            <div class="fs-2 text-center fw-bold" id="Name"></div>
+
         </div>
-        <p class="text-justify" id="Description"></p>
-        <p><strong>زمان باقیمانده:</strong> <span id="time"></span></p>
+        <p class="text-justify mt-3" id="Description"></p>
+        <div class="text-start w-100 position-fixed bottom-0 start-0 p-4 bg-white fs-5"><span id="time"></span></div>
     </div>
 </div>
 
 @section scripts {
+    <script src="~/lib/microsoft-signalr/6.0.0/signalr.min.js"></script>
     <script src="~/js/show.js"></script>
     <script>
         $(document).ready(function () {
@@ -32,7 +32,7 @@
                 return;
             }
             getProgramConductors(@pc);
-           
+
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/signalrHub")

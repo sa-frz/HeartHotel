@@ -130,7 +130,7 @@ public class ScreenController : Controller
             return NotFound();
         }
 
-        var result = await Content(id.Value);
+        var result = await Content(id.Value, true);
 
         ViewBag.ProgramName = result.Value.ProgramName;
         ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;

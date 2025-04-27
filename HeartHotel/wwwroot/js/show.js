@@ -6,6 +6,11 @@ let timeLeft;
 function getProgramConductors(pc) {
     programConductors = pc;
     setTime();
+
+    $('#clock').html(new Date().toLocaleTimeString('en-GB', { hour12: false }));
+    setInterval(() => {
+        $('#clock').html(new Date().toLocaleTimeString('en-GB', { hour12: false }));
+    }, 1000);
 }
 
 
@@ -25,16 +30,36 @@ function updateTimer() {
 }
 
 function setTime() {
-    let currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
-    let time1 = programConductors.$values[index].SaatAz;
-    let time2 = programConductors.$values[index].SaatTa;
+    $('#oldPrograms, #nextPrograms').html('');
+    // let currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    const currentTime = new Date().toTimeString().slice(0, 5); // Get current time in HH:mm format
+    for (var i = 0; (i < programConductors.$values.length); i++) {
+        let time1 = programConductors.$values[i].SaatAz;
+        let time2 = programConductors.$values[i].SaatTa;
+        if (currentTime >= time1 && currentTime <= time2) {
+            // now
+            index = i;
+        } else if (currentTime > time2) {
+            $('#oldPrograms').append(`<div class="col-9">${programConductors.$values[i].Name}</div>
+                <div class="col-3">${time1} - ${time2}</div>`);
+        } else {
+            $('#nextPrograms').append(`<div class="col-9">${programConductors.$values[i].Name}</div>
+                <div class="col-3">${time1} - ${time2}</div>`);
+        }
+    }
+
+    let SaatAz = programConductors.$values[index].SaatAz;
+    let SaatTa = programConductors.$values[index].SaatTa;
     $('#Name').text(programConductors.$values[index].Name);
     $('#Description').text(programConductors.$values[index].Description);
-    timeLeft = Math.abs(new Date(`1970-01-01T${time2}:00Z`) - new Date(`1970-01-01T${currentTime}Z`)) / 1000;
+    $('#times').html(`${SaatAz} - ${SaatTa}`);
+    timeLeft = Math.abs(new Date(`1970-01-01T${SaatTa}:00Z`) - new Date(`1970-01-01T${currentTime}Z`)) / 1000;
+    timeLeft--;
+    timeLeft--;
     if (index >= programConductors.$values.length) {
         index = 0;
         return;
     }
-    index++;
+    // index++;
     timerInterval = setInterval(updateTimer, 1000);
 }
