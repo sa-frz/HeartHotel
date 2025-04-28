@@ -11,6 +11,8 @@ public partial class ChairsConductor
 
     public int ChairsId { get; set; }
 
+    public int? PostId { get; set; }
+
     public virtual Chair Chairs { get; set; } = null!;
 
     public virtual ProgramConductor ProgramConductors { get; set; } = null!;

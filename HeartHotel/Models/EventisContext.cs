@@ -127,6 +127,7 @@ public partial class EventisContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ChairsId).HasColumnName("ChairsID");
+            entity.Property(e => e.PostId).HasColumnName("PostID");
             entity.Property(e => e.ProgramConductorsId).HasColumnName("ProgramConductorsID");
 
             entity.HasOne(d => d.Chairs).WithMany(p => p.ChairsConductors)
