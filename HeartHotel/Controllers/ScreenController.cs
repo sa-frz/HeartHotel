@@ -77,7 +77,7 @@ public class ScreenController : Controller
         return Json(result);
     }
 
-    public async Task<IActionResult> Show(string? date = "1403/08/16")
+    public async Task<IActionResult> Show(string? date = "1404/02/10")
     {
         var halls = await _context.Programs
             .Include(m => m.VenueHall)
@@ -87,14 +87,15 @@ public class ScreenController : Controller
                 Id = s.Id,
                 VenueHallId = s.VenueHallId,
                 Name = s.VenueHall.Title,
-                Address = s.VenueHall.Address
+                Address = s.VenueHall.Address,
+                s.ShowDate
             })
             .ToListAsync();
 
         var gregorianDate = date.ToGregorianDate();
         // var dayOfWeekName = gregorianDate.ToString("dddd", new System.Globalization.CultureInfo("en-US"));
         var dayOfWeekNumber = (int)gregorianDate.DayOfWeek;
-        var dayOfWeek = new Dictionary<int, string>
+        var dayOfWeekFa = new Dictionary<int, string>
         {
             { 0, "یکشنبه" },
             { 1, "دوشنبه" },
@@ -104,9 +105,21 @@ public class ScreenController : Controller
             { 5, "جمعه" },
             { 6, "شنبه" },
         };
-        ViewBag.DayOfWeek = dayOfWeek[dayOfWeekNumber];
-        // ViewBag.DayOfWeekName = dayOfWeekName;
-        ViewBag.date = date;
+
+         var dayOfWeek = new Dictionary<int, string>
+        {
+            { 0, "Sunday" },
+            { 1, "Monday" },
+            { 2, "Tuesday" },
+            { 3, "Wednesday" },
+            { 4, "Thursday" },
+            { 5, "Friday" },
+            { 6, "Saturday" },
+        };
+        // ViewBag.DayOfWeek = dayOfWeek[dayOfWeekNumber];
+        ViewBag.DayOfWeek = halls.FirstOrDefault()?.ShowDate.Split('-')[0].Trim();
+        ViewBag.date = halls.FirstOrDefault()?.ShowDate.Split('-')[1].Trim();
+        // ViewBag.date = date;
 
         var programs = new List<ProgramHallsViewModel>();
         foreach (var hall in halls)
