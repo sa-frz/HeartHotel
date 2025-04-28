@@ -53,34 +53,37 @@ namespace HeartHotel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Post,Cv")] Chair chair, [FromForm] IEnumerable<IFormFile> Image)
+        public async Task<IActionResult> Create([Bind("Id,Name,Post,Cv")] Chair chair, IEnumerable<IFormFile> Image)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(chair);
-                await _context.SaveChangesAsync();
 
                 if (Image.Count() > 0)
                 {
                     var validFile = Image.FirstOrDefault();
-                    // string fs = DateTime.Now.ToPersianDateTime().Replace("/", "").Replace(" ", "-").Replace(":", "") + "-" + validFile.Length;
-                    // fs = fs.Replace(" ", "-").Replace("?", "");
-                    // var strFilename = (fs + Path.GetExtension(validFile.FileName)).ToLower();
+                    string fs = DateTime.Now.ToPersianDateTime().Replace("/", "").Replace(" ", "-").Replace(":", "") + "-" + validFile.Length;
+                    fs = fs.Replace(" ", "-").Replace("?", "");
+                    var strFilename = (fs + Path.GetExtension(validFile.FileName)).ToLower();
                     var dir = Path.Combine(
                           Directory.GetCurrentDirectory(),
-                          "wwwroot", "Files", "Chairs",
-                          chair.Id.ToString().Trim());
+                          "wwwroot", "Files", "Chairs");
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
 
-                    var path = Path.Combine(dir, chair.Image!.Trim());
+                    var path = Path.Combine(dir, strFilename);
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         validFile?.CopyTo(stream);
                     }
+
+                    chair.Image = strFilename;
                 }
+
+                _context.Add(chair);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(chair);
@@ -107,7 +110,7 @@ namespace HeartHotel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Post,Image,Cv")] Chair chair)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Post,Cv")] Chair chair, IEnumerable<IFormFile> Image)
         {
             if (id != chair.Id)
             {
@@ -118,6 +121,34 @@ namespace HeartHotel.Controllers
             {
                 try
                 {
+                    if (Image.Count() > 0)
+                    {
+                        var validFile = Image.FirstOrDefault();
+                        string fs = DateTime.Now.ToPersianDateTime().Replace("/", "").Replace(" ", "-").Replace(":", "") + "-" + validFile.Length;
+                        fs = fs.Replace(" ", "-").Replace("?", "");
+                        var strFilename = (fs + Path.GetExtension(validFile.FileName)).ToLower();
+                        var dir = Path.Combine(
+                              Directory.GetCurrentDirectory(),
+                              "wwwroot", "Files", "Chairs");
+                        if (!Directory.Exists(dir))
+                        {
+                            Directory.CreateDirectory(dir);
+                        }
+
+                        var path = Path.Combine(dir, strFilename);
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            validFile?.CopyTo(stream);
+                        }
+
+                        chair.Image = strFilename;
+                    }
+                    else
+                    {
+                        var Chairs = await _context.Chairs.Where(e => e.Id == id).FirstOrDefaultAsync();
+                        chair.Image = Chairs.Image;
+                    }
+
                     _context.Update(chair);
                     await _context.SaveChangesAsync();
                 }
