@@ -324,6 +324,17 @@ public class APIController : Controller
                 programData.Add(conductor);
             }
 
+            var moderatorsData = new List<ChairsConductor>();
+            foreach (var item in model.moderatorsData)
+            {
+                var chairsConductor = new ChairsConductor()
+                {
+                    ChairId = item.ChairId,
+                    RoleId = item.RoleId
+                };
+                moderatorsData.Add(chairsConductor);
+            }
+
             var program = new Programs()
             {
                 Date = model.Date,
@@ -331,7 +342,8 @@ public class APIController : Controller
                 Name = model.ProgramName,
                 VenueHallId = model.VenueHallId.Value,
                 ThemeId = model.ThemeId,
-                ProgramConductors = programData
+                ProgramConductors = programData,
+                ChairsConductors = moderatorsData
             };
             _context.Add(program);
             await _context.SaveChangesAsync();
@@ -350,7 +362,6 @@ public class APIController : Controller
     {
         try
         {
-
             var program = await _context.Programs
                 .FirstOrDefaultAsync(m => m.Id == model.ProgramId);
 
@@ -369,6 +380,11 @@ public class APIController : Controller
             _context.ProgramConductors.RemoveRange(programData);
             await _context.SaveChangesAsync();
 
+            var moderators = await _context.ChairsConductors
+                            .Where(w => w.ProgramId == model.ProgramId).ToListAsync();
+            _context.ChairsConductors.RemoveRange(moderators);
+            await _context.SaveChangesAsync();
+
             var programConductors = new List<ProgramConductor>();
             foreach (var item in model.ProgramData)
             {
@@ -382,7 +398,20 @@ public class APIController : Controller
                 };
                 programConductors.Add(conductor);
             }
-            _context.AddRange(programConductors);
+            await _context.AddRangeAsync(programConductors);
+            await _context.SaveChangesAsync();
+
+            var moderatorsData = new List<ChairsConductor>();
+            foreach (var item in model.moderatorsData)
+            {
+                var chairsConductor = new ChairsConductor()
+                {
+                    ChairId = item.ChairId,
+                    RoleId = item.RoleId
+                };
+                moderatorsData.Add(chairsConductor);
+            }
+            await _context.AddRangeAsync(moderatorsData);
             await _context.SaveChangesAsync();
 
             try

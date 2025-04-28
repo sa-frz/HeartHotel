@@ -419,9 +419,9 @@
                 let row = {};
                 $(element).children('td').each(function (index, element) {
                     if (index === 0) {
-                        row['chairsId'] = $(element).find('input').val();                    
+                        row['chairId'] = $(element).find('input').val();                    
                     } else if (index === 1) {
-                        row['postId'] = $(element).find('input').val();
+                        row['roleId'] = $(element).find('input').val();
                     }
                 });
                 moderatorsData.push(row);

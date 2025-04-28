@@ -28,6 +28,7 @@ namespace HeartHotel.Models
         public string? ShowDate { get; set; }
         public string? ProgramName { get; set; }
         public IEnumerable<ProgramDataViewModel>? ProgramData { get; set; }
+        public IEnumerable<moderatorsDataViewModel>? moderatorsData { get; set; }
         public int? ProgramId { get; set; }
         public int? VenueHallId { get; set; }
         public int ThemeId { get; set; }
@@ -38,6 +39,12 @@ namespace HeartHotel.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? Time { get; set; }
+    }
+
+    public class moderatorsDataViewModel
+    {
+        public int ChairId { get; set; }
+        public int RoleId { get; set; }
     }
 
     public class GetProgram
