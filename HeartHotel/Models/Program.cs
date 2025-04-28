@@ -17,6 +17,8 @@ public partial class Programs
 
     public int ThemeId { get; set; }
 
+    public virtual ICollection<ChairsConductor> ChairsConductors { get; set; } = new List<ChairsConductor>();
+
     public virtual ICollection<ProgramConductor> ProgramConductors { get; set; } = new List<ProgramConductor>();
 
     public virtual VenueHall VenueHall { get; set; } = null!;

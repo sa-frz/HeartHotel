@@ -123,20 +123,20 @@ public partial class EventisContext : DbContext
 
         modelBuilder.Entity<ChairsConductor>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ChairsCo__3214EC2731DD1B11");
+            entity.HasKey(e => e.Id).HasName("PK__ChairsCo__3214EC272150AF45");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.ChairsId).HasColumnName("ChairsID");
-            entity.Property(e => e.PostId).HasColumnName("PostID");
-            entity.Property(e => e.ProgramConductorsId).HasColumnName("ProgramConductorsID");
+            entity.Property(e => e.ChairId).HasColumnName("ChairID");
+            entity.Property(e => e.ProgramId).HasColumnName("ProgramID");
+            entity.Property(e => e.RoleId).HasColumnName("RoleID");
 
-            entity.HasOne(d => d.Chairs).WithMany(p => p.ChairsConductors)
-                .HasForeignKey(d => d.ChairsId)
+            entity.HasOne(d => d.Chair).WithMany(p => p.ChairsConductors)
+                .HasForeignKey(d => d.ChairId)
                 .HasConstraintName("FK_ChairsConductors_Chairs");
 
-            entity.HasOne(d => d.ProgramConductors).WithMany(p => p.ChairsConductors)
-                .HasForeignKey(d => d.ProgramConductorsId)
-                .HasConstraintName("FK_ChairsConductors_ProgramConductors");
+            entity.HasOne(d => d.Program).WithMany(p => p.ChairsConductors)
+                .HasForeignKey(d => d.ProgramId)
+                .HasConstraintName("FK_ChairsConductors_Program");
         });
 
         modelBuilder.Entity<Counter>(entity =>

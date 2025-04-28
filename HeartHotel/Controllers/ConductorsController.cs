@@ -3,6 +3,7 @@ using HeartHotel.Models;
 using Firoozi.Helper;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HeartHotel.Controllers;
 public class ConductorsController : Controller
@@ -13,7 +14,7 @@ public class ConductorsController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         // var UserId = Helper.getUserId(HttpContext);
         // if (UserId == 0)
@@ -21,6 +22,7 @@ public class ConductorsController : Controller
         //     return Redirect("/Login");
         // }
         // ViewBag.UID = UserId;
+        ViewBag.Chairs = new SelectList(await _context.Chairs.ToListAsync(), "Id", "Name");
 
         return View();
     }

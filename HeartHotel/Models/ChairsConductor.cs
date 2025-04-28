@@ -7,13 +7,13 @@ public partial class ChairsConductor
 {
     public int Id { get; set; }
 
-    public int ProgramConductorsId { get; set; }
+    public int ProgramId { get; set; }
 
-    public int ChairsId { get; set; }
+    public int ChairId { get; set; }
 
-    public int? PostId { get; set; }
+    public int RoleId { get; set; }
 
-    public virtual Chair Chairs { get; set; } = null!;
+    public virtual Chair Chair { get; set; } = null!;
 
-    public virtual ProgramConductor ProgramConductors { get; set; } = null!;
+    public virtual Programs Program { get; set; } = null!;
 }
