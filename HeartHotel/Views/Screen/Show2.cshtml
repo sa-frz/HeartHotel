@@ -10,14 +10,14 @@
 <div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-flex justify-content-center align-items-center" style="z-index: 1;">
     <div class="m-4 w-100 text-center">
         <h1 class="lecture-title text-primary d-none">@ViewBag.ProgramName</h1>
-        <div class="">
+        <div class="mx-4">
 
             @* <img src="@(Model.EventsPerson.Person?.Image != null ? "https://eventis.ir/files/" + Model.EventsPerson.Person?.Image : "/img/noperson.jpg")"
                 class="card-img-top"> *@
-            <div class="fs-2 text-center fw-bold" id="Name"></div>
-
+            <div class="w-100 text-center fw-bold text-truncate" id="Name"></div>
+            
+            <p class="text-justify mt-3" id="Description"></p>
         </div>
-        <p class="text-justify mt-3" id="Description"></p>
         <div class="text-start w-100 position-fixed bottom-0 start-0 p-4 bg-white fs-5"><span id="time"></span></div>
     </div>
 </div>
@@ -32,6 +32,7 @@
                 return;
             }
             getProgramConductors(@pc);
+            adjustFontSizeToFit("Name");
 
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()
