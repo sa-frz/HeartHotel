@@ -146,6 +146,7 @@ public class ScreenController : Controller
         ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
         ViewBag.ProgramConductors = result.Value.ProgramConductors;
         ViewBag.ProgramChairs = result.Value.programChairs;
+        ViewBag.Id = id.Value;
 
         return View();
     }
@@ -162,6 +163,7 @@ public class ScreenController : Controller
         ViewBag.ProgramName = result.Value.ProgramName;
         ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
         ViewBag.ProgramConductors = result.Value.ProgramConductors;
+        ViewBag.Id = id.Value;
 
         return View();
     }

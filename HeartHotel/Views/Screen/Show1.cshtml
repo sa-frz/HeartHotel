@@ -122,7 +122,7 @@
 
             connection.on("OnConnected", (connectionId) => {
                 // console.log("Connected with ID:", connectionId);
-                $.post(`/api/SignalR/group/add/${connectionId}/Show1`)
+                $.post(`/api/SignalR/group/add/${connectionId}/Show1@(ViewBag.Id)`)
                     .done(function (response) {
                         console.log("Connection ID added to a group");
                     })

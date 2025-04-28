@@ -425,11 +425,11 @@ public class APIController : Controller
             {
                 if (isNeedRedirect)
                 {
-                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}", $"/Screen/Show{model.ThemeId.ToString().Trim()}/?id={model.ProgramId.ToString()!.Trim()}");
+                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", $"/Screen/Show{model.ThemeId.ToString().Trim()}/?id={model.ProgramId.ToString()!.Trim()}");
                 }
                 else
                 {
-                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}", "Reload");
+                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", "Reload");
                 }
             }
             catch { }
