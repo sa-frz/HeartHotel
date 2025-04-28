@@ -25,6 +25,8 @@ public class ScreenController : Controller
     {
         var program = await _context.Programs
             .Include(m => m.ProgramConductors)
+            .Include(m => m.ChairsConductors)
+            .ThenInclude(p => p.Chair)
             .FirstOrDefaultAsync(x => x.Id == ProgramId);
 
         var ProgramConductorsId = 0;
@@ -58,11 +60,19 @@ public class ScreenController : Controller
             SaatTa = s.SaatTa
         }).ToList();
 
+        var chairs = program.ChairsConductors.OrderBy(o => o.RoleId).Select(s => new
+        {
+            Name = s.Chair.Name,
+            Image = s.Chair.Image,
+            s.RoleId
+        });
+
         var result = new
         {
             ProgramName = program.Name,
             ProgramConductorsId = ProgramConductorsId,
-            ProgramConductors = ProgramConductors
+            ProgramConductors = ProgramConductors,
+            programChairs = chairs
         };
         return Json(result);
     }
@@ -135,6 +145,7 @@ public class ScreenController : Controller
         ViewBag.ProgramName = result.Value.ProgramName;
         ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
         ViewBag.ProgramConductors = result.Value.ProgramConductors;
+        ViewBag.ProgramChairs = result.Value.programChairs;
 
         return View();
     }

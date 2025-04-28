@@ -43,11 +43,15 @@ public class ConductorsController : Controller
 
         var program = await _context.Programs
             .Include(p => p.ProgramConductors)
+            .Include(p => p.ChairsConductors)
+            .ThenInclude(t => t.Chair)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (program == null)
         {
             return NotFound();
         }
+
+        ViewBag.Chairs = new SelectList(await _context.Chairs.ToListAsync(), "Id", "Name");
 
         return View(program);
     }

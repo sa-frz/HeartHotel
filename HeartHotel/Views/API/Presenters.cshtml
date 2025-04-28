@@ -15,7 +15,7 @@
                 <p class="card-text">
                 <div class="mt-2">
                     روز
-                    <select class="form-select" id="select@(item.Id)"></select>
+                    <select class="form-select rooz" id="select@(item.Id)"></select>
                 </div>
                 <div class="mt-2">
                     سالن برگزاری
@@ -72,9 +72,9 @@
             // let monthName = months[month - 1];
             // let dayOfWeekName = days[dayOfWeek];
 
-            $('.form-select').html('');
+            $('.rooz').html('');
             $.each(data, function (index, value) {
-                $('.form-select').append('<option value="' + value.id + '">' + days[value.roozehafte] + ' ' + value.rooz + '</option>');
+                $('.rooz').append('<option value="' + value.id + '">' + days[value.roozehafte] + ' ' + value.rooz + '</option>');
             });
 
         },

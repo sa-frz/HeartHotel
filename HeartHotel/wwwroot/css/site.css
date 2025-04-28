@@ -352,15 +352,21 @@ tr {
   /* max-width: 600px; */
 }
 
+.lecture-container.colored {
+  /* border: var(--bs-secondary) solid 2px; */
+  background-color: var(--bs-primary);
+  color: #fff !important;
+}
+
 .lecture-title {
   font-size: 2em;
-  color: #333;
+  /* color: #333; */
 }
 
 .lecture-details {
   margin-top: 20px;
   font-size: 1.2em;
-  color: #555;
+  /* color: #555; */
 }
 
 .text-justify {

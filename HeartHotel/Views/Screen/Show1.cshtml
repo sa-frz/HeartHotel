@@ -1,6 +1,7 @@
 @{
     ViewData["Title"] = ViewBag.ProgramName;
     var ProgramConductors = ViewBag.ProgramConductors;
+    var ProgramChairs = ViewBag.ProgramChairs;
     var ProgramConductorsId = ViewBag.ProgramConductorsId;
     var pc = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ProgramConductors, new
     System.Text.Json.JsonSerializerOptions
@@ -10,41 +11,96 @@
 
 <div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-flex justify-items-center align-items-center"
     style="z-index: 1;">
-    <div class="mx-4 w-100">
-        <div class="row">
-            <div class="col-4">سالن</div>
-            <div class="col-8">
-                <div id="oldPrograms" class="row"></div>
-            </div>
-        </div>
-
-        <div class="my-3">
-            <div class="align-items-center justify-content-center d-flex gap-2">
-                <div class="mx-2">
-                    <div class="live-indicator">
-                        <span class="red-dot"></span>
-                    </div>
-                </div>
-                <div class="lecture-container w-100">
-                    <div class="lecture-details">
-                        @* <h1 class="lecture-title">@ViewBag.ProgramName</h1> *@
-                        <div class="fs-2 text-center mb-3" id="Name"></div>
-                        <p class="text-center"><span id="times"></span></p>
-                        <p><strong><span id="time">0:00:00</span></strong></p>
-                        <p class="text-justify" id="Description"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-4"><span id="clock"></span></div>
-            <div class="col-8">
-                <div id="nextPrograms" class="row"></div>
-            </div>
+    <div class="text-center text-primary w-100 position-fixed top-0 start-0 p-2 fs-1 fw-bold" style="z-index: 2;">
+        <div class="d-flex justify-content-around align-items-center">
+            <div><img src="/img/HHicon.png" draggable="false" style="height: 60px;"></div>
+            <div>@ViewData["Title"]</div>
+            <div><img src="/img/ghalb.png" draggable="false" style="height: 60px;"></div>
         </div>
     </div>
-    <div class="text-center w-100 position-fixed bottom-0 start-0 border-top p-2 bg-white">10th Iranian Joint Cardiovascular Congress</div>
+    <div class="mx-4 w-100 fs-2">
+        @* <p id="sessionName" class="text-primary fs-1 fw-bold mb-2">@ViewData["Title"]</p> *@
+
+        <div class="mx-3">
+            <div class="d-flex gap-1 flex-wrap overflow-auto align-items-center">
+            <div class="text-secondary fw-bold">Chairs: </div>
+                @foreach (var item in ProgramChairs)
+                {
+                    if (item.RoleId == 1)
+                    {
+                        @* <div class="text-center">
+                        <img src="/files/chairs/@item.Image" class="img-thumbnail" style="width: 6rem;" />
+                        <div>@item.Name</div>
+                    </div> *@
+                        <div>@item.Name, </div>
+                    }
+                }
+            </div>
+
+            <div class="d-flex gap-1 flex-wrap overflow-auto align-items-center">
+            <div class="text-secondary fw-bold mt-2">Moderators: </div>
+                @foreach (var item in ProgramChairs)
+                {
+                    if (item.RoleId == 2)
+                    {
+                        @* <div class="text-center">
+                        <img src="/files/chairs/@item.Image" class="img-thumbnail" style="width: 6rem;" />
+                        <div>@item.Name</div>
+                    </div> *@
+                        <div>@item.Name, </div>
+                    }
+                }
+            </div>
+
+            <div class="text-secondary fw-bold mt-2">Presentations:</div>
+            <div class="me-5">
+                <table class="table table-striped">
+                    <tbody id="oldPrograms"></tbody>
+                </table>
+            </div>
+
+            <div class="my-3">
+                <div class="align-items-center justify-content-center d-flex gap-2">
+                    <div class="mx-2">
+                        <div class="live-indicator">
+                            <span class="red-dot"></span>
+                        </div>
+                    </div>
+                    <div class="lecture-container colored w-100">
+                        <div class="lecture-details">
+                            @* <h1 class="lecture-title">@ViewBag.ProgramName</h1> *@
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-1" id="Name"></div>
+                                <div><span id="times"></span></div>
+                            </div>
+                            <p id="Description"></p>
+                            <div class="d-flex justify-content-around align-items-center d-none"><span
+                                    id="time">0:00:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="me-5">
+                <table class="table table-striped">
+                    <tbody id="nextPrograms"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div class="text-center bg-secondary text-white w-100 position-fixed bottom-0 start-0 border-top p-2"
+        style="z-index: 2;">
+        <div class="d-flex">
+            <div class="d-flex align-items-center fw-bold gap-1">
+                <i class="fa fa-clock"> </i><span id="clock"></span>
+            </div>
+            <div class="w-100">10th Iranian Joint Cardiovascular Congress</div>
+        </div>
+    </div>
 </div>
 
 @section scripts {
@@ -57,6 +113,7 @@
                 return;
             } *@
                 getProgramConductors(@pc);
+            //adjustFontSizeToFit("sessionName");
 
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()

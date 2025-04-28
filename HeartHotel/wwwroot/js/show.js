@@ -40,11 +40,9 @@ function setTime() {
             // now
             index = i;
         } else if (currentTime > time2) {
-            $('#oldPrograms').append(`<div class="col-9">${programConductors.$values[i].Name}</div>
-                <div class="col-3">${time1} - ${time2}</div>`);
+            $('#oldPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
         } else {
-            $('#nextPrograms').append(`<div class="col-9">${programConductors.$values[i].Name}</div>
-                <div class="col-3">${time1} - ${time2}</div>`);
+            $('#nextPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
         }
     }
 

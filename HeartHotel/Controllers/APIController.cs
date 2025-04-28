@@ -407,7 +407,8 @@ public class APIController : Controller
                 var chairsConductor = new ChairsConductor()
                 {
                     ChairId = item.ChairId,
-                    RoleId = item.RoleId
+                    RoleId = item.RoleId,
+                    ProgramId = model.ProgramId.Value
                 };
                 moderatorsData.Add(chairsConductor);
             }
