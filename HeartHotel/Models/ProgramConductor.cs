@@ -17,5 +17,7 @@ public partial class ProgramConductor
 
     public string SaatTa { get; set; } = null!;
 
+    public virtual ICollection<ChairsConductor> ChairsConductors { get; set; } = new List<ChairsConductor>();
+
     public virtual Programs Program { get; set; } = null!;
 }

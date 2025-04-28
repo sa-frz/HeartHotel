@@ -19,6 +19,10 @@ public partial class EventisContext : DbContext
 
     public virtual DbSet<Catalog> Catalogs { get; set; }
 
+    public virtual DbSet<Chair> Chairs { get; set; }
+
+    public virtual DbSet<ChairsConductor> ChairsConductors { get; set; }
+
     public virtual DbSet<Counter> Counters { get; set; }
 
     public virtual DbSet<Event> Events { get; set; }
@@ -106,6 +110,32 @@ public partial class EventisContext : DbContext
             entity.Property(e => e.Url)
                 .HasDefaultValueSql("(NULL)")
                 .HasColumnName("URL");
+        });
+
+        modelBuilder.Entity<Chair>(entity =>
+        {
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Cv)
+                .HasColumnType("text")
+                .HasColumnName("CV");
+            entity.Property(e => e.Name).HasComment("");
+        });
+
+        modelBuilder.Entity<ChairsConductor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ChairsCo__3214EC2731DD1B11");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ChairsId).HasColumnName("ChairsID");
+            entity.Property(e => e.ProgramConductorsId).HasColumnName("ProgramConductorsID");
+
+            entity.HasOne(d => d.Chairs).WithMany(p => p.ChairsConductors)
+                .HasForeignKey(d => d.ChairsId)
+                .HasConstraintName("FK_ChairsConductors_Chairs");
+
+            entity.HasOne(d => d.ProgramConductors).WithMany(p => p.ChairsConductors)
+                .HasForeignKey(d => d.ProgramConductorsId)
+                .HasConstraintName("FK_ChairsConductors_ProgramConductors");
         });
 
         modelBuilder.Entity<Counter>(entity =>
