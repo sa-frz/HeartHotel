@@ -25,7 +25,7 @@ public class HomeController : Controller
     {
         return View();
     }
-    
+
     [Route("/Login")]
     public IActionResult Login()
     {
@@ -52,7 +52,7 @@ public class HomeController : Controller
     [Route("/Halls")]
     public async Task<IActionResult> Halls()
     {
-       var halls = await _context.VenueHalls.ToListAsync();
+        var halls = await _context.VenueHalls.ToListAsync();
         return View(halls);
     }
 
@@ -66,10 +66,16 @@ public class HomeController : Controller
 
         ViewBag.Title = title;
         ViewBag.VenueHallID = id;
+        ViewBag.ShowGMonitors = false;
+
+        if (id == 3) // hall G
+        {
+            ViewBag.ShowGMonitors = true;
+        }
 
         return View();
     }
-    
+
     public IOrderedQueryable<Event> ShowEvent(int id, int admin, int live, string pid, string srch, string asearch, bool offline, string ab)
     {
         ViewBag.Catalog = _context.Catalogs.Where(w => w.TypeId == 1).Select(s => s.Value).ToArray();
@@ -364,6 +370,31 @@ public class HomeController : Controller
         return View();
     }
 
+    [Route("/ConfMonitor1")]
+    public IActionResult ConfMonitor1()
+    {
+        return View();
+    }
+    [Route("/ConfMonitor2")]
+    public IActionResult ConfMonitor2()
+    {
+        return View();
+    }
+    [Route("/ConfMonitor3")]
+    public IActionResult ConfMonitor3()
+    {
+        return View();
+    }
+    [Route("/ConfMonitor4")]
+    public IActionResult ConfMonitor4()
+    {
+        return View();
+    }
+    [Route("/ConfMonitor5")]
+    public IActionResult ConfMonitor5()
+    {
+        return View();
+    }
 
 
 

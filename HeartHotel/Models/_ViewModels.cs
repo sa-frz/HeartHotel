@@ -52,4 +52,12 @@ namespace HeartHotel.Models
         public string? Date { get; set; }
         public int VenueHallId { get; set; }
     }
+
+
+    // Define a request model
+    public class NotifyGroupRequest
+    {
+        public string Contents { get; set; }
+        public string Icon { get; set; }
+    }
 }

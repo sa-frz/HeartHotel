@@ -1,0 +1,67 @@
+﻿@{
+    var ProgramConductors = "ViewBag.ProgramConductors";
+
+    var pc = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ProgramConductors, new
+    System.Text.Json.JsonSerializerOptions
+    { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve }));
+}
+
+<h4 class="section-title">
+    @ViewBag.title
+</h4>
+<div class="d-flex ">
+    <div>Monitor 1</div>
+    <input id="m1" type="text" value="" placeholder="متن"/>
+    <input id="i1" type="text" value="" placeholder="جهت"/>
+    <button class="btn btn-primary" onclick="notifyGroup_monitor('monitor1',$('#m1').val(), $('#i1').val())">نمایش</button>
+</div>
+<div class="d-flex ">
+    <div>Monitor 2</div>
+    <input id="m2" type="text" value="" placeholder="متن" />
+    <input id="i2" type="text" value="" placeholder="جهت" />
+    <button class="btn btn-primary" onclick="notifyGroup_monitor('monitor2',$('#m2').val(), $('#i2').val())">نمایش</button>
+</div>
+<div class="d-flex ">
+    <div>Monitor 3</div>
+    <input id="m3" type="text" value="" placeholder="متن" />
+    <input id="i3" type="text" value="" placeholder="جهت" />
+    <button class="btn btn-primary" onclick="notifyGroup_monitor('monitor3',$('#m3').val(), $('#i3').val())">نمایش</button>
+</div>
+<div class="d-flex ">
+    <div>Monitor 4</div>
+    <input id="m4" type="text" value="" placeholder="متن" />
+    <input id="i4" type="text" value="" placeholder="جهت" />
+    <button class="btn btn-primary" onclick="notifyGroup_monitor('monitor4',$('#m4').val(), $('#i4').val())">نمایش</button>
+</div>
+<div class="d-flex ">
+    <div>Monitor 5</div>
+    <input id="m5" type="text" value="" placeholder="متن" />
+    <input id="i5" type="text" value="" placeholder="جهت" />
+    <button class="btn btn-primary" onclick="notifyGroup_monitor('monitor5',$('#m5').val(), $('#i5').val())">نمایش</button>
+</div>
+
+
+
+@section scripts {
+    <script>
+        async function notifyGroup_monitor(groupName,contents,icon) {
+            try {
+                const response = await fetch(`/api/SignalR/group/notify/${groupName}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ contents, icon })
+                });
+
+                if (response.ok) {
+                    console.log('Notification sent successfully.');
+                } else {
+                    console.error('Failed to send notification:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error while sending notification:', error);
+            }
+        }
+    </script>
+}

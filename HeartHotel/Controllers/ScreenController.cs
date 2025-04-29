@@ -181,5 +181,36 @@ public class ScreenController : Controller
         return View();
     }
 
+    [Route("/Monitors")]
+    public IActionResult Monitors()
+    {
+        return View();
+    }
+
+    [Route("/Monitor1")]
+    public IActionResult Monitor1()
+    {
+        return View();
+    }
+    [Route("/Monitor2")]
+    public IActionResult Monitor2()
+    {
+        return View();
+    }
+    [Route("/Monitor3")]
+    public IActionResult Monitor3()
+    {
+        return View();
+    }
+    [Route("/Monitor4")]
+    public IActionResult Monitor4()
+    {
+        return View();
+    }
+    [Route("/Monitor5")]
+    public IActionResult Monitor5()
+    {
+        return View();
+    }
 
 }

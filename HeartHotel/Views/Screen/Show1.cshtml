@@ -23,7 +23,7 @@
 
         <div class="mx-3">
             <div class="d-flex gap-1 flex-wrap overflow-auto align-items-center">
-            <div class="text-secondary fw-bold">Chairs: </div>
+                <div class="text-secondary fw-bold">Chairs: </div>
                 @foreach (var item in ProgramChairs)
                 {
                     if (item.RoleId == 1)
@@ -38,7 +38,7 @@
             </div>
 
             <div class="d-flex gap-1 flex-wrap overflow-auto align-items-center">
-            <div class="text-secondary fw-bold mt-2">Moderators: </div>
+                <div class="text-secondary fw-bold mt-2">Moderators: </div>
                 @foreach (var item in ProgramChairs)
                 {
                     if (item.RoleId == 2)
@@ -73,7 +73,7 @@
                                 <div class="fs-1" id="Name"></div>
                                 <div><span id="times"></span></div>
                             </div>
-                            <p id="Description"></p>
+                            <p id="Description" style="margin-bottom: 0rem;"></p>
                             <div class="d-flex justify-content-around align-items-center d-none"><span
                                     id="time">0:00:00</span>
                             </div>

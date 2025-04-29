@@ -1,0 +1,91 @@
+﻿<h4 class="section-title">
+    @ViewBag.title
+</h4>
+<div class="d-flex flex-column justify-content-center align-items-center vh-100">
+    <div id="content" style="overflow: hidden; text-align: center; line-height: 1.2;"></div>
+    <i id="icon" class="" style="font-size: 20rem;"></i>
+</div>
+
+
+
+@section scripts {
+    <script src="~/lib/microsoft-signalr/6.0.0/signalr.min.js"></script>
+    <script src="~/js/show.js"></script>
+    <script>
+        $('header').hide();
+        $('footer').hide();
+        $(document).ready(function () {
+            // SignalR connection setup
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/signalrHub")
+                .build();
+
+            connection.on("OnConnected", (connectionId) => {
+                // console.log("Connected with ID:", connectionId);
+                $.post(`/api/SignalR/group/add/${connectionId}/monitor4`)
+                    .done(function (response) {
+                        console.log("Connection ID added to a group");
+                    })
+                    .fail(function (error) {
+                        console.error("Error sending connection ID to server:", error);
+                    });
+            });
+
+            connection.start()
+                .then(() => console.log("Connection started"))
+                .catch(err => console.error("Error while starting connection:", err));
+
+            connection.on("ReceiveMessage", function (message) {
+                console.log("New message received: ", message);
+                $('#content').html(message.split('_')[0])
+
+                $('#icon').removeClass();
+                $('#icon').addClass(`fa-solid fa-arrow-${message.split('_')[1]}`);
+
+                adjustFontSizeToFit()
+            });
+
+            connection.onclose(() => {
+                setTimeout(() => {
+                    connection.start()
+                        .then(() => console.log("Reconnected"))
+                        .catch(err => console.error("Error while reconnecting:", err));
+                }, 5000); // Retry every 5 seconds
+            });
+        });
+
+        function adjustFontSizeToFit() {
+            const content = document.getElementById('content');
+            let fontSize = 20; // شروع با 20rem
+            content.style.fontSize = `${fontSize}rem`;
+
+            // محاسبه ارتفاع خط
+            const lineHeight = parseFloat(window.getComputedStyle(content).lineHeight);
+
+            // کاهش فونت سایز تا زمانی که متن در دو خط جا شود
+            while (content.scrollHeight > lineHeight * 2 && fontSize > 1) {
+                fontSize -= 0.5; // کاهش فونت سایز به صورت تدریجی
+                content.style.fontSize = `${fontSize}rem`;
+            }
+        }
+
+        // اجرا هنگام بارگذاری صفحه و تغییر اندازه صفحه
+        document.addEventListener('DOMContentLoaded', adjustFontSizeToFit);
+        window.addEventListener('resize', adjustFontSizeToFit);
+    </script>
+
+    <style>
+        #content {
+            font-size: 20rem;
+            /* شروع با فونت سایز بزرگ */
+            overflow: hidden;
+            /* مخفی کردن محتوای اضافی */
+            text-align: center;
+            /* متن را وسط‌چین کنید */
+            line-height: 1.2;
+            /* ارتفاع خط */
+            word-wrap: break-word;
+            /* شکستن کلمات بلند */
+        }
+    </style>
+}

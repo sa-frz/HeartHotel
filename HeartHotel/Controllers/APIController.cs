@@ -355,7 +355,6 @@ public class APIController : Controller
         }
     }
 
-
     [Route("/api/program/edit")]
     [HttpPost]
     public async Task<IActionResult> EditProgram([FromBody] ProgramViewModel model)
@@ -465,6 +464,14 @@ public class APIController : Controller
     public async Task<IActionResult> GroupAdd(string connectionId, string groupName)
     {
         await _signalRHub.AddToGroup(connectionId, groupName);
+        return Ok();
+    }
+
+    [Route("/api/SignalR/group/notify/{groupName}")]
+    [HttpPost]
+    public async Task<IActionResult> NotifyGroup(string groupName , [FromBody] NotifyGroupRequest request)
+    {
+        await _signalRHub.NotifyGroup(groupName,$@"{request.Contents}_{request.Icon}");
         return Ok();
     }
 
