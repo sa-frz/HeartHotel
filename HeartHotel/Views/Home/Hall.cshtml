@@ -218,11 +218,11 @@
                             option += `<option value="${item.id}">${item.name}</option>`;
                         });
                         $('#currentSession').html(`<div class="d-flex align-items-center justify-content-between mb-3 gap-2">از<select class="form-select">${option}</select></div>
-                                                                                        <div class="d-flex align-items-center justify-content-between mb-3 gap-2">به<select class="form-select">${option}</select></div>
-                                                                                        <div class="d-flex justify-content-between gap-2">
-                                                                                            <button class="btn btn-secondary w-100" onclick="changeOK()">ادامه</button>
-                                                                                            <button class="btn btn-primary w-100" onclick="back()">بازگشت</button>
-                                                                                        </div>`);
+                                                                                            <div class="d-flex align-items-center justify-content-between mb-3 gap-2">به<select class="form-select">${option}</select></div>
+                                                                                            <div class="d-flex justify-content-between gap-2">
+                                                                                                <button class="btn btn-secondary w-100" onclick="changeOK()">ادامه</button>
+                                                                                                <button class="btn btn-primary w-100" onclick="back()">بازگشت</button>
+                                                                                            </div>`);
                     } else {
                         console.error('Response is not an array:', response);
                     }
@@ -247,12 +247,8 @@
             let NewProgramId = $('#currentSession select').eq(1).val();
             $.post(`/api/SignalR/changesession/?ProgramId=${ProgramId}&NewProgramId=${NewProgramId}`)
                 .done(function (response) {
-                    if (response.success) {
-                        $.alert('تغییرات با موفقیت انجام شد');
-                        $('#currentSession, #step1-2').toggleClass('d-none');
-                    } else {
-                        $.alert('خطا در تغییرات');
-                    }
+                    $.alert('تغییرات با موفقیت انجام شد');
+                    $('#currentSession, #step1-2').toggleClass('d-none');
                 })
                 .fail(function (xhr, status, error) {
                     $.alert('خطا در تغییرات');

@@ -31,6 +31,8 @@ function updateTimer() {
 
 function setTime() {
     $('#oldPrograms, #nextPrograms').html('');
+    let isSetIndex = false
+    let oldPrograms = [], nextPrograms = [];
     // let currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
     const currentTime = new Date().toTimeString().slice(0, 5); // Get current time in HH:mm format
     for (var i = 0; (i < programConductors.$values.length); i++) {
@@ -39,11 +41,28 @@ function setTime() {
         if (currentTime >= time1 && currentTime <= time2) {
             // now
             index = i;
+            isSetIndex = true;
         } else if (currentTime > time2) {
-            $('#oldPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
+            oldPrograms.push(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
+            // $('#oldPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
         } else {
-            $('#nextPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
+            nextPrograms.push(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
+            // $('#nextPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
         }
+    }
+    console.log(oldPrograms, nextPrograms);
+
+
+    if (!isSetIndex) {
+        $('#Name').closest('.gap-2').addClass('d-none');
+        $('#oldPrograms').html(oldPrograms);
+        $('#nextPrograms').html(nextPrograms);
+    } else {
+        $('#Name').closest('.gap-2').remove('d-none');
+        let oldProgramsHtml = oldPrograms ? oldPrograms[oldPrograms.length - 1] : '';
+        let nextProgramsHtml = nextPrograms ? nextPrograms.slice(0, 2).join('') : '';
+        $('#oldPrograms').html(oldProgramsHtml);
+        $('#nextPrograms').html(nextProgramsHtml);
     }
 
     let SaatAz = programConductors.$values[index].SaatAz;

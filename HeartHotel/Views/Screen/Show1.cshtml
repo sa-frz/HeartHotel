@@ -11,11 +11,15 @@
 
 <div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-flex justify-items-center align-items-center"
     style="z-index: 1;">
-    <div class="text-center text-primary w-100 position-fixed top-0 start-0 p-2 fs-1 fw-bold" style="z-index: 2;">
+    <div class="text-center text-primary w-100 position-fixed top-0 start-0 p-2" style="z-index: 2;">
         <div class="d-flex justify-content-around align-items-center">
             <div><img src="/img/HHicon.png" draggable="false" style="height: 60px;"></div>
-            <div>@ViewData["Title"]</div>
-            <div><img src="/img/ghalb.png" draggable="false" style="height: 60px;"></div>
+            <div class="w-100 fs-1 fw-bold">10th Iranian Joint Cardiovascular Congress</div>
+            @* <div><img src="/img/ghalb.png" draggable="false" style="height: 60px;"></div> *@
+            <div class="fs-3 fw-bold text-nowrap">@ViewBag.HallName</div>
+        </div>
+        <div class="d-flex align-items-center justify-content-around w-100 bg-warning mb-3 rounded-3 p-2">
+            <div class="fs-2 fw-bold text-black">@ViewData["Title"]</div>
         </div>
     </div>
     <div class="mx-4 w-100 fs-2">
@@ -37,8 +41,8 @@
                 }
             </div>
 
-            <div class="d-flex gap-1 flex-wrap overflow-auto align-items-center">
-                <div class="text-secondary fw-bold mt-2">Moderators: </div>
+            <div class="d-flex gap-1 flex-wrap overflow-auto align-items-center  mt-2">
+                <div class="text-secondary fw-bold">Moderators: </div>
                 @foreach (var item in ProgramChairs)
                 {
                     if (item.RoleId == 2)
@@ -92,7 +96,7 @@
 
 
     </div>
-    <div class="text-center bg-secondary text-white w-100 position-fixed bottom-0 start-0 border-top p-2"
+    @* <div class="text-center bg-secondary text-white w-100 position-fixed bottom-0 start-0 border-top p-2"
         style="z-index: 2;">
         <div class="d-flex">
             <div class="d-flex align-items-center fw-bold gap-1">
@@ -100,7 +104,7 @@
             </div>
             <div class="w-100">10th Iranian Joint Cardiovascular Congress</div>
         </div>
-    </div>
+    </div> *@
 </div>
 
 @section scripts {

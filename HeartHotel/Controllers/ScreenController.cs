@@ -106,7 +106,7 @@ public class ScreenController : Controller
             { 6, "شنبه" },
         };
 
-         var dayOfWeek = new Dictionary<int, string>
+        var dayOfWeek = new Dictionary<int, string>
         {
             { 0, "Sunday" },
             { 1, "Monday" },
@@ -160,6 +160,12 @@ public class ScreenController : Controller
         ViewBag.ProgramConductors = result.Value.ProgramConductors;
         ViewBag.ProgramChairs = result.Value.programChairs;
         ViewBag.Id = id.Value;
+
+        ViewBag.HallName = await _context.Programs
+            .Include(v => v.VenueHall)
+            .Where(x => x.Id == id.Value)
+            .Select(s => s.VenueHall.Title)
+            .FirstOrDefaultAsync();
 
         return View();
     }
