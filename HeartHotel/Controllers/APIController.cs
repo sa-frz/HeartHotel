@@ -499,7 +499,9 @@ public class APIController : Controller
             var programGroups = allGroups.Where(g => g.EndsWith(ProgramId.ToString().Trim())).ToList();
             foreach (var item in programGroups)
             {
-                await _signalRHub.NotifyGroup(item, $"/Screen/{item}/{NewProgramId.ToString()!.Trim()}");
+                var show = item.Substring(0, item.Length - ProgramId.ToString().Trim().Length);
+                // var newGroupName = $"{show}{NewProgramId.ToString().Trim()}";
+                await _signalRHub.NotifyGroup(item, $"/Screen/{show}/{NewProgramId.ToString()!.Trim()}");
             }
             return Ok();
         }

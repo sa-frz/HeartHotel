@@ -219,4 +219,28 @@ public class ScreenController : Controller
         return View();
     }
 
+    public IActionResult Slideshow(int HallId)
+    {
+        ViewBag.HallId = HallId;
+        
+        var imageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Slideshow");
+        if (Directory.Exists(imageFolderPath))
+        {
+            var imageFiles = Directory.GetFiles(imageFolderPath)
+                .Where(file => file.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                               file.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                               file.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                               file.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
+                .Select(file => Path.GetFileName(file))
+                .ToList();
+
+            ViewBag.Images = imageFiles;
+        }
+        else
+        {
+            ViewBag.Images = new List<string>();
+        }
+        return View();
+    }
+
 }

@@ -4,33 +4,36 @@
     ViewData["Title"] = "سالن‌های برگزاری";
 }
 
-<div class="w-100 bg-primary position-absolute end-0 top-0 vh-100 d-flex flex-column justify-content-center align-items-center"
-    style="z-index: 1;">
-
-    <img src="/img/HH.png" alt="هتل قلب" draggable="false" style="max-height: 100px;" />
-    <div class="text-center mb-3 fs-4 text-white">
-        انتخاب سالن
+<div class="w-100 bg-primary position-absolute end-0 top-0 vh-100" style="z-index: 1;">
+    <div class="d-flex justify-content-center align-items-center flex-column mt-4">
+        <img src="/img/HH.png" alt="هتل قلب" draggable="false" style="max-height: 100px;" />
+        <div class="text-center mb-3 fs-4 text-white">
+            انتخاب سالن
+        </div>
     </div>
 
-    <div class="d-flex justify-content-center align-items-center gap-3 flex-column">
-        <span class="lecture-container text-decoration-none text-center w-100">
-            <i class="fa fa-door-open fs-1 text-primary"></i>
-            <div class="fs-5">برنامه سالن‌ها</div>
-            <div class="d-flex align-items-center justify-content-between mb-3 gap-2">
-                <div class="text-nowrap fw-bold">انتخاب روز</div>
-                <div class="input-group border rounded-2" style="flex-wrap: initial; height: 38px;">
-                    <span id="dtp1" class="border-0 input-group-text cursor-pointer"
-                        style="border-radius: 4px; padding: 0 !important;">
-                        <span class="fa-regular fa-calendar d-flex align-items-center px-3"></span>
-                    </span>
-                    <span data-name="dtp1-text" class="border-0 form-control d-flex align-items-center" />
-                </div>
+
+    <div class="mb-3 mx-auto lecture-container text-decoration-none text-center" style="width: fit-content;">
+        <i class="fa fa-door-open fs-1 text-primary"></i>
+        <div class="fs-5">همه سالن‌ها</div>
+        <div class="d-flex align-items-center justify-content-between mb-3 gap-2">
+            <div class="text-nowrap fw-bold">انتخاب روز</div>
+            <div class="input-group border rounded-2" style="flex-wrap: initial; height: 38px;">
+                <span id="dtp1" class="border-0 input-group-text cursor-pointer"
+                    style="border-radius: 4px; padding: 0 !important;">
+                    <span class="fa-regular fa-calendar d-flex align-items-center px-3"></span>
+                </span>
+                <span data-name="dtp1-text" class="border-0 form-control d-flex align-items-center" />
             </div>
-            <button class="btn btn-secondary w-100" id="btn1">ادامه</button>
-        </span>
+        </div>
+        <button class="btn btn-secondary w-100" id="btn1">ادامه</button>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
+
         @foreach (var hall in Model)
         {
-            <a class="lecture-container text-decoration-none text-center w-100" href="/Hall/@hall.Id/@hall.Title">
+            <a class="w-25 lecture-container text-decoration-none text-center" href="/Hall/@hall.Id/@hall.Title">
                 <i class="fa fa-door-open fs-1 text-primary"></i>
                 <div class="fs-5">@hall.Title</div>
             </a>

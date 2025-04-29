@@ -1,0 +1,90 @@
+@model IEnumerable<HeartHotel.Models.ProgramHallsViewModel>
+@{
+    ViewData["Title"] = "Slideshow";
+    var Slideshow = ViewBag.Images;
+    @* var Slideshow = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Images, new
+    System.Text.Json.JsonSerializerOptions
+    { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve })); *@
+}
+
+<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr" style="z-index: 1;">
+    <div class="slideshow-container">
+        @* <img src="/img/HHicon.png" class="w-100 vh-100" draggable="false" style="object-fit: cover;" /> *@
+        @foreach (var item in Slideshow)
+        {
+            <div class="mySlides fade">
+                <img src="/Slideshow/@item" class="w-100" draggable="false" style="object-fit: cover;" />
+            </div>
+        }
+    </div>
+
+
+</div>
+
+@section scripts {
+    <script src="~/lib/microsoft-signalr/6.0.0/signalr.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // SignalR connection setup
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/signalrHub")
+                .build();
+
+            connection.on("OnConnected", (connectionId) => {
+                // console.log("Connected with ID:", connectionId);
+                $.post(`/api/SignalR/group/add/${connectionId}/Show`)
+                    .done(function (response) {
+                        console.log("Connection ID added to a group");
+                    })
+                    .fail(function (error) {
+                        console.error("Error sending connection ID to server:", error);
+                    });
+            });
+
+            connection.start()
+                .then(() => console.log("Connection started"))
+                .catch(err => console.error("Error while starting connection:", err));
+
+            connection.on("ReceiveMessage", function (message) {
+                console.log("New message received: ", message);
+                if (message == "Reload") {
+                    console.log("برنامه جدیدی برای این روز ثبت شده است");
+                    window.location.reload();
+                }
+                // $.alert("New message received: " + message);
+                // You can add logic here to update the UI or notify the user
+            });
+
+            connection.onclose(() => {
+                reconnectTimer = setInterval(() => {
+                    connection.start()
+                        .then(() => {
+                            console.log("Reconnected");
+                            clearInterval(reconnectTimer); // Stop the timer once reconnected
+                        })
+                        .catch(err => console.error("Error while reconnecting:", err));
+                }, 5000); // Retry every 5 seconds
+            });
+
+            showSlide(0); // Show the first slide initially
+            setInterval(nextSlide, 3000); // Change slide every 3 seconds
+        });
+
+        var currentIndex = 0;
+        var $slides = $('.slideshow-container .mySlides');
+
+        function showSlide(index) {
+            $slides.each(function (i) {
+            $(this).attr('class', (i === index) ? 'mySlides fade position-absolute top-0 show' : 'mySlides fade position-absolute top-0');
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % $slides.length;
+            showSlide(currentIndex);
+        }
+
+
+    </script>
+}
