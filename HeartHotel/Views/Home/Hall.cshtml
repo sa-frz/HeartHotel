@@ -197,7 +197,7 @@
             $('#currentSession').html($('#loader').html()).removeClass('d-none');
             $('#step1-2').addClass('d-none');
             $.ajax({
-                url: '/api/program/get',
+                url: '/api/program/get/?onlyProgram=true',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
@@ -207,17 +207,25 @@
                 success: function (response) {
                     if (response == null || response.length == 0 || $.trim(response) == '') {
                         $.alert('هیچ ایونتی برای این روز ثبت نشده است');
-                        $('#program .content').html('');
-                        $('#program, #step1-2').toggleClass('d-none');
+                        $('#currentSession, #step1-2').toggleClass('d-none');
                         return;
                     }
-                    $('#program .content').html(response);
-                    $('#btn2').removeClass('d-none');
+
+                    $('#currentSession').html('');
+                    if (Array.isArray(response)) {
+                        let option = '';
+                        response.forEach(function (item) {
+                            option += `<option value="${item.id}">${item.name}</option>`;
+                        });
+                        $('#currentSession').html('<select>' + option + '</select>');
+                    } else {
+                        console.error('Response is not an array:', response);
+                    }
+
                 },
                 error: function (xhr, status, error) {
                     $.alert('هیچ ایونتی برای این روز ثبت نشده است');
-                    $('#program .content').html('');
-                    $('#program, #step1-2').toggleClass('d-none');
+                    $('#currentSession, #step1-2').toggleClass('d-none');
                     console.log('Error:', error);
                     console.log('Status:', status);
                     console.log('Response:', xhr.responseText);

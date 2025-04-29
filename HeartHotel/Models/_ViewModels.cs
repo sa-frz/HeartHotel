@@ -50,7 +50,7 @@ namespace HeartHotel.Models
     public class GetProgram
     {
         public string? Date { get; set; }
-        public int? VenueHallId { get; set; }
+        public int VenueHallId { get; set; }
     }
 
 

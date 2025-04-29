@@ -443,24 +443,23 @@ public class APIController : Controller
 
     [Route("/api/program/get")]
     [HttpPost]
-    public async Task<PartialViewResult> GetProgram([FromBody] GetProgram model)
+    public async Task<IActionResult> GetProgram([FromBody] GetProgram model, bool? onlyProgram = false)
     {
         try
         {
-            if (model.VenueHallId == null)
+            if (onlyProgram!.Value)
             {
-                var program = await _context.Programs
+                var prg = await _context.Programs
+                    .Where(w => w.Date == model.Date && w.VenueHallId == model.VenueHallId).ToArrayAsync();
+
+                return Ok(prg);
+            }
+
+            var program = await _context.Programs
                 .Include(m => m.ProgramConductors)
-                .Where(w => w.Date == model.Date).ToListAsync();
-                return PartialView(program);
-            }
-            else
-            {
-                var program = await _context.Programs
-                    .Include(m => m.ProgramConductors)
-                    .Where(w => w.Date == model.Date && w.VenueHallId == model.VenueHallId).ToListAsync();
-                return PartialView(program);
-            }
+                .Where(w => w.Date == model.Date && w.VenueHallId == model.VenueHallId).ToListAsync();
+
+            return PartialView(program);
         }
         catch (Exception ex)
         {
