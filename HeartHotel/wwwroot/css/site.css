@@ -452,3 +452,12 @@ tr {
   min-height: unset;
   padding: unset;
 }
+
+button.nav-link {
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+button.nav-link.active {
+  color: var(--bs-secondary) !important;
+}

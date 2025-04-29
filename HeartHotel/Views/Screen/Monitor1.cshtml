@@ -47,9 +47,12 @@
             });
 
             connection.onclose(() => {
-                setTimeout(() => {
+                reconnectTimer = setInterval(() => {
                     connection.start()
-                        .then(() => console.log("Reconnected"))
+                        .then(() => {
+                            console.log("Reconnected");
+                            clearInterval(reconnectTimer); // Stop the timer once reconnected
+                        })
                         .catch(err => console.error("Error while reconnecting:", err));
                 }, 5000); // Retry every 5 seconds
             });

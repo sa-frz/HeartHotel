@@ -4,14 +4,14 @@
 }
 
 <div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr" style="z-index: 1;">
-    <div class="d-flex align-items-center justify-content-between p-4">        
+    <div class="d-flex align-items-center justify-content-between p-4">
         <img src="/img/HHicon.png" alt="هتل قلب" draggable="false" style="max-height: 60px;" />
         <div class="text-center w-100 fs-1 fw-bold">
             Heart Hotel
-        </div>        
+        </div>
     </div>
     <div class="mx-4">
-        
+
         <div class="d-flex align-items-center justify-content-around w-100 bg-warning mb-3 rounded-3 p-2">
             <div>
                 @ViewBag.DayOfWeek
@@ -19,46 +19,47 @@
             <div>@ViewBag.date</div>
         </div>
         <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-6">
-            <div class="hall-container">
-                <div class="fw-bold fs-5 bg-primary text-white rounded-3 p-2">
-                    @item.VenueHallName
-                    <div class="fw-normal small">
-                        @item.VenueHallAddress
+            @foreach (var item in Model)
+            {
+                <div class="col-6">
+                    <div class="hall-container">
+                        <div class="fw-bold fs-5 bg-primary text-white rounded-3 p-2">
+                            @item.VenueHallName
+                            <div class="fw-normal small">
+                                @item.VenueHallAddress
+                            </div>
+                        </div>
+                        <div class="fw-bold fs-5 text-primary text-center my-2">
+                            @item.ProgramName
+                        </div>
+
+                        <table class="table table-striped">
+                            <thead style="white-space: nowrap;">
+                                <tr>
+                                    <th><i class="fa fa-microphone"></i></th>
+                                    <th><i class="fa fa-clock"></i></th>
+                                    <th><i class="fa fa-info-circle"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var conductor in item.ProgramConductors)
+                                {
+                                    <tr>
+                                        <td>@conductor.Name</td>
+                                        <td>@conductor.SaatAz - @conductor.SaatTa</td>
+                                        <td>@conductor.Description</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="fw-bold fs-5 text-primary text-center my-2">
-                    @item.ProgramName
-                </div>
-
-                <table class="table table-striped">
-                    <thead style="white-space: nowrap;">
-                        <tr>
-                            <th><i class="fa fa-microphone"></i></th>
-                            <th><i class="fa fa-clock"></i></th>
-                            <th><i class="fa fa-info-circle"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var conductor in item.ProgramConductors)
-                        {
-                            <tr>
-                                <td>@conductor.Name</td>
-                                <td>@conductor.SaatAz - @conductor.SaatTa</td>
-                                <td>@conductor.Description</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            </div>
-        }
+            }
         </div>
     </div>
 
-    <div class="text-center w-100 position-fixed bottom-0 start-0 border-top p-2 bg-white">10th Iranian Joint Cardiovascular Congress</div>
+    <div class="text-center w-100 position-fixed bottom-0 start-0 border-top p-2 bg-white">10th Iranian Joint
+        Cardiovascular Congress</div>
 </div>
 
 @section scripts {
@@ -97,13 +98,12 @@
             });
 
             connection.onclose(() => {
-                // $.alert("Connection lost. Please check your network and try again.", function () {
-                //     location.reload();
-                // });
-
-                setTimeout(() => {
+                reconnectTimer = setInterval(() => {
                     connection.start()
-                        .then(() => console.log("Reconnected"))
+                        .then(() => {
+                            console.log("Reconnected");
+                            clearInterval(reconnectTimer); // Stop the timer once reconnected
+                        })
                         .catch(err => console.error("Error while reconnecting:", err));
                 }, 5000); // Retry every 5 seconds
             });
@@ -112,14 +112,14 @@
             setInterval(setCurrentPrograms, 60000);
         });
 
-        function setCurrentPrograms(){
-            $('tbody tr').each(function(){
+        function setCurrentPrograms() {
+            $('tbody tr').each(function () {
                 const currentTime = new Date().toTimeString().slice(0, 5); // Get current time in HH:mm format
                 const timeRange = $(this).find('td:nth-child(2)').text().split(' - '); // Split time range
                 if (currentTime >= timeRange[0] && currentTime <= timeRange[1]) {
                     $(this).addClass('fw-bold'); // Add fw-bold class if current time is within range
                 } else {
-                    $(this).removeClass('fw-bold'); 
+                    $(this).removeClass('fw-bold');
                 }
             });
         }
