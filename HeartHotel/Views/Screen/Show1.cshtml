@@ -1,7 +1,9 @@
 @{
     ViewData["Title"] = ViewBag.ProgramName;
     var ProgramConductors = ViewBag.ProgramConductors;
-    var ProgramChairs = ViewBag.ProgramChairs;
+    var Chairs = ((IEnumerable<dynamic>)ViewBag.ProgramChairs).ToList();
+    var ProgramChairs = Chairs.Where(x => x.RoleId == 1).ToList();
+    var ProgramModerators = Chairs.Where(x => x.RoleId == 2).ToList();
     var ProgramConductorsId = ViewBag.ProgramConductorsId;
     var pc = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ProgramConductors, new
     System.Text.Json.JsonSerializerOptions
@@ -9,10 +11,11 @@
 }
 
 
-<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-flex justify-items-center align-items-center"
+<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr"
     style="z-index: 1;">
     <div class="text-center text-primary w-100 position-fixed top-0 start-0 p-2" style="z-index: 2;">
-        <div class="d-flex justify-content-around align-items-center">
+
+        <div class="d-flex justify-content-around align-items-center m-1">
             <div><img src="/img/HHicon.png" draggable="false" style="height: 60px;"></div>
             <div class="w-100 fs-1 fw-bold">10th Iranian Joint Cardiovascular Congress</div>
             @* <div><img src="/img/ghalb.png" draggable="false" style="height: 60px;"></div> *@
@@ -21,38 +24,26 @@
         <div class="d-flex align-items-center justify-content-around w-100 bg-warning mb-3 rounded-3 p-2">
             <div class="fs-2 fw-bold text-black">@ViewData["Title"]</div>
         </div>
+
     </div>
-    <div class="mx-4 w-100 fs-2">
+
+    <div class="w-100 fs-2" style="margin-top: 163px;">
         @* <p id="sessionName" class="text-primary fs-1 fw-bold mb-2">@ViewData["Title"]</p> *@
 
         <div class="mx-3">
-            <div class="d-flex gap-1 flex-wrap overflow-auto align-items-center">
+            <div class="d-flex gap-1 flex-wrap align-items-center">
                 <div class="text-secondary fw-bold">Chairs: </div>
                 @foreach (var item in ProgramChairs)
                 {
-                    if (item.RoleId == 1)
-                    {
-                        @* <div class="text-center">
-                        <img src="/files/chairs/@item.Image" class="img-thumbnail" style="width: 6rem;" />
-                        <div>@item.Name</div>
-                    </div> *@
-                        <div>@item.Name, </div>
-                    }
+                    <div>@item.Name@(item != ProgramChairs[ProgramChairs.Count - 1] ? ", ": "") </div>
                 }
             </div>
 
-            <div class="d-flex gap-1 flex-wrap overflow-auto align-items-center  mt-2">
+            <div class="d-flex gap-1 flex-wrap align-items-center mt-2">
                 <div class="text-secondary fw-bold">Moderators: </div>
-                @foreach (var item in ProgramChairs)
+                @foreach (var item in ProgramModerators)
                 {
-                    if (item.RoleId == 2)
-                    {
-                        @* <div class="text-center">
-                        <img src="/files/chairs/@item.Image" class="img-thumbnail" style="width: 6rem;" />
-                        <div>@item.Name</div>
-                    </div> *@
-                        <div>@item.Name, </div>
-                    }
+                    <div>@item.Name@(item != ProgramModerators[ProgramModerators.Count - 1] ? ", ": "") </div>
                 }
             </div>
 
