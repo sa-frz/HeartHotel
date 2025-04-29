@@ -1,11 +1,10 @@
 ﻿<h4 class="section-title">
     @ViewBag.title
 </h4>
-<div class="d-flex flex-column justify-content-center align-items-center vh-100">
-    <div id="content" style="overflow: hidden; text-align: center; line-height: 1.2;"></div>
+
+<div class="d-flex flex-column justify-content-center align-items-center vh-100 w-100">
+    <div id="content"  class="w-100 text-center fw-bold text-truncate"></div>
 </div>
-
-
 
 @section scripts {
     <script src="~/lib/microsoft-signalr/6.0.0/signalr.min.js"></script>
@@ -41,7 +40,7 @@
                 $('#icon').removeClass();
                 $('#icon').addClass(`fa-solid fa-arrow-${message.split('_')[1]}`);
 
-                adjustFontSizeToFit()
+                adjustFontSizeToFit('content');
             });
 
             connection.onclose(() => {
@@ -53,38 +52,8 @@
             });
         });
 
-        function adjustFontSizeToFit() {
-            const content = document.getElementById('content');
-            let fontSize = 20; // شروع با 20rem
-            content.style.fontSize = `${fontSize}rem`;
-
-            // محاسبه ارتفاع خط
-            const lineHeight = parseFloat(window.getComputedStyle(content).lineHeight);
-
-            // کاهش فونت سایز تا زمانی که متن در دو خط جا شود
-            while (content.scrollHeight > lineHeight * 2 && fontSize > 1) {
-                fontSize -= 0.5; // کاهش فونت سایز به صورت تدریجی
-                content.style.fontSize = `${fontSize}rem`;
-            }
-        }
-
         // اجرا هنگام بارگذاری صفحه و تغییر اندازه صفحه
-        document.addEventListener('DOMContentLoaded', adjustFontSizeToFit);
-        window.addEventListener('resize', adjustFontSizeToFit);
+        document.addEventListener('DOMContentLoaded',  () => adjustFontSizeToFit('content'));
+        window.addEventListener('resize',  () => adjustFontSizeToFit('content'));
     </script>
-
-    <style>
-        #content {
-            font-size: 20rem;
-            /* شروع با فونت سایز بزرگ */
-            overflow: hidden;
-            /* مخفی کردن محتوای اضافی */
-            text-align: center;
-            /* متن را وسط‌چین کنید */
-            line-height: 1.2;
-            /* ارتفاع خط */
-            word-wrap: break-word;
-            /* شکستن کلمات بلند */
-        }
-    </style>
 }

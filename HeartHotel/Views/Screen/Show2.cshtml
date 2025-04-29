@@ -7,7 +7,8 @@
     { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve }));
 }
 
-<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-flex justify-content-center align-items-center" style="z-index: 1;">
+<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-flex justify-content-center align-items-center"
+    style="z-index: 1;">
     <div class="m-4 w-100 text-center">
         <h1 class="lecture-title text-primary d-none">@ViewBag.ProgramName</h1>
         <div class="mx-4">
@@ -15,7 +16,7 @@
             @* <img src="@(Model.EventsPerson.Person?.Image != null ? "https://eventis.ir/files/" + Model.EventsPerson.Person?.Image : "/img/noperson.jpg")"
                 class="card-img-top"> *@
             <div class="w-100 text-center fw-bold text-truncate" id="Name"></div>
-            
+
             <p class="text-justify mt-3" id="Description"></p>
         </div>
         <div class="text-start w-100 position-fixed bottom-0 start-0 p-4 bg-white fs-5"><span id="time"></span></div>
@@ -77,6 +78,11 @@
                         .catch(err => console.error("Error while reconnecting:", err));
                 }, 5000); // Retry every 5 seconds
             });
+
+
+            // اجرا هنگام بارگذاری صفحه و تغییر اندازه صفحه
+            document.addEventListener('DOMContentLoaded', () => adjustFontSizeToFit('content'));
+            window.addEventListener('resize', () => adjustFontSizeToFit('content'));
         });
     </script>
 }
