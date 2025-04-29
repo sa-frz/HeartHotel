@@ -485,7 +485,7 @@ public class APIController : Controller
 
     [Route("/api/SignalR/changesession")]
     [HttpPost]
-    public async Task<IActionResult> ChangeSession(int ProgramId, int NewProgramId)
+    public async Task<IActionResult> ChangeSession(int ProgramId, int NewProgramId, int VenueHallID)
     {
         // try
         // {
@@ -495,18 +495,45 @@ public class APIController : Controller
 
         try
         {
+
             var allGroups = _signalRHub.GetGroupNames();
-            var programGroups = allGroups.Where(g => g.EndsWith(ProgramId.ToString().Trim())).ToList();
-            foreach (var item in programGroups)
+            if (ProgramId == 0 || NewProgramId == 0)
             {
-                var show = item.Substring(0, item.Length - ProgramId.ToString().Trim().Length);
-                // var newGroupName = $"{show}{NewProgramId.ToString().Trim()}";
-                await _signalRHub.NotifyGroup(item, $"/Screen/{show}/{NewProgramId.ToString()!.Trim()}");
+                // بازگشت از اسلاید شو
+                if (ProgramId == 0)
+                {
+                    var slideGroup = allGroups.Where(g => g.StartsWith("Slideshow")).ToList();
+                    foreach (var item in slideGroup)
+                    {
+                        await _signalRHub.NotifyGroup(item, $"/Screen/Show1/{NewProgramId.ToString()!.Trim()}");
+                    }
+                }
+                else
+                {
+                    // رفتن به اسلاید شو
+                    var newProgramGroups = allGroups.Where(g => g.EndsWith(ProgramId.ToString().Trim())).ToList();
+                    foreach (var item in newProgramGroups)
+                    {
+                        await _signalRHub.NotifyGroup(item, $"/Screen/Slideshow/{VenueHallID.ToString().Trim()}");
+                    }
+                }
+            }
+            else
+            {
+                // تغییر برنامه
+                var programGroups = allGroups.Where(g => g.EndsWith(ProgramId.ToString().Trim())).ToList();
+                foreach (var item in programGroups)
+                {
+                    var show = item.Substring(0, item.Length - ProgramId.ToString().Trim().Length);
+                    // var newGroupName = $"{show}{NewProgramId.ToString().Trim()}";
+                    await _signalRHub.NotifyGroup(item, $"/Screen/{show}/{NewProgramId.ToString()!.Trim()}");
+                }
             }
             return Ok();
         }
-        catch {
+        catch
+        {
             return BadRequest("خطا در تغییر برنامه");
-         }
+        }
     }
 }

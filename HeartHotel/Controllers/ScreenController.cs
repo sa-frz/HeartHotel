@@ -219,10 +219,10 @@ public class ScreenController : Controller
         return View();
     }
 
-    public IActionResult Slideshow(int HallId)
+    public IActionResult Slideshow(int Id)
     {
-        ViewBag.HallId = HallId;
-        
+        ViewBag.Id = Id;
+
         var imageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Slideshow");
         if (Directory.Exists(imageFolderPath))
         {

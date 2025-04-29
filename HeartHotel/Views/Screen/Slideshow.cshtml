@@ -33,7 +33,7 @@
 
             connection.on("OnConnected", (connectionId) => {
                 // console.log("Connected with ID:", connectionId);
-                $.post(`/api/SignalR/group/add/${connectionId}/Show`)
+                $.post(`/api/SignalR/group/add/${connectionId}/Slideshow@(ViewBag.Id)`)
                     .done(function (response) {
                         console.log("Connection ID added to a group");
                     })
@@ -51,6 +51,8 @@
                 if (message == "Reload") {
                     console.log("برنامه جدیدی برای این روز ثبت شده است");
                     window.location.reload();
+                } else {
+                    window.location.href = message;
                 }
                 // $.alert("New message received: " + message);
                 // You can add logic here to update the UI or notify the user
