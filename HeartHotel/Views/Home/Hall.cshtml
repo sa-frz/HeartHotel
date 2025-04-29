@@ -76,7 +76,7 @@
             });
 
 
-            if (@ViewBag.ShowGMonitors)
+            if ('@ViewBag.ShowGMonitors.ToString().ToLower()' == 'true') {
             {
                 $('#monitors').removeClass('d-none');
             }
