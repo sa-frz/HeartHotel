@@ -424,7 +424,7 @@ public class APIController : Controller
             {
                 if (isNeedRedirect)
                 {
-                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", $"/Screen/Show{model.ThemeId.ToString().Trim()}/?id={model.ProgramId.ToString()!.Trim()}");
+                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", $"/Screen/Show{model.ThemeId.ToString().Trim()}/{model.ProgramId.ToString()!.Trim()}");
                 }
                 else
                 {
@@ -483,4 +483,28 @@ public class APIController : Controller
         return Ok();
     }
 
+    [Route("/api/SignalR/changesession")]
+    [HttpPost]
+    public async Task<IActionResult> ChangeSession(int ProgramId, int NewProgramId)
+    {
+        // try
+        // {
+        //     await _signalRHub.NotifyGroup("Show", "Reload");
+        // }
+        // catch { }
+
+        try
+        {
+            var allGroups = _signalRHub.GetGroupNames();
+            var programGroups = allGroups.Where(g => g.EndsWith(ProgramId.ToString().Trim())).ToList();
+            foreach (var item in programGroups)
+            {
+                await _signalRHub.NotifyGroup(item, $"/Screen/{item}/{NewProgramId.ToString()!.Trim()}");
+            }
+            return Ok();
+        }
+        catch {
+            return BadRequest("خطا در تغییر برنامه");
+         }
+    }
 }
