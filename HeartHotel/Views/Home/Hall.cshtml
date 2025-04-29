@@ -75,14 +75,15 @@
                 modalMode: false
             });
 
-
-            if ('@ViewBag.ShowGMonitors.ToString().ToLower()' == 'true') {
-            {
-                $('#monitors').removeClass('d-none');
-            }
             let currentDate = mds.MdsPersianDateTimePicker.convertDateToJalali(new Date());
             let currentDateString = `${currentDate.year}/${currentDate.month.toString().padStart(2, '0')}/${currentDate.day.toString().padStart(2, '0')}`;
             $('[data-name="dtp1-text"]').html(currentDateString);
+
+
+            if ('@ViewBag.ShowGMonitors.ToString().ToLower()' == 'true') 
+            {
+                $('#monitors').removeClass('d-none');
+            }
         });
 
         $('#btn1').on('click', function () {
