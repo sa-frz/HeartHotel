@@ -447,11 +447,20 @@ public class APIController : Controller
     {
         try
         {
-            var program = await _context.Programs
+            if (model.VenueHallId == null)
+            {
+                var program = await _context.Programs
                 .Include(m => m.ProgramConductors)
-                .Where(w => w.Date == model.Date && w.VenueHallId == model.VenueHallId).ToListAsync();
-
-            return PartialView(program);
+                .Where(w => w.Date == model.Date).ToListAsync();
+                return PartialView(program);
+            }
+            else
+            {
+                var program = await _context.Programs
+                    .Include(m => m.ProgramConductors)
+                    .Where(w => w.Date == model.Date && w.VenueHallId == model.VenueHallId).ToListAsync();
+                return PartialView(program);
+            }
         }
         catch (Exception ex)
         {
@@ -469,9 +478,9 @@ public class APIController : Controller
 
     [Route("/api/SignalR/group/notify/{groupName}")]
     [HttpPost]
-    public async Task<IActionResult> NotifyGroup(string groupName , [FromBody] NotifyGroupRequest request)
+    public async Task<IActionResult> NotifyGroup(string groupName, [FromBody] NotifyGroupRequest request)
     {
-        await _signalRHub.NotifyGroup(groupName,$@"{request.Contents}_{request.Icon}");
+        await _signalRHub.NotifyGroup(groupName, $@"{request.Contents}_{request.Icon}");
         return Ok();
     }
 

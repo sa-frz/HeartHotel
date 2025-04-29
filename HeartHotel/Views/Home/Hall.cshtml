@@ -52,9 +52,28 @@
 
     </div>
 
+
+
     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-        <p>Content for Tab 2</p>
+        <div id="step1-2">
+            <div class="d-flex align-items-center justify-content-between mb-3 gap-2">
+                <div class="text-nowrap fw-bold">انتخاب روز</div>
+                <div class="input-group border rounded-2" style="flex-wrap: initial; height: 38px;">
+                    <span id="dtp2" class="border-0 input-group-text cursor-pointer"
+                        style="border-radius: 4px; padding: 0 !important;">
+                        <span class="fa-regular fa-calendar d-flex align-items-center px-3"></span>
+                    </span>
+                    <span data-name="dtp2-text" class="border-0 form-control d-flex align-items-center" />
+                </div>
+            </div>
+
+            <button class="btn btn-secondary w-100" id="btnChangeProgram">ادامه</button>
+        </div>
+
+        <div id="currentSession" class="d-none"></div>
     </div>
+
+
 
     <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
         <div id="monitors" class="d-none">
@@ -85,10 +104,15 @@
                 targetTextSelector: '[data-name="dtp1-text"]',
                 modalMode: false
             });
+            const dtp2 = new mds.MdsPersianDateTimePicker(document.getElementById('dtp2'), {
+                targetTextSelector: '[data-name="dtp2-text"]',
+                modalMode: false
+            });
 
             let currentDate = mds.MdsPersianDateTimePicker.convertDateToJalali(new Date());
             let currentDateString = `${currentDate.year}/${currentDate.month.toString().padStart(2, '0')}/${currentDate.day.toString().padStart(2, '0')}`;
             $('[data-name="dtp1-text"]').html(currentDateString);
+            $('[data-name="dtp2-text"]').html(currentDateString);
 
 
             if ('@ViewBag.ShowGMonitors.ToString().ToLower()' == 'true') {
@@ -141,9 +165,7 @@
             $('#step1').removeClass('d-none');
             $(this).addClass('d-none');
         });
-    </script>
 
-    <script>
         async function notifyGroup_confmonitor(groupName, contents, icon) {
             try {
                 const response = await fetch(`/api/SignalR/group/notify/${groupName}`, {
@@ -163,5 +185,44 @@
                 console.error('Error while sending notification:', error);
             }
         }
+
+        $('#btnChangeProgram').click(function () {
+            let selectedDate = $.trim($('[data-name="dtp2-text"]').html());
+
+            if (!selectedDate) {
+                $.alert('لطفا یک تاریخ انتخاب کنید');
+                return;
+            }
+
+            $('#currentSession').html($('#loader').html()).removeClass('d-none');
+            $('#step1-2').addClass('d-none');
+            $.ajax({
+                url: '/api/program/get',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    date: selectedDate,
+                    venueHallID: '@ViewBag.VenueHallID',
+                }),
+                success: function (response) {
+                    if (response == null || response.length == 0 || $.trim(response) == '') {
+                        $.alert('هیچ ایونتی برای این روز ثبت نشده است');
+                        $('#program .content').html('');
+                        $('#program, #step1-2').toggleClass('d-none');
+                        return;
+                    }
+                    $('#program .content').html(response);
+                    $('#btn2').removeClass('d-none');
+                },
+                error: function (xhr, status, error) {
+                    $.alert('هیچ ایونتی برای این روز ثبت نشده است');
+                    $('#program .content').html('');
+                    $('#program, #step1-2').toggleClass('d-none');
+                    console.log('Error:', error);
+                    console.log('Status:', status);
+                    console.log('Response:', xhr.responseText);
+                }
+            });
+        })
     </script>
 }
