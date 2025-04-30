@@ -190,6 +190,13 @@ public class ScreenController : Controller
     [Route("/Monitors")]
     public IActionResult Monitors()
     {
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
+
         return View();
     }
 

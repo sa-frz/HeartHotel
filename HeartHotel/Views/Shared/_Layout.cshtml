@@ -27,20 +27,26 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
                             <a class="nav-link text-dark" href="/Events">ایونت‌ها</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/Halls">سالن‌ها</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
                             <a class="nav-link text-dark" href="/Conductors">کنداکتور</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
                             <a class="nav-link text-dark" href="/Chair">اشخاص</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
                             <a class="nav-link text-dark" href="/Monitors">مانیتورها</a>
+                        </li>
+                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
+                            <a class="nav-link text-dark" href="/Users">کاربران</a>
+                        </li>
+                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
+                            <a class="nav-link text-dark" href="/VenueHallManager">مدیران سالن</a>
                         </li>
                     </ul>
                 </div>
@@ -57,7 +63,8 @@
     <div class="modal fade" tabindex="-1" id="iOSConfirm" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header text-center">
+                    <i class="fa-solid fa-circle-question text-primary" style="font-size: 4rem;"></i>
                     <h5 class="modal-title">خطا</h5>
                 </div>
                 <div class="modal-body">

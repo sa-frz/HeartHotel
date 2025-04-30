@@ -16,12 +16,13 @@ public class ConductorsController : Controller
 
     public async Task<IActionResult> Index()
     {
-        // var UserId = Helper.getUserId(HttpContext);
-        // if (UserId == 0)
-        // {
-        //     return Redirect("/Login");
-        // }
-        // ViewBag.UID = UserId;
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
+
         ViewBag.Chairs = new SelectList(await _context.Chairs.ToListAsync(), "Id", "Name");
 
         return View();
@@ -29,12 +30,12 @@ public class ConductorsController : Controller
 
     public async Task<IActionResult> Edit(int? id)
     {
-        // var UserId = Helper.getUserId(HttpContext);
-        // if (UserId == 0)
-        // {
-        //     return Redirect("/Login");
-        // }
-        // ViewBag.UID = UserId;
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
 
         if (id == null)
         {

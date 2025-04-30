@@ -40,6 +40,10 @@ public class HomeController : Controller
         {
             return Redirect("/Login");
         }
+        if (UserId > 10)
+        {
+            return NotFound();
+        }
         ViewBag.UID = UserId;
 
         var Events = ShowEvent(-1, 0, 0, "", k, "", false, "");
@@ -66,7 +70,7 @@ public class HomeController : Controller
             var hallss = await _context.VenueHalls.ToListAsync();
             return View(hallss);
         }
-        
+
         var halls = await _context.VenueHallManagers
                                         .Where(s => s.UserId == UserId)
                                         .Include(i => i.VenueHall)
@@ -448,9 +452,10 @@ public class HomeController : Controller
 
 
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        // return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+         return View(); 
     }
 }

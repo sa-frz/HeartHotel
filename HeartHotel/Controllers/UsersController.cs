@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HeartHotel.Models;
+using Firoozi.Helper;
 
 namespace HeartHotel.Controllers
 {
@@ -21,6 +22,13 @@ namespace HeartHotel.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
+
             return View(await _context.Users.Where(w => w.Id > 10).ToListAsync());
         }
 
@@ -45,6 +53,13 @@ namespace HeartHotel.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
+
             return View();
         }
 
@@ -71,6 +86,13 @@ namespace HeartHotel.Controllers
             {
                 return NotFound();
             }
+
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
 
             var user = await _context.Users.FindAsync(id);
             if (user == null)
@@ -122,6 +144,13 @@ namespace HeartHotel.Controllers
             {
                 return NotFound();
             }
+
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);

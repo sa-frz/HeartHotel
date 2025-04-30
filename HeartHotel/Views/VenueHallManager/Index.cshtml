@@ -38,7 +38,9 @@
                     @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
-                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash-can text-secondary"></i></a>
+                    <a role="button"
+                        onclick="$.confirm('آیا از حذف اطلاعات اطمینان دارید؟', function(){ $.post('/VenueHallManager/Delete/@(item.Id)').done(function(){window.location.reload()})})"><i
+                            class="fa fa-trash-can text-secondary"></i></a>
                 </td>
             </tr>
         }

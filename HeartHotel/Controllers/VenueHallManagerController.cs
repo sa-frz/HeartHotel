@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HeartHotel.Models;
+using Firoozi.Helper;
 
 namespace HeartHotel.Controllers
 {
@@ -21,6 +22,13 @@ namespace HeartHotel.Controllers
         // GET: VenueHallManager
         public async Task<IActionResult> Index()
         {
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
+
             var eventisContext = _context.VenueHallManagers
                                     .Include(v => v.User).Include(v => v.VenueHall)
                                     .OrderBy(o => o.User.Id).ThenBy(o => o.VenueHall.Id);
@@ -34,6 +42,13 @@ namespace HeartHotel.Controllers
             {
                 return NotFound();
             }
+
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
 
             var venueHallManager = await _context.VenueHallManagers
                 .Include(v => v.User)
@@ -50,6 +65,13 @@ namespace HeartHotel.Controllers
         // GET: VenueHallManager/Create
         public IActionResult Create()
         {
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
+
             ViewData["UserId"] = new SelectList(_context.Users.Select(s => new
             {
                 s.Id,
@@ -79,6 +101,13 @@ namespace HeartHotel.Controllers
             {
                 return NotFound();
             }
+
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
 
             var venueHallManager = await _context.VenueHallManagers.FindAsync(id);
             if (venueHallManager == null)
@@ -135,6 +164,13 @@ namespace HeartHotel.Controllers
                 return NotFound();
             }
 
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
+
             var venueHallManager = await _context.VenueHallManagers
                 .Include(v => v.User)
                 .Include(v => v.VenueHall)
@@ -149,7 +185,7 @@ namespace HeartHotel.Controllers
 
         // POST: VenueHallManager/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        // [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var venueHallManager = await _context.VenueHallManagers.FindAsync(id);

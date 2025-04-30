@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HeartHotel.Models;
+using Firoozi.Helper;
 
 namespace HeartHotel.Controllers
 {
@@ -21,6 +22,13 @@ namespace HeartHotel.Controllers
         // GET: ChairController
         public async Task<IActionResult> Index()
         {
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
+
             return View(await _context.Chairs.ToListAsync());
         }
 
@@ -45,6 +53,13 @@ namespace HeartHotel.Controllers
         // GET: ChairController/Create
         public IActionResult Create()
         {
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
+
             return View();
         }
 
@@ -96,6 +111,13 @@ namespace HeartHotel.Controllers
             {
                 return NotFound();
             }
+
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
 
             var chair = await _context.Chairs.FindAsync(id);
             if (chair == null)
@@ -175,6 +197,13 @@ namespace HeartHotel.Controllers
             {
                 return NotFound();
             }
+
+            var UserId = Helper.getUserId(HttpContext);
+            if (UserId == 0)
+            {
+                return Redirect("/Login");
+            }
+            ViewBag.UID = UserId;
 
             var chair = await _context.Chairs
                 .FirstOrDefaultAsync(m => m.Id == id);
