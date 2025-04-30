@@ -18,4 +18,6 @@ public partial class VenueHall
     public virtual ICollection<Programs> Programs { get; set; } = new List<Programs>();
 
     public virtual Venue Venue { get; set; } = null!;
+
+    public virtual ICollection<VenueHallManager> VenueHallManagers { get; set; } = new List<VenueHallManager>();
 }

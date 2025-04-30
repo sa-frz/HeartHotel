@@ -32,4 +32,6 @@ public partial class User
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual ICollection<Traffic> Traffics { get; set; } = new List<Traffic>();
+
+    public virtual ICollection<VenueHallManager> VenueHallManagers { get; set; } = new List<VenueHallManager>();
 }
