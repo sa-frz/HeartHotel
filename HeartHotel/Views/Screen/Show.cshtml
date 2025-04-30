@@ -1,4 +1,6 @@
-@model IEnumerable<HeartHotel.Models.ProgramHallsViewModel>
+@* @model IEnumerable<HeartHotel.Models.ProgramHallsViewModel> *@
+@model IEnumerable<HeartHotel.Models.VenueHall>
+
 @{
     ViewData["Title"] = "سالن‌های برگزاری";
 }
@@ -8,17 +10,20 @@
         <img src="/img/HHicon.png" alt="هتل قلب" draggable="false" style="max-height: 60px;" />
         <div class="text-center w-100 fs-1 fw-bold">
             Heart Hotel
+            <div class="fs-2">
+                10th Iranian Joint Cardiovascular Congress
+            </div>
         </div>
     </div>
     <div class="mx-4">
 
-        <div class="d-flex align-items-center justify-content-around w-100 bg-warning mb-3 rounded-3 p-2">
+        <div class="d-flex align-items-center justify-content-around w-100 bg-warning mb-3 rounded-3 p-2 fw-bold">
             <div>
                 @ViewBag.DayOfWeek
             </div>
             <div>@ViewBag.date</div>
         </div>
-        <div class="row">
+        @* <div class="row">
             @foreach (var item in Model)
             {
                 <div class="col-6">
@@ -55,11 +60,36 @@
                     </div>
                 </div>
             }
+        </div> *@
+
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6">
+                    <div class="hall-container">
+                        <div class="fw-bold fs-5 bg-primary text-white rounded-3 p-2">
+                            @item.Title
+                            <div class="fw-normal small">
+                                @item.Address
+                            </div>
+                        </div>
+
+                        <div class="hall" frz-id="@item.Id">
+                            <div class="loader">
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
         </div>
     </div>
 
-    <div class="text-center w-100 position-fixed bottom-0 start-0 border-top p-2 bg-white">10th Iranian Joint
-        Cardiovascular Congress</div>
+    @* <div class="text-center w-100 position-fixed bottom-0 start-0 border-top p-2 bg-white">10th Iranian Joint
+        Cardiovascular Congress</div> *@
 </div>
 
 @section scripts {
@@ -108,8 +138,14 @@
                 }, 5000); // Retry every 5 seconds
             });
 
+            $('.hall').each(function () {
+                const venueHallID = $(this).attr('frz-id');
+                const selectedDate = '@ViewBag.currentTime';
+                showData(selectedDate, venueHallID, this);
+            });
+
             setCurrentPrograms();
-            setInterval(setCurrentPrograms, 60000);
+            setInterval(setCurrentPrograms, 1000);
         });
 
         function setCurrentPrograms() {
@@ -122,6 +158,27 @@
                     $(this).removeClass('fw-bold');
                 }
             });
+        }
+
+        function showData(selectedDate, venueHallID, element) {
+            $.ajax({
+                url: '/api/program/getAll',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    date: selectedDate,
+                    venueHallID: venueHallID
+                }),
+                success: function (response) {
+                    element.innerHTML = response;
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error:', error);
+                    console.log('Status:', status);
+                    console.log('Response:', xhr.responseText);
+                }
+            });
+
         }
     </script>
 }

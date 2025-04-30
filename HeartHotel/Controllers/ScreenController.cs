@@ -117,33 +117,43 @@ public class ScreenController : Controller
             { 6, "Saturday" },
         };
         // ViewBag.DayOfWeek = dayOfWeek[dayOfWeekNumber];
-        ViewBag.DayOfWeek = halls.FirstOrDefault()?.ShowDate.Split('-')[0].Trim();
-        ViewBag.date = halls.FirstOrDefault()?.ShowDate.Split('-')[1].Trim();
+        ViewBag.DayOfWeek = halls.FirstOrDefault()?.ShowDate.Replace(",", "-").Split('-')[0].Trim();
+        ViewBag.date = halls.FirstOrDefault()?.ShowDate.Replace(",", "-").Split('-')[1].Trim();
         // ViewBag.date = date;
 
-        var programs = new List<ProgramHallsViewModel>();
-        foreach (var hall in halls)
-        {
-            var result = await Content(hall.Id, true);
-            var jsonResult = result as JsonResult;
-            var data = jsonResult?.Value as dynamic;
-            var program = new ProgramHallsViewModel();
-            program.VenueHallName = hall.Name;
-            program.VenueHallAddress = hall.Address;
-            program.ProgramName = data.ProgramName;
-            program.ProgramConductorsId = data.ProgramConductorsId;
-            program.ProgramConductors = ((IEnumerable<dynamic>)data.ProgramConductors).Select(c => new ProgramConductorViewModel
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                SaatAz = c.SaatAz,
-                SaatTa = c.SaatTa
-            }).ToList();
+        // var programs = new List<ProgramHallsViewModel>();
+        // foreach (var hall in halls)
+        // {
+        //     var result = await Content(hall.Id, true);
+        //     var jsonResult = result as JsonResult;
+        //     var data = jsonResult?.Value as dynamic;
+        //     var program = new ProgramHallsViewModel();
+        //     program.VenueHallName = hall.Name;
+        //     program.VenueHallAddress = hall.Address;
+        //     program.ProgramName = data.ProgramName;
+        //     program.ProgramConductorsId = data.ProgramConductorsId;
+        //     program.ProgramConductors = ((IEnumerable<dynamic>)data.ProgramConductors).Select(c => new ProgramConductorViewModel
+        //     {
+        //         Id = c.Id,
+        //         Name = c.Name,
+        //         Description = c.Description,
+        //         SaatAz = c.SaatAz,
+        //         SaatTa = c.SaatTa
+        //     }).ToList();
 
-            programs.Add(program);
-        }
-        return View(programs);
+        //     programs.Add(program);
+        // }
+        // return View(programs);
+
+        var venueHall = await _context.Programs
+            .Include(m => m.VenueHall)
+            .Where(x => x.Date == date)
+            .Select(s => s.VenueHall).Distinct()
+            .ToListAsync();
+
+            ViewBag.currentTime = date;
+
+        return View(venueHall);
     }
 
     public async Task<IActionResult> Show1(int? id)

@@ -1,0 +1,30 @@
+@model IEnumerable< HeartHotel.Models.Programs>
+
+@foreach (var program in Model)
+{
+    <div class="border rounded-3 mt-2">
+        <div class="fw-bold fs-3 text-primary text-center my-2">
+            @program.Name
+        </div>
+
+        <table class="table table-striped">
+            <thead style="white-space: nowrap;">
+                <tr>
+                    <th><i class="fa fa-microphone"></i></th>
+                    <th><i class="fa fa-clock"></i></th>
+                    <th><i class="fa fa-info-circle"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var conductor in program.ProgramConductors)
+                {
+                    <tr>
+                        <td>@conductor.Name</td>
+                        <td class="text-nowrap">@conductor.SaatAz - @conductor.SaatTa</td>
+                        <td>@conductor.Description</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

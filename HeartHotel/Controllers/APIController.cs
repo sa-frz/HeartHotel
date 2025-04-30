@@ -468,6 +468,24 @@ public class APIController : Controller
         }
     }
 
+    [Route("/api/program/getAll")]
+    [HttpPost]
+    public async Task<IActionResult> GetProgramAll([FromBody] GetProgram model)
+    {
+        try
+        {
+            var program = await _context.Programs
+                .Include(m => m.ProgramConductors)
+                .Where(w => w.Date == model.Date && w.VenueHallId == model.VenueHallId).ToListAsync();
+
+            return PartialView(program);
+        }
+        catch (Exception ex)
+        {
+            return PartialView(ex.Message);
+        }
+    }
+
     [Route("/api/SignalR/group/add/{connectionId}/{groupName}")]
     [HttpPost]
     public async Task<IActionResult> GroupAdd(string connectionId, string groupName)

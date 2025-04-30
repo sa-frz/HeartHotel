@@ -4,22 +4,17 @@
     ViewData["Title"] = "سالن‌های برگزاری";
 }
 
-<div class="w-100 bg-primary position-absolute end-0 top-0 vh-100" style="z-index: 1;">
+@* <div class="w-100 bg-primary position-absolute end-0 top-0 vh-100" style="z-index: 1;">
     <div class="d-flex justify-content-center align-items-center flex-column mt-4">
         <img src="/img/HH.png" alt="هتل قلب" draggable="false" style="max-height: 100px;" />
         <div class="text-center mb-3 fs-4 text-white">
             انتخاب سالن
         </div>
-    </div>
+    </div> *@
 
     @if (ViewBag.IsAdmin)
     {
-        <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
-
-            <a class="w-25 lecture-container text-decoration-none text-center" role="button" id="refreshAll">
-                <i class="fa fa-door-open fs-1 text-primary"></i>
-                <div class="fs-5">بروزرسانی همه</div>
-            </a>
+        <div class="d-flex flex-column justify-content-center align-items-center mb-3">
 
             <div class="mb-3 lecture-container text-decoration-none text-center" style="width: fit-content;">
                 <i class="fa fa-door-open fs-1 text-primary"></i>
@@ -36,6 +31,11 @@
                 </div>
                 <button class="btn btn-secondary w-100" id="btn1">ادامه</button>
             </div>
+
+            <a class="w-25 lecture-container text-decoration-none text-center" role="button" id="refreshAll">
+                <i class="fa fa-door-open fs-1 text-primary"></i>
+                <div class="fs-5">بروزرسانی همه</div>
+            </a>
         </div>
     }
 
@@ -49,7 +49,7 @@
             </a>
         }
     </div>
-</div>
+@* </div> *@
 
 @section styles {
     <link href="~/lib/datetimepicker 4.1.1/mds.bs.datetimepicker.style.css" rel="stylesheet" />
@@ -59,6 +59,8 @@
     <script src="~/lib/datetimepicker 4.1.1/mds.bs.datetimepicker.js"></script>
     <script>
         $(document).ready(function () {
+            $('body').addClass('bg-primary');
+            
             const dtp1 = new mds.MdsPersianDateTimePicker(document.getElementById('dtp1'), {
                 targetTextSelector: '[data-name="dtp1-text"]',
                 modalMode: false
