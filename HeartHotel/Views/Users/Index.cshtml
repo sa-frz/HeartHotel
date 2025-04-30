@@ -1,0 +1,87 @@
+@model IEnumerable<HeartHotel.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>کاربران</h1>
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary">افزودن</a>
+    </p>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            @* <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th> *@
+            <th>
+                نام
+            </th>
+            <th>
+                نام خانوادگی
+            </th>
+            <th>
+                شماره همراه
+            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.CreateDate)
+            </th> 
+             <th>
+                @Html.DisplayNameFor(model => model.TelegramId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdateDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Position)
+            </th> *@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @* <td>
+                @Html.DisplayFor(modelItem => item.Password)
+            </td> *@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Firstname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lastname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mobile)
+                </td>
+                @* <td>
+                @Html.DisplayFor(modelItem => item.CreateDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TelegramId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Position)
+            </td> *@
+                <td class="d-flex gap-2 justify-content-around align-items-center">
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil-alt text-primary"></i></a> |
+                    @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash-can text-secondary"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

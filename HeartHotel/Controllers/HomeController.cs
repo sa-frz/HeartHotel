@@ -52,16 +52,58 @@ public class HomeController : Controller
     [Route("/Halls")]
     public async Task<IActionResult> Halls()
     {
-        var halls = await _context.VenueHalls.ToListAsync();
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
+
+        ViewBag.IsAdmin = false;
+        if (UserId <= 10)
+        {
+            ViewBag.IsAdmin = true;
+            var hallss = await _context.VenueHalls.ToListAsync();
+            return View(hallss);
+        }
+        
+        var halls = await _context.VenueHallManagers
+                                        .Where(s => s.UserId == UserId)
+                                        .Include(i => i.VenueHall)
+                                        .Select(s => s.VenueHall)
+                                        .ToListAsync();
         return View(halls);
     }
 
     [Route("/Hall/{id?}/{title}")]
-    public IActionResult Hall(int? id, string title)
+    public async Task<IActionResult> Hall(int? id, string title)
     {
         if (id == null || _context.VenueHalls == null)
         {
             return NotFound();
+        }
+
+        var UserId = Helper.getUserId(HttpContext);
+        if (UserId == 0)
+        {
+            return Redirect("/Login");
+        }
+        ViewBag.UID = UserId;
+        ViewBag.IsAdmin = false;
+        if (UserId <= 10)
+        {
+            ViewBag.IsAdmin = true;
+        }
+
+        if (!ViewBag.IsAdmin)
+        {
+            var accsses = await _context.VenueHallManagers
+                                                    .Where(s => s.UserId == UserId && s.VenueHallId == id)
+                                                    .ToListAsync();
+            if (accsses.Count() == 0)
+            {
+                return NotFound();
+            }
         }
 
         ViewBag.Title = title;

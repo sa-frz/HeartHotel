@@ -1,0 +1,46 @@
+@model IEnumerable<HeartHotel.Models.VenueHallManager>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>مدیران سالن</h1>
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary">افزودن</a>
+    </p>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                کاربر
+            </th>
+            <th>
+                سالن
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.User.Firstname @item.User.Lastname
+                </td>
+                <td>
+                    @item.VenueHall.Title
+                </td>
+                <td>
+                    @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash-can text-secondary"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

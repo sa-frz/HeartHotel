@@ -1,0 +1,45 @@
+@model HeartHotel.Models.VenueHallManager
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>ایجاد دسترسی مدیر سالن</h1>
+
+@* <h4>VenueHallManager</h4> *@
+<hr />
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="UserId" class="control-label">نام کاربر</label>
+        <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="VenueHallId" class="control-label">نام سالن</label>
+        <select asp-for="VenueHallId" class="form-control" asp-items="ViewBag.VenueHallId"></select>
+    </div>
+    <div class="form-group w-100 d-flex justify-content-between align-items-center mt-3 gap-2">
+        <input type="submit" value="ایجاد" class="btn btn-primary w-100" />
+        <a asp-action="Index" class="btn btn-secondary w-100">بازگشت</a>
+    </div>
+</form>
+
+
+@section styles {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('select').select2({
+                dir: "rtl"
+            });
+        });
+    </script>
+}
