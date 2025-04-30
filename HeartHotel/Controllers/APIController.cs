@@ -27,7 +27,8 @@ public class APIController : Controller
     {
         try
         {
-            var login = await _context.Users.Where(w => w.Mobile == Mobile && w.Id < 11).FirstOrDefaultAsync();
+            // var login = await _context.Users.Where(w => w.Mobile == Mobile && w.Id < 11).FirstOrDefaultAsync();
+            var login = await _context.Users.Where(w => w.Mobile == Mobile).FirstOrDefaultAsync();
             if (login == null)
             {
                 return NotFound();
