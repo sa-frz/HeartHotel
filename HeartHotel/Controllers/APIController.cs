@@ -536,4 +536,24 @@ public class APIController : Controller
             return BadRequest("خطا در تغییر برنامه");
         }
     }
+
+    [Route("/api/SignalR/refreshAllShow")]
+    [HttpPost]
+    public async Task<IActionResult> RefreshAllShow()
+    {
+        try
+        {
+            var allGroups = _signalRHub.GetGroupNames();
+            var showGroups = allGroups.Where(g => g.StartsWith("Show")).ToList();
+            foreach (var item in showGroups)
+            {
+                    await _signalRHub.NotifyGroup(item, "Reload");
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        return Ok();
+    }
 }

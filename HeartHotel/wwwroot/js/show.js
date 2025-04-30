@@ -1,6 +1,7 @@
 let index = 0;
 let programConductors;
 let timerInterval;
+let timerIntervalSettime;
 let timeLeft;
 
 function getProgramConductors(pc) {
@@ -54,10 +55,12 @@ function setTime() {
 
 
     if (!isSetIndex) {
+        timerIntervalSettime = setInterval(setTime, 1000);
         $('#Name').closest('.gap-2').addClass('d-none');
         $('#oldPrograms').html(oldPrograms);
         $('#nextPrograms').html(nextPrograms);
     } else {
+        clearInterval(timerIntervalSettime);
         $('#Name').closest('.gap-2').remove('d-none');
         let oldProgramsHtml = oldPrograms ? oldPrograms[oldPrograms.length - 1] : '';
         let nextProgramsHtml = nextPrograms ? nextPrograms.slice(0, 2).join('') : '';
