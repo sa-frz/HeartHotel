@@ -20,10 +20,10 @@ namespace Firoozi.Helper
             }
             catch { }
 
-            if (UserId <= 0 || UserId > 10)
-            {
-                UserId = 0;
-            }
+            // if (UserId <= 0 || UserId > 10)
+            // {
+            //     UserId = 0;
+            // }
 
             return UserId;
         }
