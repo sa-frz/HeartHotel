@@ -3,7 +3,7 @@
 </h4>
 
 <div class="d-flex flex-column justify-content-center align-items-center vh-100 w-100">
-    <div id="content" class="w-100 text-center fw-bold text-truncate"></div>
+    <div id="content" class="w-100 text-center fw-bold"></div>
 </div>
 
 @section scripts {
@@ -41,6 +41,10 @@
                 $('#icon').addClass(`fa-solid fa-arrow-${message.split('_')[1]}`);
 
                 adjustFontSizeToFit('content');
+
+                setTimeout(() => {
+                    adjustFontSizeToFit('content');
+                }, 1000); // Adjust font size after 1 second
             });
 
             let reconnectTimer;

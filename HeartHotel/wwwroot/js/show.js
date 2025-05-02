@@ -84,13 +84,15 @@ function setTime() {
 }
 
 function adjustFontSizeToFit(elementId) {
-    const element = document.getElementById(elementId);
-    // element.textContent = text;
-    let fontSize = 500; // Start with a base font size
-    element.style.fontSize = fontSize + "px";
+    const $element = $('#' + elementId);
+    const isEnglish = /^[A-Za-z0-9\s.,'!?-]*$/.test($element.html());
 
-    while (element.scrollWidth > element.offsetWidth && fontSize > 10) {
+    let fontSize = 500; // Start with a base font size
+    $element.css('font-size', fontSize + 'px');
+    $element.addClass('text-truncate');
+
+    while ($element[0].scrollWidth > $element[0].offsetWidth && fontSize > 10) {
         fontSize--;
-        element.style.fontSize = fontSize + "px";
+        $element.css('font-size', fontSize + 'px');
     }
 }
