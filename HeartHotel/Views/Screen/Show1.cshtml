@@ -1,4 +1,5 @@
 @{
+    Layout = "~/Views/Shared/_LayoutFull.cshtml";
     ViewData["Title"] = ViewBag.ProgramName;
     var ProgramConductors = ViewBag.ProgramConductors;
     var Chairs = ((IEnumerable<dynamic>)ViewBag.ProgramChairs).ToList();
@@ -11,14 +12,16 @@
 }
 
 
-<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr"    style="z-index: 1;">
+<div class="w-100 bg-white ltr">
     <div class="text-center text-primary w-100 p-2" style="z-index: 2;">
 
         <div class="d-flex justify-content-around align-items-center m-1">
-            <div><img src="/img/HHicon.png" draggable="false" style="height: 60px;"></div>
+            <div class="d-flex align-items-center gap-2">
+                <img src="/img/HHicon.png" draggable="false" style="height: 60px;">
+                <div class="fs-1 fw-bold text-nowrap text-secondary">@ViewBag.HallName</div>
+            </div>
             <div class="w-100 fs-1 fw-bold">10th Iranian Joint Cardiovascular Congress</div>
             @* <div><img src="/img/ghalb.png" draggable="false" style="height: 60px;"></div> *@
-            <div class="fs-3 fw-bold text-nowrap">@ViewBag.HallName</div>
         </div>
         <div class="d-flex align-items-center justify-content-around w-100 bg-warning mb-3 rounded-3 p-2">
             <div class="fs-2 fw-bold text-black">@ViewData["Title"]</div>
@@ -97,6 +100,14 @@
     </div> *@
 </div>
 
+<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-none flex-column justify-content-center align-items-center"
+    style="z-index: 1000;" id="hallNameOverlay">
+    <div class="adjustFontSizeToFit w-100 text-center text-primary fw-bold">@ViewBag.HallName</div>
+    <div class="d-flex align-items-center fw-bold fs-5 gap-1 text-secondary">
+        <i class="fa fa-clock"> </i><span id="clock"></span>
+    </div>
+</div>
+
 @section scripts {
     <script src="~/lib/microsoft-signalr/6.0.0/signalr.min.js"></script>
     <script src="~/js/show.js" asp-append-version="true"></script>
@@ -106,8 +117,15 @@
                 $.alert('زمان برگزاری به پایان رسیده است!');
                 return;
             } *@
-                getProgramConductors(@pc);
-            //adjustFontSizeToFit("sessionName");
+            getProgramConductors(@pc);
+            
+            @* adjustFontSizeToFit();
+            let adj = setInterval(function () {
+                adjustFontSizeToFit();
+            }, 1000);
+            clearInterval(adj); *@
+
+            @* SetShowHallName(); *@
 
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()

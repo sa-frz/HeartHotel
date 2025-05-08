@@ -151,7 +151,7 @@ public class ScreenController : Controller
             .Select(s => s.VenueHall).Distinct()
             .ToListAsync();
 
-            ViewBag.currentTime = date;
+        ViewBag.currentTime = date;
 
         return View(venueHall);
     }
@@ -211,28 +211,77 @@ public class ScreenController : Controller
     }
 
     [Route("/Monitor1")]
-    public IActionResult Monitor1()
+    public IActionResult Monitor1(string Content)
     {
+        try
+        {
+            ViewBag.Content = Content.Split('_')[0];
+            ViewBag.Icon = Content.Split('_')[1];
+        }
+        catch
+        {
+        }
+
         return View();
     }
+
     [Route("/Monitor2")]
-    public IActionResult Monitor2()
+    public IActionResult Monitor2(string Content)
     {
+        try
+        {
+            ViewBag.Content = Content.Split('_')[0];
+            ViewBag.Icon = Content.Split('_')[1];
+        }
+        catch
+        {
+        }
+
         return View();
     }
+
     [Route("/Monitor3")]
-    public IActionResult Monitor3()
+    public IActionResult Monitor3(string Content)
     {
+        try
+        {
+            ViewBag.Content = Content.Split('_')[0];
+            ViewBag.Icon = Content.Split('_')[1];
+        }
+        catch
+        {
+        }
+
         return View();
     }
+
     [Route("/Monitor4")]
-    public IActionResult Monitor4()
+    public IActionResult Monitor4(string Content)
     {
+        try
+        {
+            ViewBag.Content = Content.Split('_')[0];
+            ViewBag.Icon = Content.Split('_')[1];
+        }
+        catch
+        {
+        }
+
         return View();
     }
+
     [Route("/Monitor5")]
-    public IActionResult Monitor5()
+    public IActionResult Monitor5(string Content)
     {
+        try
+        {
+            ViewBag.Content = Content.Split('_')[0];
+            ViewBag.Icon = Content.Split('_')[1];
+        }
+        catch
+        {
+        }
+
         return View();
     }
 
