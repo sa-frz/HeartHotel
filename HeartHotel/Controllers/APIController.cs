@@ -78,6 +78,7 @@ public class APIController : Controller
             else
             {
                 HttpContext.Session.SetString("userid", login.Id.ToString());
+                SaveUserIdToCookie(login.Id);
             }
             return Ok();
         }
@@ -566,7 +567,7 @@ public class APIController : Controller
             var showGroups = allGroups.Where(g => g.StartsWith("Show")).ToList();
             foreach (var item in showGroups)
             {
-                    await _signalRHub.NotifyGroup(item, "Reload");
+                await _signalRHub.NotifyGroup(item, "Reload");
             }
         }
         catch (Exception ex)
@@ -575,4 +576,57 @@ public class APIController : Controller
         }
         return Ok();
     }
+
+    [Route("/api/user/saveToCookie")]
+    [HttpPost]
+    public IActionResult SaveUserIdToCookie(int userId)
+    {
+        try
+        {
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                HttpOnly = true,
+                Secure = true
+            };
+
+            Response.Cookies.Append("UserId", userId.ToString(), cookieOptions);
+            return Ok("UserId saved to cookie successfully.");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Route("/api/user/getFromCookie")]
+    [HttpGet]
+    public IActionResult GetUserIdFromCookie()
+    {
+        try
+        {
+            var userId = Request.Cookies["UserId"];
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Ok(0);
+            }
+
+            HttpContext.Session.SetString("userid", userId);
+            return Ok(int.Parse(userId));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+     [Route("/api/halls/list")]
+    public async Task<PartialViewResult> HallsList()
+    {
+        var halls = await _context.VenueHalls.ToListAsync();
+
+        return PartialView(halls);
+    }
+
+
 }

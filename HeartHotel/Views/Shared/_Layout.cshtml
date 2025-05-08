@@ -27,26 +27,27 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
+                        @* <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
                             <a class="nav-link text-dark" href="/Events">ایونت‌ها</a>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/Halls">سالن‌ها</a>
+                            <a class="nav-link @(ViewData["Active"] == "Halls" ? "active" : "text-dark")" href="/Halls">مدیریت سالن‌ها</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Conductors">کنداکتور</a>
+                            <a class="nav-link @(ViewData["Active"] == "Conductors" ? "active" : "text-dark")"
+                                href="/Conductors">مدیریت جلسات</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Chair">اشخاص</a>
+                            <a class="nav-link @(ViewData["Active"] == "Chair" ? "active" : "text-dark")" href="/Chair">مدیریت اشخاص</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Monitors">مانیتورها</a>
+                            <a class="nav-link @(ViewData["Active"] == "Monitors" ? "active" : "text-dark")" href="/Monitors">مانیتورها</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Users">کاربران</a>
+                            <a class="nav-link @(ViewData["Active"] == "Users" ? "active" : "text-dark")" href="/Users">مدیریت کاربران</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/VenueHallManager">مدیران سالن</a>
+                            <a class="nav-link @(ViewData["Active"] == "VenueHallManager" ? "active" : "text-dark")" href="/VenueHallManager">مدیریت مدیران</a>
                         </li>
                     </ul>
                 </div>
@@ -138,8 +139,7 @@
 
     @*Screen Preloader*@
     <div class="loading" style="display: none;">
-        @* <span class="preloader m-auto"></span> *@
-        <i class="heello-full-logo"></i>
+        <img src="/img/HH.png" draggable="false" />
         <div class="loader">
             <div class="dot"></div>
             <div class="dot"></div>

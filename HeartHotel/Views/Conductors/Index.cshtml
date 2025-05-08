@@ -48,73 +48,103 @@
 </div>
 
 <div id="step3" class="d-none">
-    <div class="content"></div>
-    <div class="mt-3">افزودن برنامه به کنداکتور</div>
-    <div class="d-flex gap-2 justify-content-between border rounded-3 p-1 shadow-sm mb-3">
-        <div>
-            <div>اجرا</div>
-            @* <input type="text" class="form-control" id="txtName" placeholder="اجرا"> *@
-            <select asp-items="@(ViewBag.Chairs)" class="form-select" id="txtName">
-                <option value="">انتخاب کنید...</option>
-            </select>
+    <div class="content">
+
+        <div class="d-flex justify-content-between hall-container text-primary fw-bold fs-4">
+            <div></div>
+            <div></div>
         </div>
-        <div class="d-flex gap-1">
-            <div>
-                از
-                <input type="time" class="form-control ltr" id="timepickerAz">
-            </div>
-            <div>
-                تا
-                <input type="time" class="form-control ltr" id="timepickerTa">
+
+        <div class="hall-container">
+            <div class="fw-bold fs-5 text-primary mb-3">عنوان جلسه
+                <input type="text" class="form-control" id="txtName3">
             </div>
         </div>
-        <div>توضیحات
-            <input type="text" class="form-control" id="txtDescription" placeholder="توضیحات">
-        </div>
-        <div>
-            <div>&nbsp;</div>
-            <i class="fa fa-plus bg-primary text-white" id="addRecord"
-                style="height: 34px;width: 34px;border-radius: .5rem;display: flex;align-items: center;justify-content: center;"></i>
+
+        <div class="hall-container">
+            <div class="fw-bold fs-5 text-primary mt-3">کنداکتور</div>
+            <table class="table table-striped">
+                <thead style="white-space: nowrap;">
+                    <tr>
+                        <th>اجرا</th>
+                        <th>ساعت</th>
+                        <th>توضیحات</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div>افزودن برنامه به کنداکتور</div>
+            <div class="d-flex gap-2 justify-content-between border rounded-3 p-1 shadow-sm mb-3">
+                <div>
+                    <div>اجرا</div>
+                    @* <input type="text" class="form-control" id="txtName" placeholder="اجرا"> *@
+                    <select asp-items="@(ViewBag.Chairs)" class="form-select" id="txtName">
+                        <option value="">انتخاب کنید...</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-1">
+                    <div>
+                        از
+                        <input type="time" class="form-control ltr" id="timepickerAz">
+                    </div>
+                    <div>
+                        تا
+                        <input type="time" class="form-control ltr" id="timepickerTa">
+                    </div>
+                </div>
+                <div>توضیحات
+                    <input type="text" class="form-control" id="txtDescription" placeholder="توضیحات">
+                </div>
+                <div>
+                    <div>&nbsp;</div>
+                    <i class="fa fa-plus bg-primary text-white" id="addRecord"
+                        style="height: 34px;width: 34px;border-radius: .5rem;display: flex;align-items: center;justify-content: center;"></i>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="fw-bold fs-5 text-primary mt-3">Chairs | Moderators</div>
-    <table class="table table-striped">
-        <thead style="white-space: nowrap;">
-            <tr>
-                <th>شخص</th>
-                <th>نقش</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody id="tblChairs">
-        </tbody>
-    </table>
-    <div>افزودن Chairs | Moderators</div>
-    <div class="d-flex gap-2 justify-content-between border rounded-3 p-1 shadow-sm mb-3">
-        <div>
+    <div class="hall-container">
+        <div class="fw-bold fs-5 text-primary mt-3">Chairs | Moderators</div>
+        <table class="table table-striped">
+            <thead style="white-space: nowrap;">
+                <tr>
+                    <th>شخص</th>
+                    <th>نقش</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody id="tblChairs">
+            </tbody>
+        </table>
+        <div>افزودن Chairs | Moderators</div>
+        <div class="d-flex gap-2 justify-content-between border rounded-3 p-1 shadow-sm mb-3">
             <div>
-                انتخاب شخص
-            </div>
-            <select asp-items="@(ViewBag.Chairs)" class="form-select" id="chairs">
-                <option value="">انتخاب کنید...</option>
-            </select>
-        </div>
-        <div>نقش
-            <div>
-                <select class="form-select" id="role">
-                    <option value="1">Chairs</option>
-                    <option value="2">Moderators</option>
+                <div>
+                    انتخاب شخص
+                </div>
+                <select asp-items="@(ViewBag.Chairs)" class="form-select" id="chairs">
+                    <option value="">انتخاب کنید...</option>
                 </select>
             </div>
-        </div>
-        <div>
-            <div>&nbsp;</div>
-            <i class="fa fa-plus bg-primary text-white" id="addChairs"
-                style="height: 34px;width: 34px;border-radius: .5rem;display: flex;align-items: center;justify-content: center;"></i>
+            <div>نقش
+                <div>
+                    <select class="form-select" id="role">
+                        <option value="1">Chairs</option>
+                        <option value="2">Moderators</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div>&nbsp;</div>
+                <i class="fa fa-plus bg-primary text-white" id="addChairs"
+                    style="height: 34px;width: 34px;border-radius: .5rem;display: flex;align-items: center;justify-content: center;"></i>
+            </div>
         </div>
     </div>
-    
+
     <div class="mt-3 d-flex align-items-center gap-2">
         <button class="btn btn-secondary w-100" id="btn3">ادامه</button>
         <button class="btn btn-primary w-100" id="btn31">بازگشت</button>
@@ -225,10 +255,10 @@
             }
 
             $('#btn1').html($('#loader').html()).attr('disabled', true);
-            $.get(`/api/program/halls?date=${selectedDate}`)
+            $.get(`/api/halls/list`)
                 .done(function (data) {
                     if ($.trim(data) === '') {
-                        $.alert('هیچ ایونتی برای این روز ثبت نشده است');
+                        $.alert('هیچ سالنی تعریف نشده است');
                         $('#btn1').html('ادامه').removeAttr('disabled');
                         return;
                     }
@@ -237,10 +267,10 @@
                     $('#step1, #step2').toggleClass('d-none');
                     $('#line-0, #step-1').toggleClass('active');
                     $('#btn1').html('ادامه').removeAttr('disabled');
-                    showAllProgram();
+                    // showAllProgram();
                 })
                 .fail(function (xhr, status, error) {
-                    $.alert('هیچ ایونتی برای این روز ثبت نشده است.');
+                    $.alert('هیچ سالنی تعریف نشده است');
                     $('#btn1').html('ادامه').removeAttr('disabled');
                     console.error(xhr, status, error);
                 });
@@ -257,17 +287,13 @@
                 return;
             }
 
-            venueHall = $('input[name="options"]:checked').parent().parent().attr('frz-venuehall');
-            programDate = $('input[name="options"]:checked').parent().parent().attr('frz-date');
-            programName = $(`[for="option-${$('input[name="options"]:checked').val()}"]`).html();
+            venueHall = $('input[name="options"]:checked').val();
+            venueHallName = $('input[name="options"]:checked').next().html();
+            programDate = $.trim($('[data-name="dtp1-text"]').html());
 
-            let content = $('input[name="options"]:checked').parent().parent().html();
-            $('#step3 .content').html(content);
-            $('#step3 .content input[name="options"]').addClass('d-none');
-            $('#step3 .content table thead tr').append('<th>عملیات</th>');
-            $('#step3 .content table tbody tr').each(function () {
-                $(this).append(`<td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>`);
-            });
+            $('#step3 .content > div').children().eq(0).html(venueHallName);
+            $('#step3 .content > div').children().eq(1).html(programDate);
+
             $('#step2, #step3').toggleClass('d-none');
             $('#line-1, #step-2').toggleClass('active');
         });
@@ -286,11 +312,11 @@
                 return;
             }
             let tr = ` <tr>
-                            <td>${$('#txtName option:selected').text()}</td>
-                            <td>${$('#timepickerAz').val()} - ${$('#timepickerTa').val()}</td>
-                            <td>${$('#txtDescription').val()}</td>
-                            <td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>
-                        </tr>`;
+                                                                    <td>${$('#txtName option:selected').text()}</td>
+                                                                    <td>${$('#timepickerAz').val()} - ${$('#timepickerTa').val()}</td>
+                                                                    <td>${$('#txtDescription').val()}</td>
+                                                                    <td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>
+                                                                </tr>`;
             $('#step3 .content table tbody').append(tr);
             $('#txtName').val('');
             $('#timepickerAz').val('');
@@ -315,10 +341,10 @@
             }
 
             let tr = ` <tr>
-                            <td>${$('#chairs option:selected').text()}<input type="hidden" value="${$('#chairs').val()}"></td>
-                            <td>${$('#role option:selected').text()}<input type="hidden" value="${$('#role').val()}"></td>
-                            <td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>
-                        </tr>`;
+                                                                    <td>${$('#chairs option:selected').text()}<input type="hidden" value="${$('#chairs').val()}"></td>
+                                                                    <td>${$('#role option:selected').text()}<input type="hidden" value="${$('#role').val()}"></td>
+                                                                    <td><i class="fa fa-trash-can text-danger" onclick="deleteRow(this)"></i></td>
+                                                                </tr>`;
             $('#tblChairs').append(tr);
         });
 
@@ -328,6 +354,11 @@
         });
 
         $('#btn3').click(function () {
+            if (!$('#txtName3').val()) {
+                $.alert('لطفا عنوان جلسه را وارد کنید.');
+                return;
+            }
+
             if ($('#step3 .content table tbody tr').length === 0) {
                 $.alert('لطفا حداقل یک زمان را اضافه کنید.');
                 return;
@@ -354,11 +385,11 @@
             let selectedTheme = $('input[name="theme"]:checked').val();
             let selectedThemeText = $(`[for="theme-${selectedTheme}"]`).html();
 
-            $('#step5 .content #txtName5').val(programName);
-            let rooz = $('#step2 .content > div > div').html();
-            @* programDate = $('#step2 .content > div div:last-child').html(); *@
+            $('#step5 .content #txtName5').val($('#txtName3').val());
+            @* let rooz = $('#step2 .content > div > div').html(); *@
+                @* programDate = $('#step2 .content > div div:last-child').html(); *@
 
-            $('#step5 .content #txtDate5').val(rooz + ' - ' + programDate);
+                $('#step5 .content #txtDate5').val(programDate);
             // $(' #programsTable').html($('#step3 .content table tbody').html().replace(/<td>.*?<\/td>\s*<\/tr>/g, '</tr>'));
 
             let table = $('#step3 .content table tbody').html().replace(/<td>.*?<\/td>\s*<\/tr>/g, '</tr>');
@@ -387,11 +418,11 @@
 
         $('#btn5').click(function () {
             if (!$('#txtName5').val()) {
-                $.alert('لطفا عنوان نمایشی ایونت را وارد کنید.');
+                $.alert('لطفا عنوان جلسه را وارد کنید.');
                 return;
             }
             if (!$('#txtDate5').val()) {
-                $.alert('لطفا روز و تاریخ نمایشی ایونت را وارد کنید.');
+                $.alert('لطفا روز و تاریخ جلسه را وارد کنید.');
                 return;
             }
 
@@ -399,7 +430,7 @@
                 $(element).children('td').each(function (index, element) {
                     if (index == 0) {
                         if (!$(element).find('input').val()) {
-                            $.alert('لطفا نام اجراهای نمایشی را وارد کنید.');
+                            $.alert('لطفا نام اجراها را وارد کنید.');
                             return;
                         }
                     }
@@ -472,11 +503,11 @@
                     success: function (data) {
                         $($this).html(data);
                         @* $($this).append('<div class="mt-3 d-flex align-items-center gap-2"><button type="button" class="btn btn-primary w-100" onclick="goNext()">ادامه</button><button type="button" class="btn btn-secondary w-100" onclick="ret()">بازگشت</button></div>'); *@
-                                                                                                                                                                                                            },
+                                                                                                                                                                                                                                                    },
                     error: function (xhr, status, error) {
                         console.error(error);
                         @* $.alert('خطا در بارگذاری برنامه‌ها.'); *@
-                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                    }
                 });
             });
         }

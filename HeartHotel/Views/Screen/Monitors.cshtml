@@ -1,4 +1,6 @@
 ﻿@{
+    ViewData["Title"] = "مانیتور";
+    ViewData["Active"] = "Monitors";
     var ProgramConductors = "ViewBag.ProgramConductors";
 
     var pc = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ProgramConductors, new

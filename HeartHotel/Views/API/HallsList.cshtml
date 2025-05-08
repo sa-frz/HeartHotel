@@ -1,0 +1,9 @@
+﻿@model IEnumerable< HeartHotel.Models.VenueHall>
+
+@foreach (var hall in Model)
+{
+    <div class="hall-container">
+        <input type="radio" id="option-@hall.Id" name="options" value="@hall.Id" class="form-check-input me-2" />
+        <label for="option-@hall.Id" class="form-check-label fw-bold fs-5 text-primary">@hall.Title</label>
+    </div>
+}
