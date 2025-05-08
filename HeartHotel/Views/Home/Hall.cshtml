@@ -40,6 +40,10 @@
         </div>
 
         <div id="program" class="d-none">
+            <div class="hall-container">
+                <button class="btn btn-primary w-100" id="btnAuto">نمایش خودکار</button>
+            </div>
+
             <div class="content">
                 <div class="loader">
                     <div class="dot"></div>
@@ -219,11 +223,11 @@
                             option += `<option value="${item.id}">${item.name}</option>`;
                         });
                         $('#currentSession').html(`<div class="d-flex align-items-center justify-content-between mb-3 gap-2">از<select class="form-select">${option}</select></div>
-                                                                    <div class="d-flex align-items-center justify-content-between mb-3 gap-2">به<select class="form-select">${option}</select></div>
-                                                                    <div class="d-flex justify-content-between gap-2">
-                                                                        <button class="btn btn-secondary w-100" onclick="changeOK()">ادامه</button>
-                                                                        <button class="btn btn-primary w-100" onclick="back()">بازگشت</button>
-                                                                    </div>`);
+                                                                            <div class="d-flex align-items-center justify-content-between mb-3 gap-2">به<select class="form-select">${option}</select></div>
+                                                                            <div class="d-flex justify-content-between gap-2">
+                                                                                <button class="btn btn-secondary w-100" onclick="changeOK()">ادامه</button>
+                                                                                <button class="btn btn-primary w-100" onclick="back()">بازگشت</button>
+                                                                            </div>`);
                     } else {
                         console.error('Response is not an array:', response);
                     }
@@ -259,5 +263,10 @@
                     console.log('Response:', xhr.responseText);
                 });
         }
+
+        $('#btnAuto').click(function () {
+            let selectedDate = $.trim($('[data-name="dtp1-text"]').html());
+            window.location.href = `/Screen/Show1/?hallid=@ViewBag.VenueHallID&date=${selectedDate}`;
+        });
     </script>
 }

@@ -24,15 +24,15 @@ public class ScreenController : Controller
     public async Task<dynamic> Content(int ProgramId, bool showAll = false)
     {
         var program = await _context.Programs
-            .Include(m => m.ProgramConductors)
-            .Include(m => m.ChairsConductors)
-            .ThenInclude(p => p.Chair)
-            .FirstOrDefaultAsync(x => x.Id == ProgramId);
+             .Include(m => m.ProgramConductors)
+             .Include(m => m.ChairsConductors)
+             .ThenInclude(p => p.Chair)
+             .FirstOrDefaultAsync(x => x.Id == ProgramId);
 
         var ProgramConductorsId = 0;
         if (!showAll)
         {
-            foreach (var conductor in program.ProgramConductors)
+            foreach (var conductor in program!.ProgramConductors)
             {
                 if (conductor.SaatAz == null || conductor.SaatTa == null)
                 {
@@ -50,7 +50,7 @@ public class ScreenController : Controller
             }
         }
 
-        var ProgramConductors = program.ProgramConductors.Where(x => x.Id >= ProgramConductorsId).OrderBy(x =>
+        var ProgramConductors = program!.ProgramConductors.Where(x => x.Id >= ProgramConductorsId).OrderBy(x =>
         x.Id).Select(s => new
         {
             Id = s.Id,
@@ -156,11 +156,41 @@ public class ScreenController : Controller
         return View(venueHall);
     }
 
-    public async Task<IActionResult> Show1(int? id)
+    public async Task<IActionResult> Show1(int? id, int? hallId, string date)
     {
-        if (id == null)
+        if (id == null && hallId == null)
         {
             return NotFound();
+        }
+
+        if (id == null)
+        {
+            var currentDate = date ?? DateTime.Now.ToPersian();
+            var currentTime = DateTime.Now.ToString("HH:mm");
+            var Query = @$"SELECT TOP 1 Programs.* 
+                                    FROM Programs
+                                    LEFT OUTER JOIN ProgramConductors ON ProgramConductors.ProgramId = Programs.ID
+                                    WHERE [Date] = '{currentDate}' 
+                                    AND VenueHallId = {hallId} 
+                                    AND CAST(SaatAz AS TIME) <= CAST('{currentTime}' AS TIME)
+                                    AND CAST(SaatTa AS TIME) >= CAST('{currentTime}' AS TIME)";
+            var program = await _context.Programs.FromSqlRaw(Query).FirstOrDefaultAsync();
+
+            if (program == null)
+            {
+                ViewBag.ProgramName = "";
+                ViewBag.ProgramConductorsId = 0;
+                ViewBag.ProgramConductors = new List<dynamic>();
+                ViewBag.ProgramChairs = new List<dynamic>();
+                ViewBag.Id = 0;
+
+                ViewBag.HallName = await _context.VenueHalls
+                    .Where(x => x.Id == hallId!.Value)
+                    .Select(s => s.Title)
+                    .FirstOrDefaultAsync();
+                return View();
+            }
+            id = program.Id;
         }
 
         var result = await Content(id.Value, true);
@@ -170,6 +200,7 @@ public class ScreenController : Controller
         ViewBag.ProgramConductors = result.Value.ProgramConductors;
         ViewBag.ProgramChairs = result.Value.programChairs;
         ViewBag.Id = id.Value;
+        ViewBag.VenueHallId = hallId;
 
         ViewBag.HallName = await _context.Programs
             .Include(v => v.VenueHall)

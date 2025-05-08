@@ -107,9 +107,17 @@ function adjustFontSizeToFit(elementClass = 'adjustFontSizeToFit') {
     const $element = $('.' + elementClass);
     const isEnglish = /^[A-Za-z0-9\s.,'!?-]*$/.test($element.html());
 
-    let fontSize = 300; // Start with a base font size
+    let fontSize = 500; // Start with a base font size
     $element.css('font-size', fontSize + 'px');
     $element.addClass('text-truncate');
+
+    while ($element[0].scrollWidth > $element[0].offsetWidth && fontSize > 10) {
+        fontSize--;
+        $element.css('font-size', fontSize + 'px');
+    }
+
+    fontSize -= 10; // Reduce font size a bit more for better fit
+    $element.css('font-size', fontSize + 'px');
 
     while ($element[0].scrollWidth > $element[0].offsetWidth && fontSize > 10) {
         fontSize--;
