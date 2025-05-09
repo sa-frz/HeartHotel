@@ -236,6 +236,10 @@ public class ScreenController : Controller
         {
             return Redirect("/Login");
         }
+        if (UserId > 10)
+        {
+            return NotFound();
+        }
         ViewBag.UID = UserId;
 
         return View();

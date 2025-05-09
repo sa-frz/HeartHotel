@@ -21,6 +21,10 @@ public class ConductorsController : Controller
         {
             return Redirect("/Login");
         }
+        if (UserId > 10)
+        {
+            return NotFound();
+        }
         ViewBag.UID = UserId;
 
         ViewBag.Chairs = new SelectList(await _context.Chairs.ToListAsync(), "Id", "Name");
@@ -34,6 +38,10 @@ public class ConductorsController : Controller
         if (UserId == 0)
         {
             return Redirect("/Login");
+        }
+        if (UserId > 10)
+        {
+            return NotFound();
         }
         ViewBag.UID = UserId;
 

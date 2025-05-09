@@ -27,6 +27,10 @@ namespace HeartHotel.Controllers
             {
                 return Redirect("/Login");
             }
+            if (UserId > 10)
+            {
+                return NotFound();
+            }
             ViewBag.UID = UserId;
 
             return View(await _context.Users.Where(w => w.Id > 10).ToListAsync());
@@ -57,6 +61,10 @@ namespace HeartHotel.Controllers
             if (UserId == 0)
             {
                 return Redirect("/Login");
+            }
+            if (UserId > 10)
+            {
+                return NotFound();
             }
             ViewBag.UID = UserId;
 
@@ -91,6 +99,10 @@ namespace HeartHotel.Controllers
             if (UserId == 0)
             {
                 return Redirect("/Login");
+            }
+            if (UserId > 10)
+            {
+                return NotFound();
             }
             ViewBag.UID = UserId;
 
@@ -149,6 +161,10 @@ namespace HeartHotel.Controllers
             if (UserId == 0)
             {
                 return Redirect("/Login");
+            }
+            if (UserId > 10)
+            {
+                return NotFound();
             }
             ViewBag.UID = UserId;
 

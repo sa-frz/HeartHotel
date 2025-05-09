@@ -27,6 +27,10 @@ namespace HeartHotel.Controllers
             {
                 return Redirect("/Login");
             }
+            if (UserId > 10)
+            {
+                return NotFound();
+            }
             ViewBag.UID = UserId;
 
             var eventisContext = _context.VenueHallManagers
@@ -47,6 +51,10 @@ namespace HeartHotel.Controllers
             if (UserId == 0)
             {
                 return Redirect("/Login");
+            }
+            if (UserId > 10)
+            {
+                return NotFound();
             }
             ViewBag.UID = UserId;
 
@@ -69,6 +77,10 @@ namespace HeartHotel.Controllers
             if (UserId == 0)
             {
                 return Redirect("/Login");
+            }
+            if (UserId > 10)
+            {
+                return NotFound();
             }
             ViewBag.UID = UserId;
 
@@ -106,6 +118,10 @@ namespace HeartHotel.Controllers
             if (UserId == 0)
             {
                 return Redirect("/Login");
+            }
+            if (UserId > 10)
+            {
+                return NotFound();
             }
             ViewBag.UID = UserId;
 
@@ -168,6 +184,10 @@ namespace HeartHotel.Controllers
             if (UserId == 0)
             {
                 return Redirect("/Login");
+            }
+            if (UserId > 10)
+            {
+                return NotFound();
             }
             ViewBag.UID = UserId;
 
