@@ -620,6 +620,23 @@ public class APIController : Controller
         }
     }
 
+    [Route("/api/user/logout")]
+    [HttpGet]
+    public IActionResult Logout()
+    {
+        try
+        {
+            HttpContext.Session.Remove("userid");
+            Response.Cookies.Delete("UserId");
+            
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
      [Route("/api/halls/list")]
     public async Task<PartialViewResult> HallsList()
     {

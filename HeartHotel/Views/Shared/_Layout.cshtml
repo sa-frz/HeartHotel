@@ -31,26 +31,36 @@
                             <a class="nav-link text-dark" href="/Events">ایونت‌ها</a>
                         </li> *@
                         <li class="nav-item">
-                            <a class="nav-link @(ViewData["Active"] == "Halls" ? "active" : "text-dark")" href="/Halls">جلسات سالن‌ها</a>
+                            <a class="nav-link @(ViewData["Active"] == "Halls" ? "active" : "text-dark")"
+                                href="/Halls">جلسات سالن‌ها</a>
                         </li>
                         <li class="nav-item" @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link @(ViewData["Active"] == "HallsManagement" ? "active" : "text-dark")" href="/HallsManagement">مدیریت سالن‌ها</a>
+                            <a class="nav-link @(ViewData["Active"] == "HallsManagement" ? "active" : "text-dark")"
+                                href="/HallsManagement">مدیریت سالن‌ها</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
                             <a class="nav-link @(ViewData["Active"] == "Conductors" ? "active" : "text-dark")"
                                 href="/Conductors">مدیریت جلسات</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link @(ViewData["Active"] == "Chair" ? "active" : "text-dark")" href="/Chair">مدیریت اشخاص</a>
+                            <a class="nav-link @(ViewData["Active"] == "Chair" ? "active" : "text-dark")"
+                                href="/Chair">مدیریت اشخاص</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link @(ViewData["Active"] == "Monitors" ? "active" : "text-dark")" href="/Monitors">مانیتورها</a>
+                            <a class="nav-link @(ViewData["Active"] == "Monitors" ? "active" : "text-dark")"
+                                href="/Monitors">مانیتورها</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link @(ViewData["Active"] == "Users" ? "active" : "text-dark")" href="/Users">مدیریت کاربران</a>
+                            <a class="nav-link @(ViewData["Active"] == "Users" ? "active" : "text-dark")"
+                                href="/Users">مدیریت کاربران</a>
                         </li>
                         <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link @(ViewData["Active"] == "VenueHallManager" ? "active" : "text-dark")" href="/VenueHallManager">مدیریت مدیران</a>
+                            <a class="nav-link @(ViewData["Active"] == "VenueHallManager" ? "active" : "text-dark")"
+                                href="/VenueHallManager">مدیریت مدیران</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewData["Active"] == "Logout" ? "active" : "text-dark")"
+                                onclick="logout()" style="cursor: pointer;">خروج</a>
                         </li>
                     </ul>
                 </div>
@@ -189,6 +199,15 @@
             <span class="dot"></span>
             <span class="dot"></span>
         </div>
+    </script>
+
+    <script>
+        function logout() {
+            $.get('/api/user/logout')
+                .done(function () {
+                    window.location.href = '/';
+                })
+        }
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
