@@ -424,13 +424,18 @@ public class APIController : Controller
 
             try
             {
+                var p = await _context.Programs.FirstOrDefaultAsync(f => f.Id == model.ProgramId);
+                var venueHallId = p!.VenueHall;
+
                 if (isNeedRedirect)
                 {
-                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", $"/Screen/Show{model.ThemeId.ToString().Trim()}/{model.ProgramId.ToString()!.Trim()}");
+                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{venueHallId}", $"/Screen/Show{model.ThemeId.ToString().Trim()}");
+                    // await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", $"/Screen/Show{model.ThemeId.ToString().Trim()}/{model.ProgramId.ToString()!.Trim()}");
                 }
                 else
                 {
-                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", "Reload");
+                    await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{venueHallId}", "Reload");
+                    // await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", "Reload");
                 }
             }
             catch { }

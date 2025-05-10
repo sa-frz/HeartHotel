@@ -180,11 +180,20 @@ public class ScreenController : Controller
             ViewBag.Id = id.Value;
             ViewBag.Auto = false;
 
-            ViewBag.HallName = await _context.Programs
-                .Include(v => v.VenueHall)
-                .Where(x => x.Id == id.Value)
-                .Select(s => s.VenueHall.Title)
-                .FirstOrDefaultAsync();
+            var hallData = await _context.Programs
+                            .Include(v => v.VenueHall)
+                            .Where(x => x.Id == id.Value)
+                            .Select(s => s.VenueHall)
+                            .FirstOrDefaultAsync();
+
+            ViewBag.HallName = hallData.Title;
+            ViewBag.VenueHallId = hallData.Id;
+            
+            // ViewBag.HallName = await _context.Programs
+            //     .Include(v => v.VenueHall)
+            //     .Where(x => x.Id == id.Value)
+            //     .Select(s => s.VenueHall.Title)
+            //     .FirstOrDefaultAsync();
         }
 
         return View();

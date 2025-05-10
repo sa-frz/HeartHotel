@@ -93,9 +93,7 @@
     <script src="~/js/show.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
-            // Show Hall Name Overlay
-            $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
-            adjustFontSizeToFit();
+            showHallName();
 
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()
@@ -104,7 +102,7 @@
 
             connection.on("OnConnected", (connectionId) => {
                 // console.log("Connected with ID:", connectionId);
-                $.post(`/api/SignalR/group/add/${connectionId}/Show1@(ViewBag.Id)`)
+                $.post(`/api/SignalR/group/add/${connectionId}/Show1@(ViewBag.VenueHallId)`)
                     .done(function (response) {
                         console.log("Connection ID added to a group");
                     })
@@ -123,7 +121,13 @@
                     console.log("برنامه جدیدی برای این روز ثبت شده است");
                     window.location.reload();
                 } else {
-                    window.location.href = message;
+                    const queryString = window.location.search;
+                    // const urlParams = new URLSearchParams(queryString);
+                    // console.log("Query String Parameters:", Object.fromEntries(urlParams.entries()));
+                    if (window.location.search == '') {
+                        queryString = '/@(ViewBag.Id)';
+                    }
+                    window.location.href = message + queryString;
                 }
             });
 

@@ -9,9 +9,7 @@ let hallNameTimer = 15000;
 let clock;
 
 async function getProgramConductors(auto, venueHallId, date, id) {
-    // Show Hall Name Overlay
-    $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
-    adjustFontSizeToFit();
+    showHallName();
     setClock();
 
     if (auto) {
@@ -38,9 +36,7 @@ async function getProgramConductors(auto, venueHallId, date, id) {
 }
 
 function showDataAuto() {
-    // Show Hall Name Overlay
-    $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
-    adjustFontSizeToFit();
+    showHallName();
 
     let currentTime = new Date().toTimeString().slice(0, 5); // Get current time in HH:mm format
     let filteredSessions = allDaySessions.filter(session => {
@@ -66,9 +62,9 @@ function showDataAuto() {
             return idx < moderators.length - 1 ? `<div>${moderator.name},</div>` : `<div>${moderator.name}</div>`;
         }).join('');
         $('#Moderators').html(`<div class="text-secondary fw-bold">Moderators: </div> ${moderatorsHtml}`);
-        
+
         $('#title').html(filteredSessions[0].name);
-    
+
         $('#hallNameOverlay').removeClass('d-flex').addClass('d-none');
         setTime(true);
     } else {
@@ -103,6 +99,12 @@ function showDataOnce() {
 
     $('#hallNameOverlay').removeClass('d-flex').addClass('d-none');
     setTime();
+}
+
+function showHallName() {
+    // Show Hall Name Overlay
+    $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
+    adjustFontSizeToFit();
 }
 
 function SetShowHallName() {
@@ -173,6 +175,8 @@ function setTime(auto = false) {
             clearTimeout(timerIntervalSettime);
             showDataAuto();
             return;
+        } else {
+            showHallName();
         }
     } else {
         clearTimeout(timerIntervalSettime);
