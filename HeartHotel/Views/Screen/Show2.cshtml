@@ -15,9 +15,9 @@
 
             @* <img src="@(Model.EventsPerson.Person?.Image != null ? "https://eventis.ir/files/" + Model.EventsPerson.Person?.Image : "/img/noperson.jpg")"
                 class="card-img-top"> *@
-            <div class="w-100 text-center fw-bold text-truncate" id="Name"></div>
+            <div class="w-100 text-center fw-bold text-truncate adjustFontSizeToFit" id="Name"></div>
 
-            <p class="text-justify mt-3" id="Description"></p>
+            <p class="text-justify mt-3 fs-2" id="Description"></p>
         </div>
         <div class="text-start w-100 position-fixed bottom-0 start-0 p-4 bg-white fs-5"><span id="time"></span></div>
     </div>
@@ -33,7 +33,7 @@
                 return;
             }
             getProgramConductors(@pc);
-            adjustFontSizeToFit("Name");
+            adjustFontSizeToFit();
 
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()
@@ -79,8 +79,8 @@
             });
 
             // اجرا هنگام بارگذاری صفحه و تغییر اندازه صفحه
-            document.addEventListener('DOMContentLoaded', () => adjustFontSizeToFit('content'));
-            window.addEventListener('resize', () => adjustFontSizeToFit('content'));
+            document.addEventListener('DOMContentLoaded', () => adjustFontSizeToFit());
+            window.addEventListener('resize', () => adjustFontSizeToFit());
         });
     </script>
 }

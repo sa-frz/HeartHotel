@@ -63,7 +63,7 @@ function setTime() {
             // now
             index = i;
             isSetIndex = true;
-        } else if (currentTime > time2) {
+        } else if (currentTime >= time2) {
             oldPrograms.push(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
             // $('#oldPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
         } else {
@@ -81,7 +81,8 @@ function setTime() {
         $('#nextPrograms').html(nextPrograms);
     } else {
         clearInterval(timerIntervalSettime);
-        $('#Name').closest('.gap-2').remove('d-none');
+        $('#Name').closest('.gap-2').removeClass('d-none');
+        adjustFontSizeToFit();
         let oldProgramsHtml = oldPrograms ? oldPrograms[oldPrograms.length - 1] : '';
         let nextProgramsHtml = nextPrograms ? nextPrograms.slice(0, 2).join('') : '';
         $('#oldPrograms').html(oldProgramsHtml);

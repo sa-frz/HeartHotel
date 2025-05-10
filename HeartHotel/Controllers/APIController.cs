@@ -628,7 +628,7 @@ public class APIController : Controller
         {
             HttpContext.Session.Remove("userid");
             Response.Cookies.Delete("UserId");
-            
+
             return Ok();
         }
         catch (Exception ex)
@@ -637,7 +637,7 @@ public class APIController : Controller
         }
     }
 
-     [Route("/api/halls/list")]
+    [Route("/api/halls/list")]
     public async Task<PartialViewResult> HallsList()
     {
         var halls = await _context.VenueHalls.ToListAsync();
@@ -645,5 +645,70 @@ public class APIController : Controller
         return PartialView(halls);
     }
 
+    [Route("/api/program/AllDaySessions")]
+    public async Task<IActionResult> AllDaySessions(int VenueHallId, string Date)
+    {
+        var p = await _context.Programs
+                            .Include(i => i.ProgramConductors)
+                            .Include(i => i.ChairsConductors)
+                            .ThenInclude(t => t.Chair)
+                            .Where(w => w.Date == Date && w.VenueHallId == VenueHallId)
+                            .Select(s => new
+                            {
+                                s.Id,
+                                s.Name,
+                                MinSaatAz = s.ProgramConductors.Min(m => m.SaatAz),
+                                MaxSaatTa = s.ProgramConductors.Max(m => m.SaatTa),
+                                ProgramConductors = s.ProgramConductors.Select(pc => new
+                                {
+                                    Name = pc.Name,
+                                    Description = pc.Description,
+                                    SaatAz = pc.SaatAz,
+                                    SaatTa = pc.SaatTa
+                                }).ToList(),
+                                ChairsConductors = s.ChairsConductors.OrderBy(o => o.RoleId).Select(cc => new
+                                {
+                                    Name = cc.Chair.Name,
+                                    Image = cc.Chair.Image,
+                                    cc.RoleId
+                                }).ToList()
+                            })
+                            .ToListAsync();
+
+        return Ok(p);
+    }
+
+    [Route("/api/program/Session")]
+    public async Task<IActionResult> Session(int id)
+    {
+        var p = await _context.Programs
+                            .Include(i => i.ProgramConductors)
+                            .Include(i => i.ChairsConductors)
+                            .ThenInclude(t => t.Chair)
+                            .Where(w => w.Id == id)
+                            .Select(s => new
+                            {
+                                s.Id,
+                                s.Name,
+                                MinSaatAz = s.ProgramConductors.Min(m => m.SaatAz),
+                                MaxSaatTa = s.ProgramConductors.Max(m => m.SaatTa),
+                                ProgramConductors = s.ProgramConductors.Select(pc => new
+                                {
+                                    Name = pc.Name,
+                                    Description = pc.Description,
+                                    SaatAz = pc.SaatAz,
+                                    SaatTa = pc.SaatTa
+                                }).ToList(),
+                                ChairsConductors = s.ChairsConductors.OrderBy(o => o.RoleId).Select(cc => new
+                                {
+                                    Name = cc.Chair.Name,
+                                    Image = cc.Chair.Image,
+                                    cc.RoleId
+                                }).ToList()
+                            })
+                            .ToListAsync();
+
+        return Ok(p);
+    }
 
 }

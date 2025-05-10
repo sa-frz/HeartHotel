@@ -163,6 +163,8 @@ public class ScreenController : Controller
             return NotFound();
         }
 
+        ViewBag.Auto = false;
+
         if (id == null)
         {
             var currentDate = date ?? DateTime.Now.ToPersian();
@@ -175,6 +177,13 @@ public class ScreenController : Controller
                                     AND CAST(SaatAz AS TIME) <= CAST('{currentTime}' AS TIME)
                                     AND CAST(SaatTa AS TIME) >= CAST('{currentTime}' AS TIME)";
             var program = await _context.Programs.FromSqlRaw(Query).FirstOrDefaultAsync();
+
+            ViewBag.VenueHallId = hallId;
+            ViewBag.Date = date;
+            ViewBag.Auto = true;
+
+            // var qq = await AllDayPrograms(hallId.Value, date);
+            // var jj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(qq);
 
             if (program == null)
             {
@@ -200,7 +209,6 @@ public class ScreenController : Controller
         ViewBag.ProgramConductors = result.Value.ProgramConductors;
         ViewBag.ProgramChairs = result.Value.programChairs;
         ViewBag.Id = id.Value;
-        ViewBag.VenueHallId = hallId;
 
         ViewBag.HallName = await _context.Programs
             .Include(v => v.VenueHall)
@@ -224,6 +232,40 @@ public class ScreenController : Controller
         ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
         ViewBag.ProgramConductors = result.Value.ProgramConductors;
         ViewBag.Id = id.Value;
+
+        return View();
+    }
+
+    public async Task<IActionResult> Show3(int? id, int? hallId, string date)
+    {
+        if (id == null && hallId == null)
+        {
+            return NotFound();
+        }
+
+        if (id == null)
+        {
+            ViewBag.VenueHallId = hallId;
+            ViewBag.Date = date;
+            ViewBag.Auto = true;
+
+            ViewBag.HallName = await _context.VenueHalls
+                .Where(x => x.Id == hallId!.Value)
+                .Select(s => s.Title)
+                .FirstOrDefaultAsync();
+            return View();
+        }
+        else
+        {
+            ViewBag.Id = id.Value;
+            ViewBag.Auto = false;
+
+            ViewBag.HallName = await _context.Programs
+                .Include(v => v.VenueHall)
+                .Where(x => x.Id == id.Value)
+                .Select(s => s.VenueHall.Title)
+                .FirstOrDefaultAsync();
+        }
 
         return View();
     }
