@@ -163,86 +163,6 @@ public class ScreenController : Controller
             return NotFound();
         }
 
-        ViewBag.Auto = false;
-
-        if (id == null)
-        {
-            var currentDate = date ?? DateTime.Now.ToPersian();
-            var currentTime = DateTime.Now.ToString("HH:mm");
-            var Query = @$"SELECT TOP 1 Programs.* 
-                                    FROM Programs
-                                    LEFT OUTER JOIN ProgramConductors ON ProgramConductors.ProgramId = Programs.ID
-                                    WHERE [Date] = '{currentDate}' 
-                                    AND VenueHallId = {hallId} 
-                                    AND CAST(SaatAz AS TIME) <= CAST('{currentTime}' AS TIME)
-                                    AND CAST(SaatTa AS TIME) >= CAST('{currentTime}' AS TIME)";
-            var program = await _context.Programs.FromSqlRaw(Query).FirstOrDefaultAsync();
-
-            ViewBag.VenueHallId = hallId;
-            ViewBag.Date = date;
-            ViewBag.Auto = true;
-
-            // var qq = await AllDayPrograms(hallId.Value, date);
-            // var jj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(qq);
-
-            if (program == null)
-            {
-                ViewBag.ProgramName = "";
-                ViewBag.ProgramConductorsId = 0;
-                ViewBag.ProgramConductors = new List<dynamic>();
-                ViewBag.ProgramChairs = new List<dynamic>();
-                ViewBag.Id = 0;
-
-                ViewBag.HallName = await _context.VenueHalls
-                    .Where(x => x.Id == hallId!.Value)
-                    .Select(s => s.Title)
-                    .FirstOrDefaultAsync();
-                return View();
-            }
-            id = program.Id;
-        }
-
-        var result = await Content(id.Value, true);
-
-        ViewBag.ProgramName = result.Value.ProgramName;
-        ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
-        ViewBag.ProgramConductors = result.Value.ProgramConductors;
-        ViewBag.ProgramChairs = result.Value.programChairs;
-        ViewBag.Id = id.Value;
-
-        ViewBag.HallName = await _context.Programs
-            .Include(v => v.VenueHall)
-            .Where(x => x.Id == id.Value)
-            .Select(s => s.VenueHall.Title)
-            .FirstOrDefaultAsync();
-
-        return View();
-    }
-
-    public async Task<IActionResult> Show2(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var result = await Content(id.Value);
-
-        ViewBag.ProgramName = result.Value.ProgramName;
-        ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
-        ViewBag.ProgramConductors = result.Value.ProgramConductors;
-        ViewBag.Id = id.Value;
-
-        return View();
-    }
-
-    public async Task<IActionResult> Show3(int? id, int? hallId, string date)
-    {
-        if (id == null && hallId == null)
-        {
-            return NotFound();
-        }
-
         if (id == null)
         {
             ViewBag.VenueHallId = hallId;
@@ -266,6 +186,23 @@ public class ScreenController : Controller
                 .Select(s => s.VenueHall.Title)
                 .FirstOrDefaultAsync();
         }
+
+        return View();
+    }
+
+    public async Task<IActionResult> Show2(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var result = await Content(id.Value);
+
+        ViewBag.ProgramName = result.Value.ProgramName;
+        ViewBag.ProgramConductorsId = result.Value.ProgramConductorsId;
+        ViewBag.ProgramConductors = result.Value.ProgramConductors;
+        ViewBag.Id = id.Value;
 
         return View();
     }

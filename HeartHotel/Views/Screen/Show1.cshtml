@@ -1,14 +1,6 @@
 @{
     Layout = "~/Views/Shared/_LayoutFull.cshtml";
-    ViewData["Title"] = ViewBag.ProgramName;
-    var ProgramConductors = ViewBag.ProgramConductors;
-    var Chairs = ((IEnumerable<dynamic>)ViewBag.ProgramChairs).ToList();
-    var ProgramChairs = Chairs.Where(x => x.RoleId == 1).ToList();
-    var ProgramModerators = Chairs.Where(x => x.RoleId == 2).ToList();
-    var ProgramConductorsId = ViewBag.ProgramConductorsId;
-    var pc = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ProgramConductors, new
-    System.Text.Json.JsonSerializerOptions
-    { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve }));
+    ViewData["Title"] = ViewBag.HallName;
 }
 
 
@@ -24,7 +16,7 @@
             @* <div><img src="/img/ghalb.png" draggable="false" style="height: 60px;"></div> *@
         </div>
         <div class="d-flex align-items-center justify-content-around w-100 bg-warning mb-3 rounded-3 p-2">
-            <div class="fs-2 fw-bold text-black">@ViewData["Title"]</div>
+            <div class="fs-2 fw-bold text-black" id="title">@ViewData["Title"]</div>
         </div>
 
     </div>
@@ -33,20 +25,12 @@
         @* <p id="sessionName" class="text-primary fs-1 fw-bold mb-2">@ViewData["Title"]</p> *@
 
         <div class="mx-3">
-            <div class="d-flex gap-1 flex-wrap align-items-center">
+            <div class="d-flex gap-1 flex-wrap align-items-center" id="Chairs">
                 <div class="text-secondary fw-bold">Chairs: </div>
-                @foreach (var item in ProgramChairs)
-                {
-                    <div>@item.Name@(item != ProgramChairs[ProgramChairs.Count - 1] ? ", ": "") </div>
-                }
             </div>
 
-            <div class="d-flex gap-1 flex-wrap align-items-center mt-2">
+            <div class="d-flex gap-1 flex-wrap align-items-center mt-2" id="Moderators">
                 <div class="text-secondary fw-bold">Moderators: </div>
-                @foreach (var item in ProgramModerators)
-                {
-                    <div>@item.Name@(item != ProgramModerators[ProgramModerators.Count - 1] ? ", ": "") </div>
-                }
             </div>
 
             <div class="text-secondary fw-bold mt-2">Presentations:</div>
@@ -89,15 +73,7 @@
 
 
     </div>
-    @* <div class="text-center bg-secondary text-white w-100 position-fixed bottom-0 start-0 border-top p-2"
-        style="z-index: 2;">
-        <div class="d-flex">
-            <div class="d-flex align-items-center fw-bold gap-1">
-                <i class="fa fa-clock"> </i><span id="clock"></span>
-            </div>
-            <div class="w-100">10th Iranian Joint Cardiovascular Congress</div>
-        </div>
-    </div> *@
+
 </div>
 
 <div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-flex flex-column align-items-center"
@@ -107,9 +83,9 @@
         <div class="adjustFontSizeToFit w-100 text-center text-primary fw-bold" style="font-size: 220pt;">
             @ViewBag.HallName</div>
     </div>
-    @* <div class="d-flex align-items-center fw-bold fs-5 gap-1 text-secondary">
+    <div class="d-flex align-items-center justify-content-center fw-bold fs-5 gap-1 mb-3 text-secondary position-absolute end-0 w-100 bottom-0">
         <i class="fa fa-clock"> </i><span id="clock"></span>
-    </div> *@
+    </div>
 </div>
 
 @section scripts {
@@ -117,17 +93,9 @@
     <script src="~/js/show.js" asp-append-version="true"></script>
     <script>
         $(document).ready(function () {
-
-            if ('@(ViewBag.Id == 0)' == 'True') {
-                // Show Hall Name Overlay
-                $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
-                adjustFontSizeToFit();
-            } else {
-                // Show Programs
-                $('#hallNameOverlay').removeClass('d-flex').addClass('d-none');
-                getProgramConductors(@pc);
-            }
-            // SetShowHallName();
+            // Show Hall Name Overlay
+            $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
+            adjustFontSizeToFit();
 
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()
@@ -169,6 +137,15 @@
                         .catch(err => console.error("Error while reconnecting:", err));
                 }, 5000); // Retry every 5 seconds
             });
+
+            let auto = '@ViewBag.Auto'.toString().toLowerCase();
+            if (auto == 'true') {
+                // Show All-day Sessions
+                getProgramConductors(true, '@ViewBag.VenueHallId', '@ViewBag.Date', 0);
+            } else {
+                // Show Current Session
+                getProgramConductors(false, 0, 0, '@ViewBag.Id');
+            }
         });
     </script>
 }

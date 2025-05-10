@@ -1,20 +1,108 @@
 let index = 0;
-let programConductors;
+let programConductors, allDaySessions, chairs, moderators, currentSession;
 let timerInterval;
 let timerIntervalSettime;
 let timeLeft;
+let timeAutoPrograms;
 let hallNameOverlayTimer;
 let hallNameTimer = 15000;
 let clock;
 
-function getProgramConductors(pc) {
-    programConductors = pc;
-    setTime();
+async function getProgramConductors(auto, venueHallId, date, id) {
+    // Show Hall Name Overlay
+    $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
+    adjustFontSizeToFit();
+    setClock();
 
-    $('#clock').html(new Date().toLocaleTimeString('en-GB', { hour12: false }));
-    clock = setInterval(() => {
-        $('#clock').html(new Date().toLocaleTimeString('en-GB', { hour12: false }));
-    }, 1000);
+    if (auto) {
+        try {
+            const response = await $.get(`/api/program/AllDaySessions?VenueHallId=${venueHallId}&Date=${date}`);
+            allDaySessions = response;
+            showDataAuto();
+            return;
+        } catch (error) {
+            console.error('Failed to fetch session data:', error);
+            return;
+        }
+    } else {
+        try {
+            const pc = await $.get(`/api/program/Session?Id=${id}`);
+            currentSession = pc;
+            showDataOnce();
+            return;
+        } catch (error) {
+            console.error('Failed to fetch session data:', error);
+            return;
+        }
+    }
+}
+
+function showDataAuto() {
+    // Show Hall Name Overlay
+    $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
+    adjustFontSizeToFit();
+
+    let currentTime = new Date().toTimeString().slice(0, 5); // Get current time in HH:mm format
+    let filteredSessions = allDaySessions.filter(session => {
+        return currentTime >= session.minSaatAz && currentTime <= session.maxSaatTa;
+    });
+    // console.log('showDataAuto', currentTime);
+    if (filteredSessions.length > 0) {
+        clearTimeout(timeAutoPrograms);
+        programConductors = filteredSessions[0].programConductors;
+        chairs = filteredSessions[0].chairsConductors.filter(chair => {
+            return chair.roleId == 1;
+        });
+        moderators = filteredSessions[0].chairsConductors.filter(moderator => {
+            return moderator.roleId == 2;
+        });
+
+        let chairsHtml = chairs.map((chair, idx) => {
+            return idx < chairs.length - 1 ? `<div>${chair.name},</div>` : `<div>${chair.name}</div>`;
+        }).join('');
+        $('#Chairs').html(`<div class="text-secondary fw-bold">Chairs: </div> ${chairsHtml}`);
+
+        let moderatorsHtml = moderators.map((moderator, idx) => {
+            return idx < moderators.length - 1 ? `<div>${moderator.name},</div>` : `<div>${moderator.name}</div>`;
+        }).join('');
+        $('#Moderators').html(`<div class="text-secondary fw-bold">Moderators: </div> ${moderatorsHtml}`);
+        
+        $('#title').html(filteredSessions[0].name);
+    
+        $('#hallNameOverlay').removeClass('d-flex').addClass('d-none');
+        setTime(true);
+    } else {
+        console.warn('No sessions found for the current time.');
+        clearTimeout(timeAutoPrograms);
+        timeAutoPrograms = setTimeout(() => {
+            showDataAuto();
+        }, 1000);
+        // return;
+    }
+}
+
+function showDataOnce() {
+    programConductors = currentSession[0].programConductors;
+    chairs = currentSession[0].chairsConductors.filter(chair => {
+        return chair.roleId == 1;
+    });
+    moderators = currentSession[0].chairsConductors.filter(moderator => {
+        return moderator.roleId == 2;
+    });
+
+    let chairsHtml = chairs.map((chair, idx) => {
+        return idx < chairs.length - 1 ? `<div>${chair.name},</div>` : `<div>${chair.name}</div>`;
+    }).join('');
+    $('#Chairs').html(chairsHtml);
+
+    let moderatorsHtml = moderators.map((moderator, idx) => {
+        return idx < moderators.length - 1 ? `<div>${moderator.name},</div>` : `<div>${moderator.name}</div>`;
+    }).join('');
+    $('#Moderators').html(moderatorsHtml);
+    $('#title').html(currentSession[0].name);
+
+    $('#hallNameOverlay').removeClass('d-flex').addClass('d-none');
+    setTime();
 }
 
 function SetShowHallName() {
@@ -36,7 +124,7 @@ function SetShowHallName() {
 }
 
 const timerElement = document.getElementById('time');
-function updateTimer() {
+function updateTimer(auto = false) {
     const hours = Math.floor(timeLeft / 3600);
     const minutes = Math.floor((timeLeft % 3600) / 60);
     const seconds = timeLeft % 60;
@@ -46,62 +134,71 @@ function updateTimer() {
     if (timeLeft < 0) {
         clearInterval(timerInterval);
         //$.alert('زمان به پایان رسید!');
-        setTime();
+        setTime(auto);
     }
 }
 
-function setTime() {
+function setTime(auto = false) {
     $('#oldPrograms, #nextPrograms').html('');
     let isSetIndex = false
     let oldPrograms = [], nextPrograms = [];
     // let currentTime = new Date().toLocaleTimeString('en-GB', { hour12: false });
     const currentTime = new Date().toTimeString().slice(0, 5); // Get current time in HH:mm format
-    for (var i = 0; (i < programConductors.$values.length); i++) {
-        let time1 = programConductors.$values[i].SaatAz;
-        let time2 = programConductors.$values[i].SaatTa;
-        if (currentTime >= time1 && currentTime <= time2) {
+    for (var i = 0; (i < programConductors.length); i++) {
+        let time1 = programConductors[i].saatAz;
+        let time2 = programConductors[i].saatTa;
+        if (currentTime >= time1 && currentTime < time2) {
             // now
             index = i;
             isSetIndex = true;
         } else if (currentTime >= time2) {
-            oldPrograms.push(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
-            // $('#oldPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
+            oldPrograms.push(`<tr><td>${programConductors[i].name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
+            // $('#oldPrograms').append(`<tr><td>${programConductors[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
         } else {
-            nextPrograms.push(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
-            // $('#nextPrograms').append(`<tr><td>${programConductors.$values[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
+            nextPrograms.push(`<tr><td>${programConductors[i].name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
+            // $('#nextPrograms').append(`<tr><td>${programConductors[i].Name}</td><td class="text-start">${time1} - ${time2}</td></tr>`);
         }
     }
     // console.log(oldPrograms, nextPrograms);
 
 
     if (!isSetIndex) {
-        timerIntervalSettime = setInterval(setTime, 1000);
+        // Session is End
+        clearTimeout(timerIntervalSettime);
+        timerIntervalSettime = setTimeout(setTime, 1000);
         $('#Name').closest('.gap-2').addClass('d-none');
         $('#oldPrograms').html(oldPrograms);
         $('#nextPrograms').html(nextPrograms);
+        if (auto) {
+            clearTimeout(timerIntervalSettime);
+            showDataAuto();
+            return;
+        }
     } else {
-        clearInterval(timerIntervalSettime);
-        $('#Name').closest('.gap-2').removeClass('d-none');
-        adjustFontSizeToFit();
+        clearTimeout(timerIntervalSettime);
+        $('#Name').closest('.gap-2').remove('d-none');
         let oldProgramsHtml = oldPrograms ? oldPrograms[oldPrograms.length - 1] : '';
         let nextProgramsHtml = nextPrograms ? nextPrograms.slice(0, 2).join('') : '';
         $('#oldPrograms').html(oldProgramsHtml);
         $('#nextPrograms').html(nextProgramsHtml);
     }
 
-    let SaatAz = programConductors.$values[index].SaatAz;
-    let SaatTa = programConductors.$values[index].SaatTa;
-    $('#Name').text(programConductors.$values[index].Name);
-    $('#Description').text(programConductors.$values[index].Description);
+    let SaatAz = programConductors[index].saatAz;
+    let SaatTa = programConductors[index].saatTa;
+    $('#Name').text(programConductors[index].name);
+    $('#Description').text(programConductors[index].description);
     $('#times').html(`${SaatAz} - ${SaatTa}`);
     timeLeft = Math.abs(new Date(`1970-01-01T${SaatTa}:00Z`) - new Date(`1970-01-01T${currentTime}Z`)) / 1000 - 60;
 
-    if (index >= programConductors.$values.length) {
+    if (index >= programConductors.length) {
         index = 0;
         return;
     }
     // index++;
-    timerInterval = setInterval(updateTimer, 1000);
+    clearInterval(timerInterval); // Clear any existing interval
+    timerInterval = setInterval(() => {
+        updateTimer(auto);
+    }, 1000);
 }
 
 function adjustFontSizeToFit(elementClass = 'adjustFontSizeToFit') {
@@ -123,5 +220,17 @@ function adjustFontSizeToFit(elementClass = 'adjustFontSizeToFit') {
     while ($element[0].scrollWidth > $element[0].offsetWidth && fontSize > 10) {
         fontSize--;
         $element.css('font-size', fontSize + 'px');
+    }
+}
+
+function setClock(show = true) {
+    if (show) {
+        $('#clock').html(new Date().toLocaleTimeString('en-GB', { hour12: false }));
+        clock = setInterval(() => {
+            $('#clock').html(new Date().toLocaleTimeString('en-GB', { hour12: false }));
+        }, 1000);
+    } else {
+        $('#clock').html('');
+        clearInterval(clock);
     }
 }
