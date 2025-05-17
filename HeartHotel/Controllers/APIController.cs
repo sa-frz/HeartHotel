@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Firoozi.Helper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using HeartHotel.Hubs;
+using Microsoft.Data.SqlClient;
+using Dapper;
 
 namespace HeartHotel.Controllers;
 
@@ -14,11 +16,13 @@ public class APIController : Controller
     private readonly EventisContext _context;
     private readonly SignalRHub _signalRHub;
     // private readonly IHubContext<NotificationHub> _hubContext;
+    private readonly IConfiguration _configuration;
 
-    public APIController(EventisContext context, SignalRHub signalRHub)
+    public APIController(EventisContext context, SignalRHub signalRHub, IConfiguration configuration)
     {
         _context = context;
         _signalRHub = signalRHub;
+        _configuration = configuration;
     }
 
     [Route("/api/sms/send")]
@@ -448,6 +452,50 @@ public class APIController : Controller
         }
     }
 
+    [Route("/api/program/daily")]
+    [HttpPost]
+    public async Task<IActionResult> DailyProgram([FromBody] GetProgram model)
+    {
+        try
+        {
+            var Query = $@"
+                                SELECT p.*, pc.*
+                                FROM dbo.Programs p
+                                LEFT JOIN dbo.ProgramConductors pc ON p.ID = pc.ProgramId
+                                WHERE p.Date =  '{model.Date}' AND p.VenueHallId = {model.VenueHallId}
+                                ORDER BY pc.SaatAz";
+
+            using (var connection = new SqlConnection(_configuration.GetConnectionString("EventisEntity")))
+            {
+                var programDict = new Dictionary<int, Programs>();
+
+                var programs = await connection.QueryAsync<Programs, ProgramConductor, Programs>(
+                    Query,
+                    (program, conductor) =>
+                    {
+                        if (!programDict.TryGetValue(program.Id, out var existingProgram))
+                        {
+                            existingProgram = program;
+                            existingProgram.ProgramConductors = new List<ProgramConductor>();
+                            programDict.Add(existingProgram.Id, existingProgram);
+                        }
+                        existingProgram.ProgramConductors.Add(conductor);
+                        return existingProgram;
+                    },
+                    new { model.Date, model.VenueHallId }, // Pass parameters safely
+                    splitOn: "Id"
+                );
+
+                return PartialView(programs.Distinct().ToList()); // Avoid duplicates
+            }
+
+        }
+        catch (Exception ex)
+        {
+            return PartialView(ex.Message);
+        }
+    }
+
     [Route("/api/program/get")]
     [HttpPost]
     public async Task<IActionResult> GetProgram([FromBody] GetProgram model, bool? onlyProgram = false)
@@ -482,13 +530,68 @@ public class APIController : Controller
         {
             var program = await _context.Programs
                 .Include(m => m.ProgramConductors)
-                .Where(w => w.Date == model.Date && w.VenueHallId == model.VenueHallId).ToListAsync();
+                .Where(w => w.Date == model.Date
+                            && w.VenueHallId == model.VenueHallId
+                            && w.ThemeId > 0).ToListAsync();
 
             return PartialView(program);
         }
         catch (Exception ex)
         {
             return PartialView(ex.Message);
+        }
+    }
+
+    [Route("/api/program/addScreenSaver")]
+    [HttpPost]
+    public async Task<IActionResult> CreateScreenSaver(int VenueHallId, string Date, string SaatAz, string SaatTa)
+    {
+        try
+        {
+            var program = new Programs()
+            {
+                VenueHallId = VenueHallId,
+                Date = Date,
+                ThemeId = 0,
+                Name = "Screen Saver",
+                ShowDate = Date
+            };
+
+            var programConductor = new ProgramConductor()
+            {
+                Name = "Screen Saver",
+                Description = "",
+                SaatAz = SaatAz,
+                SaatTa = SaatTa
+            };
+
+            program.ProgramConductors.Add(programConductor);
+            _context.Add(program);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
+
+    [Route("/api/program/deleteprogram")]
+    [HttpPost]
+    public async Task<IActionResult> DeleteProgram(int id)
+    {
+        try
+        {
+            var programs = await _context.Programs.Where(w => w.Id == id).ToListAsync();
+            _context.RemoveRange(programs);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
         }
     }
 
@@ -714,6 +817,29 @@ public class APIController : Controller
                             .ToListAsync();
 
         return Ok(p);
+    }
+
+    [Route("/api/screen/slideshow")]
+public IActionResult Slideshow()
+    {
+        var imageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Slideshow");
+        if (Directory.Exists(imageFolderPath))
+        {
+            var imageFiles = Directory.GetFiles(imageFolderPath)
+                .Where(file => file.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                               file.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                               file.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                               file.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
+                .Select(file => Path.GetFileName(file))
+                .ToList();
+
+            ViewBag.Images = imageFiles;
+        }
+        else
+        {
+            ViewBag.Images = new List<string>();
+        }
+        return View();
     }
 
 }

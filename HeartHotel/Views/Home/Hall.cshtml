@@ -8,8 +8,12 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button"
-            role="tab" aria-controls="tab1" aria-selected="true">کنداکتور</button>
+        <button class="nav-link active" id="tab0-tab" data-bs-toggle="tab" data-bs-target="#tab0" type="button"
+            role="tab" aria-controls="tab0" aria-selected="true">برنامه روزانه</button>
+    </li>
+    <li class="nav-item d-none" role="presentation">
+        <button class="nav-link" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab"
+            aria-controls="tab1" aria-selected="false">کنداکتور</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab"
@@ -22,7 +26,47 @@
 </ul>
 <div class="tab-content mt-4" id="myTabContent">
 
-    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+    <div class="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-tab">
+
+        <div id="step1-0">
+            <div class="d-flex align-items-center justify-content-between mb-3 gap-2">
+                <div class="text-nowrap fw-bold">انتخاب روز</div>
+                <div class="input-group border rounded-2" style="flex-wrap: initial; height: 38px;">
+                    <span id="dtp0" class="border-0 input-group-text cursor-pointer"
+                        style="border-radius: 4px; padding: 0 !important;">
+                        <span class="fa-regular fa-calendar d-flex align-items-center px-3"></span>
+                    </span>
+                    <span data-name="dtp0-text" class="border-0 form-control d-flex align-items-center" />
+                </div>
+            </div>
+
+            <button class="btn btn-secondary w-100" id="btnDailyPrograms">ادامه</button>
+        </div>
+
+        <div id="daily" class="d-none">
+            <div class="hall-container d-flex justify-content-between gap-2">
+                <button class="btn btn-primary w-100" id="btnAuto">نمایش خودکار</button>
+                <button class="btn btn-secondary w-100" id="btn2-0">بازگشت</button>
+            </div>
+
+            <div class="content">
+                <div class="loader">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            <div class="hall-container d-flex justify-content-between gap-2">
+                <button class="btn btn-primary w-100" id="btnAuto">نمایش خودکار</button>
+                <button class="btn btn-secondary w-100" id="btn2-1">بازگشت</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
 
         <div id="step1">
             <div class="d-flex align-items-center justify-content-between mb-3 gap-2">
@@ -40,9 +84,9 @@
         </div>
 
         <div id="program" class="d-none">
-            <div class="hall-container">
+            @* <div class="hall-container">
                 <button class="btn btn-primary w-100" id="btnAuto">نمایش خودکار</button>
-            </div>
+            </div> *@
 
             <div class="content">
                 <div class="loader">
@@ -95,6 +139,79 @@
 
 </div>
 
+<div class="modal fade" tabindex="-1" id="addGapwithTimeModal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title">افزودن برنامه</h5>
+            </div>
+            <div class="modal-body">
+                <select id="addGapwithTimeSelect" class="form-select">
+                    <option value="-1">نام سالن</option>
+                    <option value="0">گالری تصویر (Screen Saver)</option>
+                </select>
+                <div class="d-flex gap-1 mt-3">
+                    <div class="w-100">
+                        از
+                        <input type="time" class="form-control ltr" id="timepickerAz">
+                    </div>
+                    <div class="w-100">
+                        تا
+                        <input type="time" class="form-control ltr" id="timepickerTa">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="addGapwithTime">انتخاب</span>
+                <span data-bs-dismiss="modal">انصراف</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="addGapModal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title">تغییر برنامه</h5>
+            </div>
+            <div class="modal-body">
+                <select id="addGapSelect" class="form-select">
+                    <option value="-1">نام سالن</option>
+                    <option value="0">گالری تصویر (Screen Saver)</option>
+                </select>
+                <input type="hidden" id="addGapTimes">
+            </div>
+            <div class="modal-footer">
+                <span id="addGap">انتخاب</span>
+                <span data-bs-dismiss="modal">انصراف</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="changeGapModal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title">تغییر برنامه</h5>
+            </div>
+            <div class="modal-body">
+                <select id="changeGapSelect" class="form-select">
+                    <option value="-1">نام سالن</option>
+                    <option value="0">گالری تصویر (Screen Saver)</option>
+                </select>
+                <input type="hidden" id="pId">
+                <input type="hidden" id="themeId">
+                <input type="hidden" id="changeGapTimes">
+            </div>
+            <div class="modal-footer">
+                <span id="changeGap">انتخاب</span>
+                <span data-bs-dismiss="modal">انصراف</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section styles {
     <link href="~/lib/datetimepicker 4.1.1/mds.bs.datetimepicker.style.css" rel="stylesheet" />
@@ -112,16 +229,60 @@
                 targetTextSelector: '[data-name="dtp2-text"]',
                 modalMode: false
             });
+            const dtp0 = new mds.MdsPersianDateTimePicker(document.getElementById('dtp0'), {
+                targetTextSelector: '[data-name="dtp0-text"]',
+                modalMode: false
+            });
 
             let currentDate = mds.MdsPersianDateTimePicker.convertDateToJalali(new Date());
             let currentDateString = `${currentDate.year}/${currentDate.month.toString().padStart(2, '0')}/${currentDate.day.toString().padStart(2, '0')}`;
             $('[data-name="dtp1-text"]').html(currentDateString);
             $('[data-name="dtp2-text"]').html(currentDateString);
+            $('[data-name="dtp0-text"]').html(currentDateString);
 
 
             if ('@ViewBag.ShowGMonitors.ToString().ToLower()' == 'true') {
                 $('#monitors').removeClass('d-none');
             }
+        });
+
+        $('#btnDailyPrograms').on('click', function () {
+            let selectedDate = $.trim($('[data-name="dtp0-text"]').html());
+
+            if (!selectedDate) {
+                $.alert('لطفا یک تاریخ انتخاب کنید');
+                return;
+            }
+
+            $('#daily .content').html($('#loader').html())
+            $('#daily').removeClass('d-none');
+            $('#step1-0').addClass('d-none');
+            $.ajax({
+                url: '/api/program/daily',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    date: selectedDate,
+                    venueHallID: '@ViewBag.VenueHallID',
+                }),
+                success: function (response) {
+                    if (response == null || response.length == 0 || $.trim(response) == '') {
+                        $.alert('هیچ برنامه‌ای برای این روز ثبت نشده است');
+                        $('#daily .content').html('');
+                        $('#daily, #step1-0').toggleClass('d-none');
+                        return;
+                    }
+                    $('#daily .content').html(response);
+                },
+                error: function (xhr, status, error) {
+                    $.alert('هیچ برنامه‌ای برای این روز ثبت نشده است');
+                    $('#daily .content').html('');
+                    $('#daily, #step1-0').toggleClass('d-none');
+                    console.log('Error:', error);
+                    console.log('Status:', status);
+                    console.log('Response:', xhr.responseText);
+                }
+            });
         });
 
         $('#btn1').on('click', function () {
@@ -145,7 +306,7 @@
                 }),
                 success: function (response) {
                     if (response == null || response.length == 0 || $.trim(response) == '') {
-                        $.alert('هیچ ایونتی برای این روز ثبت نشده است');
+                        $.alert('هیچ برنامه‌ای برای این روز ثبت نشده است');
                         $('#program .content').html('');
                         $('#program, #step1').toggleClass('d-none');
                         return;
@@ -154,7 +315,7 @@
                     $('#btn2').removeClass('d-none');
                 },
                 error: function (xhr, status, error) {
-                    $.alert('هیچ ایونتی برای این روز ثبت نشده است');
+                    $.alert('هیچ برنامه‌ای برای این روز ثبت نشده است');
                     $('#program .content').html('');
                     $('#program, #step1').toggleClass('d-none');
                     console.log('Error:', error);
@@ -223,11 +384,11 @@
                             option += `<option value="${item.id}">${item.name}</option>`;
                         });
                         $('#currentSession').html(`<div class="d-flex align-items-center justify-content-between mb-3 gap-2">از<select class="form-select">${option}</select></div>
-                                                                            <div class="d-flex align-items-center justify-content-between mb-3 gap-2">به<select class="form-select">${option}</select></div>
-                                                                            <div class="d-flex justify-content-between gap-2">
-                                                                                <button class="btn btn-secondary w-100" onclick="changeOK()">ادامه</button>
-                                                                                <button class="btn btn-primary w-100" onclick="back()">بازگشت</button>
-                                                                            </div>`);
+                                                                                                        <div class="d-flex align-items-center justify-content-between mb-3 gap-2">به<select class="form-select">${option}</select></div>
+                                                                                                        <div class="d-flex justify-content-between gap-2">
+                                                                                                            <button class="btn btn-secondary w-100" onclick="changeOK()">ادامه</button>
+                                                                                                            <button class="btn btn-primary w-100" onclick="back()">بازگشت</button>
+                                                                                                        </div>`);
                     } else {
                         console.error('Response is not an array:', response);
                     }
@@ -264,9 +425,93 @@
                 });
         }
 
-        $('#btnAuto').click(function () {
-            let selectedDate = $.trim($('[data-name="dtp1-text"]').html());
+        $('#btnAuto, #btnAuto1').click(function () {
+            let selectedDate = $.trim($('[data-name="dtp0-text"]').html());
             window.location.href = `/Screen/Show1/?hallid=@ViewBag.VenueHallID&date=${selectedDate}`;
+        });
+
+        function addGap(times) {
+            if (times == '0') {
+                $('#timepickerAz, #timepickerTa').val('');
+                $('#addGapwithTimeModal').modal('show');
+                return;
+            }
+            $('#addGapTimes').val(times);
+            $('#addGapModal').modal('show');
+        }
+
+        $('#addGap').click(async function () {
+            $('#addGapModal').modal('hide');
+
+            if ($('#addGapSelect').val() == '0') {
+                // Screen Saver
+                $.showScreenPreloader();
+                const response = await $.post(`/api/program/addScreenSaver?VenueHallId=@ViewBag.VenueHallID&Date=${$.trim($('[data-name="dtp0-text"]').html())}&saatAz=${$('#addGapTimes').val().split(' - ')[1]}&saatTa=${$('#addGapTimes').val().split(' - ')[0]}`);
+                $('#btnDailyPrograms').trigger('click');
+                $.hideScreenPreloader();
+            }
+        });
+
+        function changeGap(id, program, times) {
+            $('#pId').val(id);
+            $('#themeId').val(program);
+            $('#changeGapTimes').val(times);
+            $('#changeGapModal').modal('show');
+        }
+
+        $('#changeGap').click(async function () {
+            $('#changeGapModal').modal('hide');
+
+            if ($('#changeGapSelect').val() == '0' && $('#themeId').val() == '0') {
+                // No Change
+            } else if ($('#changeGapSelect').val() == '0') {
+                // Screen Saver
+                $.showScreenPreloader();
+                const response = await $.post(`/api/program/addScreenSaver?VenueHallId=@ViewBag.VenueHallID&Date=${$.trim($('[data-name="dtp0-text"]').html())}&SaatAz=${$('#changeGapTimes').val().split(' - ')[1]}&SaatTa=${$('#changeGapTimes').val().split(' - ')[0]}`);
+                $('#btnDailyPrograms').trigger('click');
+                $.hideScreenPreloader();
+            } else {
+                // Hall Name
+                $.showScreenPreloader();
+                const response = await $.post(`/api/program/deleteprogram?id=${$('#pId').val()}`);
+                $('#btnDailyPrograms').trigger('click');
+                $.hideScreenPreloader();
+            }
+        });
+
+        function deleteProgram(id) {
+            $.confirm(`آیا از عملکرد خود اطمینان دارید؟`, async function () {
+                $.showScreenPreloader();
+                const response = await $.post(`/api/program/deleteprogram?id=${id}`);
+                $('#btnDailyPrograms').trigger('click');
+                $.hideScreenPreloader();
+            });
+        }
+
+        $('#btn2-0, #btn2-1').on('click', function () {
+            $('#daily').addClass('d-none');
+            $('#step1-0').removeClass('d-none');
+        });
+
+        $('#addGapwithTime').click(async function () {
+            if (!$('#timepickerAz').val()) {
+                $.alert('لطفا زمان شروع را وارد کنید.');
+                return;
+            }
+            if (!$('#timepickerTa').val()) {
+                $.alert('لطفا زمان پایان را وارد کنید.');
+                return;
+            }
+
+            $('#addGapwithTimeModal').modal('hide');
+
+            if ($('#addGapwithTimeSelect').val() == '0') {
+                // Screen Saver
+                $.showScreenPreloader();
+                const response = await $.post(`/api/program/addScreenSaver?VenueHallId=@ViewBag.VenueHallID&Date=${$.trim($('[data-name="dtp0-text"]').html())}&SaatAz=${$('#timepickerAz').val()}&SaatTa=${$('#timepickerTa').val()}`);
+                $('#btnDailyPrograms').trigger('click');
+                $.hideScreenPreloader();
+            }
         });
     </script>
 }

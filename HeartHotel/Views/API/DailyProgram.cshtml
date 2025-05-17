@@ -1,0 +1,106 @@
+@model IEnumerable< HeartHotel.Models.Programs>
+@{
+    TimeSpan firstTime = TimeSpan.Parse("00:00"), lastTime = TimeSpan.Parse("00:00");
+}
+
+@* <div>
+    در زمان‌های خالی موجود بین جلسات به صورت خودکار نام سالن نمایش داده خواهد شد.
+    <br>
+    در صورت نیاز می‌توانید این ساعات را ویرایش کنید.
+</div> *@
+@foreach (var program in Model)
+{
+    TimeSpan currentFirstTime = TimeSpan.Parse(program.ProgramConductors.FirstOrDefault()?.SaatAz ?? "00:00");
+    TimeSpan currentLastTime = TimeSpan.Parse(program.ProgramConductors.LastOrDefault()?.SaatTa ?? "00:00");
+
+    if (firstTime == TimeSpan.Parse("00:00"))
+    {
+        <div class="hall-container">
+            <div class="fw-bold fs-4 bg-warning text-primary rounded-3 p-2">
+                <div>نمایش نام سالن</div>
+            </div>
+            <div class="d-flex justify-content-between gap-2 mt-3">
+                <a class="btn btn-primary w-100" role="button" onclick="addGap('0')">تغییر برنامه</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        if (currentFirstTime > lastTime)
+        {
+            var times = $"{currentFirstTime.Hours:D2}:{currentFirstTime.Minutes:D2} - {lastTime.Hours:D2}:{lastTime.Minutes:D2}";
+            <div class="hall-container">
+                <div class="fw-bold fs-4 bg-warning text-primary rounded-3 p-2">
+                    <div class="d-flex justify-content-between">
+                        <div>نمایش نام سالن</div>
+                        <div>@times</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between gap-2 mt-3">
+                    <a class="btn btn-primary w-100" role="button" onclick="addGap('@times')">تغییر برنامه</a>
+                    @* <a class="btn btn-secondary w-100" role="button" onclick="addProg('@times')">افزودن کنداکتور</a> *@
+                </div>
+            </div>
+        }
+    }
+
+    <div class="hall-container">
+        <div class="fw-bold fs-4 bg-warning text-primary rounded-3 p-2">
+            <div class="d-flex justify-content-between">
+                <div>@program.Name</div>
+                <div>@($"{currentLastTime.Hours:D2}:{currentLastTime.Minutes:D2} - {currentFirstTime.Hours:D2}:{currentFirstTime.Minutes:D2}")</div>
+            </div>
+        </div>
+        
+        @{
+                firstTime = TimeSpan.Parse(program.ProgramConductors.FirstOrDefault()?.SaatAz ?? "00:00");
+                lastTime = TimeSpan.Parse(program.ProgramConductors.LastOrDefault()?.SaatTa ?? "00:00");
+            }
+        @if (program.ThemeId == 0) {
+                <div class="d-flex justify-content-between gap-2 mt-3">
+                    <a class="btn btn-primary w-100" role="button" onclick="changeGap('@program.Id', '@program.ThemeId', '@($"{currentLastTime.Hours:D2}:{currentLastTime.Minutes:D2} - {currentFirstTime.Hours:D2}:{currentFirstTime.Minutes:D2}")')">تغییر برنامه</a>
+                    @* <a class="btn btn-secondary w-100" role="button" onclick="changeProg('@program.Id')">افزودن کنداکتور</a> *@
+                    <a class="btn btn-danger w-100" role="button" onclick="deleteProgram('@program.Id')"><i class="fa fa-trash-can"></i></a>
+                </div>
+        } else {
+            <div class="fw-bold fs-5 text-primary text-center my-2">
+                @program.ShowDate
+            </div>
+
+            <table class="table table-striped">
+                <thead style="white-space: nowrap;">
+                    <tr>
+                        <th>اجرا</th>
+                        <th>ساعت</th>
+                        <th>توضیحات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var conductor in program.ProgramConductors)
+                    {
+                        <tr>
+                            <td>@conductor.Name</td>
+                            <td>@conductor.SaatAz - @conductor.SaatTa</td>
+                            <td>@conductor.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between gap-2">
+                <a class="btn btn-primary w-100" href="/Screen/Show@(program.ThemeId)/@(program.Id)">نمایش برنامه در مانیتور</a>
+                <a class="btn btn-secondary w-100" href="/Conductors/Edit/@(program.Id)">ویرایش کنداکتور</a>
+                <a class="btn btn-danger w-100" role="button" onclick="deleteProgram('@program.Id')"><i class="fa fa-trash-can"></i></a>
+            </div>
+        }
+
+    </div>
+}
+<div class="hall-container">
+    <div class="fw-bold fs-4 bg-warning text-primary rounded-3 p-2">
+        <div>نمایش نام سالن</div>
+    </div>
+    <div class="d-flex justify-content-between gap-2 mt-3">
+        <a class="btn btn-primary w-100" role="button" onclick="addGap('0')">تغییر برنامه</a>
+    </div>
+</div>

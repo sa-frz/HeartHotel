@@ -10,8 +10,11 @@ builder.Services.AddControllersWithViews();
 // Register SignalRHub
 builder.Services.AddSingleton<SignalRHub>();
 
+var connectionString = builder.Configuration.GetConnectionString("EventisContext");
 builder.Services.AddDbContext<EventisContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EventisContext")));
+    options.UseSqlServer(connectionString));
+
+// builder.Services.AddSingleton(connectionString ?? "");
 
 builder.Services.AddSignalR();
 

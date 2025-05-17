@@ -36,14 +36,20 @@ async function getProgramConductors(auto, venueHallId, date, id) {
 }
 
 function showDataAuto() {
-    showHallName();
-
     let currentTime = new Date().toTimeString().slice(0, 5); // Get current time in HH:mm format
     let filteredSessions = allDaySessions.filter(session => {
         return currentTime >= session.minSaatAz && currentTime <= session.maxSaatTa;
     });
     // console.log('showDataAuto', currentTime);
-    if (filteredSessions.length > 0) {
+    if (filteredSessions.length > 0 && filteredSessions[0].name == "Screen Saver") {
+        // $('.adjustFontSizeToFit').html(filteredSessions[0].name);
+        showScreenSaver();
+        clearTimeout(timeAutoPrograms);
+        timeAutoPrograms = setTimeout(() => {
+            showDataAuto();
+        }, 1000);
+    } else if (filteredSessions.length > 0) {
+        showHallName();
         clearTimeout(timeAutoPrograms);
         programConductors = filteredSessions[0].programConductors;
         chairs = filteredSessions[0].chairsConductors.filter(chair => {
@@ -66,9 +72,12 @@ function showDataAuto() {
         $('#title').html(filteredSessions[0].name);
 
         $('#hallNameOverlay').removeClass('d-flex').addClass('d-none');
+        $('#screenSaverOverlay').removeClass('d-flex').addClass('d-none');
+
         setTime(true);
     } else {
-        console.warn('No sessions found for the current time.');
+        // console.warn('No sessions found for the current time.');
+        showHallName();
         clearTimeout(timeAutoPrograms);
         timeAutoPrograms = setTimeout(() => {
             showDataAuto();
@@ -98,13 +107,22 @@ function showDataOnce() {
     $('#title').html(currentSession[0].name);
 
     $('#hallNameOverlay').removeClass('d-flex').addClass('d-none');
+    $('#screenSaverOverlay').removeClass('d-flex').addClass('d-none');
+
     setTime();
 }
 
 function showHallName() {
     // Show Hall Name Overlay
     $('#hallNameOverlay').removeClass('d-none').addClass('d-flex');
+    $('#screenSaverOverlay').removeClass('d-flex').addClass('d-none');
     adjustFontSizeToFit();
+}
+
+function showScreenSaver() {
+    // Show Screen Saver Overlay
+    $('#screenSaverOverlay').removeClass('d-none').addClass('d-flex');
+    $('#hallNameOverlay').removeClass('d-flex').addClass('d-none');
 }
 
 function SetShowHallName() {
