@@ -8,18 +8,14 @@
     { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve })); *@
 }
 
-<div class="ltr">
-    <div class="slideshow-container">
-        @* <img src="/img/HHicon.png" class="w-100 vh-100" draggable="false" style="object-fit: cover;" /> *@
-        @foreach (var item in Slideshow)
-        {
-            <div class="mySlides fade">
-                <img src="/Slideshow/@item" class="w-100 vh-100" draggable="false" style="object-fit: cover;" />
-            </div>
-        }
-    </div>
 
-
+<div class="slideshow-container">
+    @foreach (var item in Slideshow)
+    {
+        <div class="mySlides fade">
+            <img src="/Slideshow/@item" class="w-100 vh-100" draggable="false" style="object-fit: cover;" />
+        </div>
+    }
 </div>
 
 @section scripts {
