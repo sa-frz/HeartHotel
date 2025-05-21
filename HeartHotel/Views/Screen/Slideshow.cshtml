@@ -1,5 +1,6 @@
 @model IEnumerable<HeartHotel.Models.ProgramHallsViewModel>
 @{
+    Layout = "~/Views/Shared/_LayoutFull.cshtml";
     ViewData["Title"] = "Slideshow";
     var Slideshow = ViewBag.Images;
     @* var Slideshow = Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Images, new
@@ -7,7 +8,7 @@
     { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve })); *@
 }
 
-<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr" style="z-index: 1;">
+<div class="ltr">
     <div class="slideshow-container">
         @* <img src="/img/HHicon.png" class="w-100 vh-100" draggable="false" style="object-fit: cover;" /> *@
         @foreach (var item in Slideshow)
