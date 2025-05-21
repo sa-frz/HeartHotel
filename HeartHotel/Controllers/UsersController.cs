@@ -20,7 +20,7 @@ namespace HeartHotel.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber, string k, int pageSize = 25)
         {
             var UserId = Helper.getUserId(HttpContext);
             if (UserId == 0)
@@ -33,7 +33,8 @@ namespace HeartHotel.Controllers
             }
             ViewBag.UID = UserId;
 
-            return View(await _context.Users.Where(w => w.Id > 10).ToListAsync());
+            // return View(await _context.Users.Where(w => w.Id > 10).ToListAsync());
+            return View(await PaginatedList<User>.CreateAsync(_context.Users.Where(w => w.Id > 10).AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Users/Details/5

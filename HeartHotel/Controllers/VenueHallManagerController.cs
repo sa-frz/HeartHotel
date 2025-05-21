@@ -20,7 +20,7 @@ namespace HeartHotel.Controllers
         }
 
         // GET: VenueHallManager
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber, string k, int pageSize = 25)
         {
             var UserId = Helper.getUserId(HttpContext);
             if (UserId == 0)
@@ -36,7 +36,8 @@ namespace HeartHotel.Controllers
             var eventisContext = _context.VenueHallManagers
                                     .Include(v => v.User).Include(v => v.VenueHall)
                                     .OrderBy(o => o.User.Id).ThenBy(o => o.VenueHall.Id);
-            return View(await eventisContext.ToListAsync());
+            // return View(await eventisContext.ToListAsync());
+            return View(await PaginatedList<VenueHallManager>.CreateAsync(eventisContext.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: VenueHallManager/Details/5

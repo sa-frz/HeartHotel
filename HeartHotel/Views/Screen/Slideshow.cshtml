@@ -13,7 +13,7 @@
         @foreach (var item in Slideshow)
         {
             <div class="mySlides fade">
-                <img src="/Slideshow/@item" class="w-100" draggable="false" style="object-fit: cover;" />
+                <img src="/Slideshow/@item" class="w-100 vh-100" draggable="false" style="object-fit: cover;" />
             </div>
         }
     </div>
@@ -78,7 +78,7 @@
 
         function showSlide(index) {
             $slides.each(function (i) {
-                $(this).attr('class', (i === index) ? 'mySlides fade position-absolute top-0 show' : 'mySlides fade position-absolute top-0');
+                $(this).attr('class', (i === index) ? 'mySlides fade position-absolute top-0 show w-100 vh-100' : 'mySlides fade position-absolute top-0');
             });
         }
 

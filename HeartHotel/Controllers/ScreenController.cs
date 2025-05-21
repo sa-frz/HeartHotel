@@ -117,8 +117,17 @@ public class ScreenController : Controller
             { 6, "Saturday" },
         };
         // ViewBag.DayOfWeek = dayOfWeek[dayOfWeekNumber];
-        ViewBag.DayOfWeek = halls.FirstOrDefault()?.ShowDate.Replace(",", "-").Split('-')[0].Trim();
-        ViewBag.date = halls.FirstOrDefault()?.ShowDate.Replace(",", "-").Split('-')[1].Trim();
+        if (halls.FirstOrDefault()?.ShowDate.IndexOf(",") > 0 || halls.FirstOrDefault()?.ShowDate.IndexOf("-") > 0)
+        {
+            ViewBag.DayOfWeek = halls.FirstOrDefault()?.ShowDate.Replace(",", "-").Split('-')[0].Trim();
+            ViewBag.date = halls.FirstOrDefault()?.ShowDate.Replace(",", "-").Split('-')[1].Trim();
+        }
+        else
+        {
+            ViewBag.DayOfWeek = "";
+            ViewBag.date = halls.FirstOrDefault()?.ShowDate.Trim();
+        }
+
         // ViewBag.date = date;
 
         // var programs = new List<ProgramHallsViewModel>();
@@ -188,7 +197,7 @@ public class ScreenController : Controller
 
             ViewBag.HallName = hallData.Title;
             ViewBag.VenueHallId = hallData.Id;
-            
+
             // ViewBag.HallName = await _context.Programs
             //     .Include(v => v.VenueHall)
             //     .Where(x => x.Id == id.Value)

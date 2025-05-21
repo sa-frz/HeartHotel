@@ -27,26 +27,14 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Events">ایونت‌ها</a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/Halls">سالن‌ها</a>
                         </li>
-                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Conductors">کنداکتور</a>
+                        <li class="nav-item">
+                            <a role="button" class="nav-link text-dark" id="fullscreenButton">تمام صفحه</a>
                         </li>
-                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Chair">اشخاص</a>
-                        </li>
-                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Monitors">مانیتورها</a>
-                        </li>
-                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/Users">کاربران</a>
-                        </li>
-                        <li class="nav-item @(ViewBag.UID < 11 ? "" : "d-none")">
-                            <a class="nav-link text-dark" href="/VenueHallManager">مدیران سالن</a>
+                        <li class="nav-item">
+                            <a role="button" class="nav-link text-dark" id="exitFullscreenButton">خروج از تمام صفحه</a>
                         </li>
                     </ul>
                 </div>
@@ -54,9 +42,9 @@
         </nav>
     </header>
 
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
 
 
     @*Confirm*@
@@ -170,7 +158,7 @@
         </div>
     </div>
 
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -184,18 +172,52 @@
         </div>
     </script>
 
-<script>
-    $(document).ready(function () {
-        document.addEventListener('mousemove', function (e) {
-            const header = document.getElementById('header');
-            if (e.clientY <= 50) {
-                header.style.display = 'block';
-            } else if (!header.contains(e.target)) {
-                header.style.display = 'none';
+    <script>
+        $(document).ready(function () {
+            document.addEventListener('mousemove', function (e) {
+                const header = document.getElementById('header');
+                if (e.clientY <= 50) {
+                    header.style.display = 'block';
+                } else if (!header.contains(e.target)) {
+                    header.style.display = 'none';
+                }
+            });
+
+            function fullscreenShow() {
+                let elem = document.documentElement; // Fullscreen the whole page
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.mozRequestFullScreen) { // Firefox
+                    elem.mozRequestFullScreen();
+                } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { // IE/Edge
+                    elem.msRequestFullscreen();
+                }
             }
+
+            function exitFullscreen() {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) { // Firefox
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) { // Chrome, Safari, Opera
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { // IE/Edge
+                    document.msExitFullscreen();
+                }
+            }
+
+            $("#fullscreenButton").on("click", function () {
+                fullscreenShow();
+            });
+
+            $("#exitFullscreenButton").on("click", function () {
+                exitFullscreen();
+            });
+
         });
-    });
-</script>
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

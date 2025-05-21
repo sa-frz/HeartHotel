@@ -1,5 +1,6 @@
 ﻿@{
     string[] day = new string[] { "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه" };
+    ViewData["Active"] = "Halls";
 }
 
 <h4 class="section-title">
@@ -15,7 +16,7 @@
         <button class="nav-link" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab"
             aria-controls="tab1" aria-selected="false">کنداکتور</button>
     </li>
-    <li class="nav-item" role="presentation">
+    <li class="nav-item d-none" role="presentation">
         <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab"
             aria-controls="tab2" aria-selected="false">تغییر برنامه جلسه</button>
     </li>
@@ -208,6 +209,21 @@
             <div class="modal-footer">
                 <span id="changeGap">انتخاب</span>
                 <span data-bs-dismiss="modal">انصراف</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="showDetailsModal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title text-primary  text-center fw-bold fs-5">جزییات</div>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <span data-bs-dismiss="modal" class="w-100">بستن</span>
             </div>
         </div>
     </div>
@@ -473,7 +489,7 @@
             } else {
                 // Hall Name
                 $.showScreenPreloader();
-                const response = await $.post(`/api/program/deleteprogram?id=${$('#pId').val()}`);
+                const response = await $.post(`/api/program/deleteprogram?id=${$('#pId').val()}&VenueHallId=@ViewBag.VenueHallID`);
                 $('#btnDailyPrograms').trigger('click');
                 $.hideScreenPreloader();
             }
@@ -482,7 +498,7 @@
         function deleteProgram(id) {
             $.confirm(`آیا از عملکرد خود اطمینان دارید؟`, async function () {
                 $.showScreenPreloader();
-                const response = await $.post(`/api/program/deleteprogram?id=${id}`);
+                const response = await $.post(`/api/program/deleteprogram?id=${id}&VenueHallId=@ViewBag.VenueHallID`);
                 $('#btnDailyPrograms').trigger('click');
                 $.hideScreenPreloader();
             });
@@ -513,5 +529,14 @@
                 $.hideScreenPreloader();
             }
         });
+
+        function showDetails(elem, title){
+            $('#showDetailsModal')
+            .find('.modal-title').html(title);
+
+            $('#showDetailsModal')
+            .modal('show')
+            .find('.modal-body').html($(elem).html());
+        }
     </script>
 }

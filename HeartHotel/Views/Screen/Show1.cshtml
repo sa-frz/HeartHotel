@@ -100,6 +100,7 @@
         $(document).ready(function () {
             showHallName();
             getSlideShow();
+            let auto = '@ViewBag.Auto'.toString().toLowerCase();
 
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()
@@ -108,7 +109,8 @@
 
             connection.on("OnConnected", (connectionId) => {
                 // console.log("Connected with ID:", connectionId);
-                $.post(`/api/SignalR/group/add/${connectionId}/Show1@(ViewBag.VenueHallId)`)
+                console.log("Connected in Group:", "ShowHall@(ViewBag.VenueHallId)");
+                $.post(`/api/SignalR/group/add/${connectionId}/ShowHall@(ViewBag.VenueHallId)`)
                     .done(function (response) {
                         console.log("Connection ID added to a group");
                     })
@@ -126,6 +128,14 @@
                 if (message == "Reload") {
                     console.log("برنامه جدیدی برای این روز ثبت شده است");
                     window.location.reload();
+                } else if (message == "Change") {
+                    if (auto == 'true') {
+                        // Show All-day Sessions
+                        getProgramConductors(true, '@ViewBag.VenueHallId', '@ViewBag.Date', 0);
+                    } else {
+                        // Show Current Session
+                        getProgramConductors(false, 0, 0, '@ViewBag.Id');
+                    }
                 } else {
                     const queryString = window.location.search;
                     // const urlParams = new URLSearchParams(queryString);
@@ -148,7 +158,6 @@
                 }, 5000); // Retry every 5 seconds
             });
 
-            let auto = '@ViewBag.Auto'.toString().toLowerCase();
             if (auto == 'true') {
                 // Show All-day Sessions
                 getProgramConductors(true, '@ViewBag.VenueHallId', '@ViewBag.Date', 0);
@@ -158,9 +167,28 @@
             }
         });
 
+        var currentIndex;
         function getSlideShow() {
-            var response = $.get('/api/screen/slideshow');
-            $('#screenSaverOverlay').html(response);
+            $.get('/api/screen/slideshow')
+                .done(function (response) {
+                    $('#screenSaverOverlay').html(response);
+                    showSlide(0); // Show the first slide initially
+                    setInterval(nextSlide, 7000); // Change slide every 7 seconds
+                    currentIndex = 0;
+                });
+        }
+
+        function showSlide(index) {
+            var $slides = $('.slideshow-container .mySlides');
+            $slides.each(function (i) {
+                $(this).attr('class', (i === index) ? 'mySlides fade position-absolute top-0 show w-100 vh-100 end-0' : 'mySlides fade position-absolute top-0');
+            });
+        }
+
+        function nextSlide() {
+            var $slides = $('.slideshow-container .mySlides');
+            currentIndex = (currentIndex + 1) % $slides.length;
+            showSlide(currentIndex);
         }
     </script>
 }

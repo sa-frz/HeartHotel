@@ -376,6 +376,7 @@ public class APIController : Controller
             program.ShowDate = model.ShowDate!;
             program.Name = model.ProgramName!;
             program.ThemeId = model.ThemeId;
+            var venueHallId = program.VenueHallId;
 
             _context.Update(program);
             await _context.SaveChangesAsync();
@@ -428,17 +429,16 @@ public class APIController : Controller
 
             try
             {
-                var p = await _context.Programs.FirstOrDefaultAsync(f => f.Id == model.ProgramId);
-                var venueHallId = p!.VenueHall;
-
                 if (isNeedRedirect)
                 {
                     await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{venueHallId}", $"/Screen/Show{model.ThemeId.ToString().Trim()}");
+                    await _signalRHub.NotifyGroup($"ShowHall{venueHallId}", $"/Screen/Show{model.ThemeId.ToString().Trim()}");
                     // await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", $"/Screen/Show{model.ThemeId.ToString().Trim()}/{model.ProgramId.ToString()!.Trim()}");
                 }
                 else
                 {
                     await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{venueHallId}", "Reload");
+                    await _signalRHub.NotifyGroup($"ShowHall{venueHallId}", "Change");
                     // await _signalRHub.NotifyGroup($"Show{programThemeId.ToString().Trim()}{model.ProgramId.Value}", "Reload");
                 }
             }
@@ -569,6 +569,8 @@ public class APIController : Controller
             _context.Add(program);
             await _context.SaveChangesAsync();
 
+            await _signalRHub.NotifyGroup($"ShowHall{VenueHallId}", "Change");
+
             return Ok();
         }
         catch
@@ -579,13 +581,15 @@ public class APIController : Controller
 
     [Route("/api/program/deleteprogram")]
     [HttpPost]
-    public async Task<IActionResult> DeleteProgram(int id)
+    public async Task<IActionResult> DeleteProgram(int id, int VenueHallId)
     {
         try
         {
             var programs = await _context.Programs.Where(w => w.Id == id).ToListAsync();
             _context.RemoveRange(programs);
             await _context.SaveChangesAsync();
+
+            await _signalRHub.NotifyGroup($"ShowHall{VenueHallId}", "Change");
 
             return Ok();
         }
@@ -820,7 +824,7 @@ public class APIController : Controller
     }
 
     [Route("/api/screen/slideshow")]
-public IActionResult Slideshow()
+    public IActionResult Slideshow()
     {
         var imageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Slideshow");
         if (Directory.Exists(imageFolderPath))
@@ -839,7 +843,7 @@ public IActionResult Slideshow()
         {
             ViewBag.Images = new List<string>();
         }
-        return View();
+        return PartialView();
     }
 
 }

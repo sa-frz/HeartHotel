@@ -20,7 +20,7 @@ namespace HeartHotel.Controllers
         }
 
         // GET: ChairController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber, string k, int pageSize = 25)
         {
             var UserId = Helper.getUserId(HttpContext);
             if (UserId == 0)
@@ -33,7 +33,9 @@ namespace HeartHotel.Controllers
             }
             ViewBag.UID = UserId;
 
-            return View(await _context.Chairs.ToListAsync());
+            // return View(await _context.Chairs.ToListAsync());
+            return View(await PaginatedList<Chair>.CreateAsync(_context.Chairs.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
 
         // GET: ChairController/Details/5
