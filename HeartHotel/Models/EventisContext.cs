@@ -325,6 +325,7 @@ public partial class EventisContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.MonitorId).HasColumnName("MonitorId");
         });
 
         modelBuilder.Entity<Organizer>(entity =>

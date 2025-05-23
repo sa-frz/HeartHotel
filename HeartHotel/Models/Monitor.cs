@@ -10,4 +10,6 @@ public partial class Monitor
     public string Text { get; set; } = null!;
 
     public string Icon { get; set; } = null!;
+
+    public int MonitorId { get; set; }
 }
