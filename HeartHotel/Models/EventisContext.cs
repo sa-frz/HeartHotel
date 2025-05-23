@@ -35,6 +35,8 @@ public partial class EventisContext : DbContext
 
     public virtual DbSet<Lecture> Lectures { get; set; }
 
+    public virtual DbSet<Monitor> Monitors { get; set; }
+
     public virtual DbSet<Organizer> Organizers { get; set; }
 
     public virtual DbSet<Otp> Otps { get; set; }
@@ -312,6 +314,17 @@ public partial class EventisContext : DbContext
             entity.HasOne(d => d.VenueHall).WithMany(p => p.Lectures)
                 .HasForeignKey(d => d.VenueHallId)
                 .HasConstraintName("FK_Lectures_VenueHalls");
+        });
+
+        modelBuilder.Entity<Monitor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Monitors__3214EC270B7CF227");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Icon)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<Organizer>(entity =>
