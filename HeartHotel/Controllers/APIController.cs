@@ -569,7 +569,11 @@ public class APIController : Controller
             _context.Add(program);
             await _context.SaveChangesAsync();
 
-            await _signalRHub.NotifyGroup($"ShowHall{VenueHallId}", "Change");
+            try
+            {
+                await _signalRHub.NotifyGroup($"ShowHall{VenueHallId}", "Change");
+            }
+            catch { }
 
             return Ok();
         }
@@ -588,8 +592,11 @@ public class APIController : Controller
             var programs = await _context.Programs.Where(w => w.Id == id).ToListAsync();
             _context.RemoveRange(programs);
             await _context.SaveChangesAsync();
-
-            await _signalRHub.NotifyGroup($"ShowHall{VenueHallId}", "Change");
+            try
+            {
+                await _signalRHub.NotifyGroup($"ShowHall{VenueHallId}", "Change");
+            }
+            catch { }
 
             return Ok();
         }

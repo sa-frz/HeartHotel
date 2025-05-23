@@ -29,7 +29,7 @@
                     <td>نمایش نام سالن</td>
                     <td>
                         @* <a class="btn btn-primary w-100" role="button" onclick="addGap('0')"><i class="fa fa-plus"></i></a> *@
-                        <a class="text-primary" role="button" onclick="addGap('0')"><i class="fa fa-plus"></i></a>
+                        <a class="text-primary" role="button" onclick="addGap('0')"><i class="fa fa-pen-line"></i></a>
                     </td>
                 </tr>
             }
@@ -44,7 +44,7 @@
                         <td>نمایش نام سالن</td>
                         <td>
                             @* <a class="btn btn-primary w-100" role="button" onclick="addGap('@times')"><i class="fa fa-plus"></i></a> *@
-                            <a class="text-primary" role="button" onclick="addGap('@times')"><i class="fa fa-plus"></i></a>
+                            <a class="text-primary" role="button" onclick="addGap('@times')"><i class="fa fa-pen-line"></i></a>
                         </td>
                     </tr>
                 }
@@ -63,7 +63,7 @@
                         <td class="d-flex gap-5">
                             @* <a class="btn btn-primary w-100" role="button" onclick="changeGap('@program.Id', '@program.ThemeId', '@($"{currentLastTime.Hours:D2}:{currentLastTime.Minutes:D2} - {currentFirstTime.Hours:D2}:{currentFirstTime.Minutes:D2}")')"><i class="fa fa-refresh"></i></a>
                             <a class="btn btn-secondary w-100" role="button" onclick="deleteProgram('@program.Id')"><i class="fa fa-trash-can"></i></a> *@
-                            <a class="text-primary" role="button" onclick="changeGap('@program.Id', '@program.ThemeId', '@($"{currentLastTime.Hours:D2}:{currentLastTime.Minutes:D2} - {currentFirstTime.Hours:D2}:{currentFirstTime.Minutes:D2}")')"><i class="fa fa-refresh"></i></a>
+                            <a class="text-primary" role="button" onclick="changeGap('@program.Id', '@program.ThemeId', '@($"{currentLastTime.Hours:D2}:{currentLastTime.Minutes:D2} - {currentFirstTime.Hours:D2}:{currentFirstTime.Minutes:D2}")')"><i class="fa fa-pen-line"></i></a>
                             <a class="text-secondary" role="button" onclick="deleteProgram('@program.Id')"><i class="fa fa-trash-can"></i></a>
                         </td>
                 } else {
@@ -112,7 +112,7 @@
             <td></td>
             <td>نمایش نام سالن</td>
             <td>
-                <a class="text-primary" role="button" onclick="addGap('0')"><i class="fa fa-plus"></i></a>
+                <a class="text-primary" role="button" onclick="addGap('0')"><i class="fa fa-pen-line"></i></a>
             </td>
         </tr>
 
