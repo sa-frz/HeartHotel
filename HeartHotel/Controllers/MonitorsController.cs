@@ -104,7 +104,7 @@ namespace HeartHotel.Controllers
                 return NotFound();
             }
             ViewBag.UID = UserId;
-            
+
             if (id == null)
             {
                 return NotFound();
@@ -173,7 +173,7 @@ namespace HeartHotel.Controllers
 
         // POST: Monitors/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        // [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var monitor = await _context.Monitors.FindAsync(id);
@@ -183,7 +183,8 @@ namespace HeartHotel.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            // return RedirectToAction(nameof(Index));
+            return Ok();
         }
 
         public async Task<IActionResult> ShowText(int id)

@@ -26,7 +26,7 @@
             <th>
                 شماره مانیتور
             </th>
-            <th>
+            <th class="ltr">
                 URL
             </th>
             <th>
@@ -57,7 +57,10 @@
                                 class="fa fa-image text-info"></i></a> |
                         <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pen-line text-primary"></i></a> |
                         @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
-                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash-can text-secondary"></i></a>
+                        @* <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash-can text-secondary"></i></a> *@
+                        <a role="button"
+                        onclick="$.confirm('آیا از حذف اطلاعات اطمینان دارید؟', async function(){ await $.post('/Monitors/Delete/@(item.Id)').done(function(){window.location.reload()})})"><i
+                            class="fa fa-trash-can text-secondary"></i></a>
                     </div>
                 </td>
             </tr>
