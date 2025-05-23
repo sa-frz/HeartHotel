@@ -3,15 +3,15 @@
     ViewData["Title"] = "Screen Monitor";
 }
 
-@* <h4 class="section-title">
-    @ViewBag.title
-</h4> *@
-
 <div class="d-flex flex-column justify-content-center align-items-center vh-100">
     <div id="content" class="w-100 text-center fw-bold text-truncate adjustFontSizeToFit"
         style="font-size: 100px !important;"></div>
     <i id="icon" class="" style="font-size: 20rem;"></i>
     <img src="" class="d-none" />
+</div>
+
+<div class="w-100 bg-white position-absolute end-0 top-0 vh-100 ltr d-none flex-column align-items-center"
+    style="z-index: 1000;" id="screenSaverOverlay">
 </div>
 
 @section scripts {
@@ -25,11 +25,7 @@
             $('#icon').addClass(`fa-solid fa-arrow-@ViewBag.icon`);
 
             adjustFontSizeToFit();
-            // let adjTimer = setInterval(function () {
-            //     adjustFontSizeToFit();
-            //     clearInterval(adjTimer);
-            //     console.log("Font size adjusted");
-            // }, 600);
+            getSlideShow();
 
             // SignalR connection setup
             const connection = new signalR.HubConnectionBuilder()
@@ -38,7 +34,7 @@
 
             connection.on("OnConnected", (connectionId) => {
                 // console.log("Connected with ID:", connectionId);
-                $.post(`/api/SignalR/group/add/${connectionId}/monitor1`)
+                $.post(`/api/SignalR/group/add/${connectionId}/monitor${@ViewBag.Id}`)
                     .done(function (response) {
                         console.log("Connection ID added to a group");
                     })
@@ -53,13 +49,11 @@
 
             connection.on("ReceiveMessage", function (message) {
                 console.log("New message received: ", message);
-                @* $('#content').html(message.split('_')[0])
-
-                $('#icon').removeClass();
-                $('#icon').addClass(`fa-solid fa-arrow-${message.split('_')[1]}`);
-
-                adjustFontSizeToFit(); *@
-                    window.location.href = `/Monitor1/?Content=${message}`;
+                if (message == "Reload" || message == "Change") {
+                    window.location.reload();
+                } else if (message == "Screen Saver") {
+                    showScreenSaver();
+                }
             });
 
             connection.onclose(() => {
@@ -74,8 +68,28 @@
             });
         });
 
-        // اجرا هنگام بارگذاری صفحه و تغییر اندازه صفحه
-        document.addEventListener('DOMContentLoaded', () => adjustFontSizeToFit());
-        window.addEventListener('resize', () => adjustFontSizeToFit());
+        var currentIndex;
+        function getSlideShow() {
+            $.get('/api/screen/slideshow')
+                .done(function (response) {
+                    $('#screenSaverOverlay').html(response);
+                    showSlide(0); // Show the first slide initially
+                    setInterval(nextSlide, 7000); // Change slide every 7 seconds
+                    currentIndex = 0;
+                });
+        }
+
+        function showSlide(index) {
+            var $slides = $('.slideshow-container .mySlides');
+            $slides.each(function (i) {
+                $(this).attr('class', (i === index) ? 'mySlides fade position-absolute top-0 show w-100 vh-100 end-0' : 'mySlides fade position-absolute top-0');
+            });
+        }
+
+        function nextSlide() {
+            var $slides = $('.slideshow-container .mySlides');
+            currentIndex = (currentIndex + 1) % $slides.length;
+            showSlide(currentIndex);
+        }
     </script>
 }

@@ -225,111 +225,125 @@ public class ScreenController : Controller
         return View();
     }
 
-    [Route("/Monitors")]
-    public IActionResult Monitors()
-    {
-        var UserId = Helper.getUserId(HttpContext);
-        if (UserId == 0)
-        {
-            return Redirect("/Login");
-        }
-        if (UserId > 10)
-        {
-            return NotFound();
-        }
-        ViewBag.UID = UserId;
+    // public async Task<IActionResult> Monitors()
+    // {
+    //     var UserId = Helper.getUserId(HttpContext);
+    //     if (UserId == 0)
+    //     {
+    //         return Redirect("/Login");
+    //     }
+    //     if (UserId > 10)
+    //     {
+    //         return NotFound();
+    //     }
+    //     ViewBag.UID = UserId;
 
-        return View();
-    }
+    //     var monitor = await _context.Monitors.ToListAsync();
 
-    public IActionResult Monitor(int? id)
+    //     return View(monitor);
+    // }
+
+    public async Task<IActionResult> Monitor(int? id)
     {
         if (id == null)
         {
             ViewBag.Content = "هتل قلب";
             ViewBag.Icon = "";
+            ViewBag.Id = 0;
         }
         else
         {
-
+            var monitor = await _context.Monitors.FirstOrDefaultAsync(f => f.MonitorId == id);
+            if (monitor != null)
+            {
+                ViewBag.Content = monitor.Text;
+                ViewBag.Icon = monitor.Icon;
+                ViewBag.Id = id;
+            }
+            else
+            {
+                ViewBag.Content = "هتل قلب";
+                ViewBag.Icon = "";
+                ViewBag.Id = id;
+            }
         }
         return View();
     }
 
-    [Route("/Monitor1")]
-    public IActionResult Monitor1(string Content)
-    {
-        try
-        {
-            ViewBag.Content = Content.Split('_')[0];
-            ViewBag.Icon = Content.Split('_')[1];
-        }
-        catch
-        {
-        }
+    // [Route("/Monitor1")]
+    // public IActionResult Monitor1(string Content)
+    // {
+    //     try
+    //     {
+    //         ViewBag.Content = Content.Split('_')[0];
+    //         ViewBag.Icon = Content.Split('_')[1];
+    //     }
+    //     catch
+    //     {
+    //     }
 
-        return View();
-    }
+    //     return View();
+    // }
 
-    [Route("/Monitor2")]
-    public IActionResult Monitor2(string Content)
-    {
-        try
-        {
-            ViewBag.Content = Content.Split('_')[0];
-            ViewBag.Icon = Content.Split('_')[1];
-        }
-        catch
-        {
-        }
+    // [Route("/Monitor2")]
+    // public IActionResult Monitor2(string Content)
+    // {
+    //     try
+    //     {
+    //         ViewBag.Content = Content.Split('_')[0];
+    //         ViewBag.Icon = Content.Split('_')[1];
+    //     }
+    //     catch
+    //     {
+    //     }
 
-        return View();
-    }
+    //     return View();
+    // }
 
-    [Route("/Monitor3")]
-    public IActionResult Monitor3(string Content)
-    {
-        try
-        {
-            ViewBag.Content = Content.Split('_')[0];
-            ViewBag.Icon = Content.Split('_')[1];
-        }
-        catch
-        {
-        }
+    // [Route("/Monitor3")]
+    // public IActionResult Monitor3(string Content)
+    // {
+    //     try
+    //     {
+    //         ViewBag.Content = Content.Split('_')[0];
+    //         ViewBag.Icon = Content.Split('_')[1];
+    //     }
+    //     catch
+    //     {
+    //     }
 
-        return View();
-    }
+    //     return View();
+    // }
 
-    [Route("/Monitor4")]
-    public IActionResult Monitor4(string Content)
-    {
-        try
-        {
-            ViewBag.Content = Content.Split('_')[0];
-            ViewBag.Icon = Content.Split('_')[1];
-        }
-        catch
-        {
-        }
+    // [Route("/Monitor4")]
+    // public IActionResult Monitor4(string Content)
+    // {
+    //     try
+    //     {
+    //         ViewBag.Content = Content.Split('_')[0];
+    //         ViewBag.Icon = Content.Split('_')[1];
+    //     }
+    //     catch
+    //     {
+    //     }
 
-        return View();
-    }
+    //     return View();
+    // }
 
-    [Route("/Monitor5")]
-    public IActionResult Monitor5(string Content)
-    {
-        try
-        {
-            ViewBag.Content = Content.Split('_')[0];
-            ViewBag.Icon = Content.Split('_')[1];
-        }
-        catch
-        {
-        }
+    // [Route("/Monitor5")]
+    // public IActionResult Monitor5(string Content)
+    // {
+    //     try
+    //     {
+    //         ViewBag.Content = Content.Split('_')[0];
+    //         ViewBag.Icon = Content.Split('_')[1];
+    //     }
+    //     catch
+    //     {
+    //     }
 
-        return View();
-    }
+    //     return View();
+    // }
 
     public IActionResult Slideshow(int Id)
     {

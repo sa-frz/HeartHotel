@@ -1,16 +1,15 @@
 @model HeartHotel.Models.VenueHall
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "افزودن";
     ViewData["Active"] = "HallsManagement";
 }
 
-<h1>Create</h1>
+<h1>@ViewData["Title"]</h1>
 
-<h4>VenueHall</h4>
+<h4>اطلاعات سالن</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -31,8 +30,7 @@
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
-    </div>
-</div>
+  
 
 <div>
     <a asp-action="Index">Back to List</a>

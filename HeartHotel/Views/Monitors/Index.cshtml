@@ -1,0 +1,94 @@
+@model IEnumerable<HeartHotel.Models.Monitor>
+
+@{
+    ViewData["Title"] = "مانیتورها";
+    ViewData["Active"] = "Monitors";
+    string domainWithProtocol = $"{Context.Request.Scheme}://{Context.Request.Host}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>@ViewBag.Title</h1>
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary">افزودن</a>
+    </p>
+</div>
+
+<table class="table table-striped">
+    <thead style="white-space: nowrap;">
+        <tr>
+            <th>
+                متن
+            </th>
+            <th>
+                جهت
+            </th>
+            <th>
+                شماره مانیتور
+            </th>
+            <th>
+                URL
+            </th>
+            <th>
+                عملیات
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text)
+                </td>
+                <td>
+                    <i class="fa-solid fa-arrow-@item.Icon"></i>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MonitorId)
+                </td>
+                <td class="ltr">
+                    <a href="/Screen/Monitor/@item.MonitorId">@domainWithProtocol/Screen/Monitor/@item.MonitorId</a>
+                </td>
+                <td>
+                    <div class="d-flex gap-2 justify-content-around align-items-center">
+                        <a role="button" onclick="ShowText('@item.MonitorId')"><i class="fa fa-t text-black"></i></a> |
+                        <a role="button" onclick="ShowScreenSaver('@item.MonitorId')"><i
+                                class="fa fa-image text-info"></i></a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pen-line text-primary"></i></a> |
+                        @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
+                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash-can text-secondary"></i></a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script>
+        async function ShowText(id) {
+            $.showPreloader();
+            await $.get(`/Monitors/ShowText/${id}`)
+                .done(function () {
+                    $.hidePreloader();
+                    $.alert(`اطلاعات نمایش متن برای مانیتور شماره ${id} ارسال شد.
+                                        <br>
+                                        چنانچه تغییری در این مانیتور مشاهده نکردید، لطفا مانیتور مورد نظر را Refresh نمایید.`)
+                });
+        }
+
+        async function ShowScreenSaver(id) {
+            $.showPreloader();
+            await $.get(`/Monitors/ShowScreenSaver/${id}`)
+                .done(function () {
+                    $.hidePreloader();
+                    $.alert(`اطلاعات نمایش اسلاید شو برای مانیتور شماره ${id} ارسال شد.
+                                        <br>
+                                        چنانچه تغییری در این مانیتور مشاهده نکردید، لطفا مانیتور مورد نظر را Refresh نمایید.
+                                        <br>
+                                        سپس کلید نمایش اسلاید شو را مجدد فشار دهید.`);
+                });
+        }
+    </script>
+}
