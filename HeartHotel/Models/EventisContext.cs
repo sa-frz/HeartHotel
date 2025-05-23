@@ -79,6 +79,8 @@ public partial class EventisContext : DbContext
 
     public virtual DbSet<VenueHallManager> VenueHallManagers { get; set; }
 
+    public virtual DbSet<VenueHallMonitor> VenueHallMonitors { get; set; }
+
     public virtual DbSet<ViewParticipant> ViewParticipants { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -657,6 +659,20 @@ public partial class EventisContext : DbContext
             entity.HasOne(d => d.VenueHall).WithMany(p => p.VenueHallManagers)
                 .HasForeignKey(d => d.VenueHallId)
                 .HasConstraintName("FK_VenueHallManagers_VenueHalls");
+        });
+
+        modelBuilder.Entity<VenueHallMonitor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("SQLPROPK_dbo.HallMonitors");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.HallId).HasColumnName("HallID");
+            entity.Property(e => e.MonitorId).HasColumnName("MonitorID");
+
+            entity.HasOne(d => d.Hall).WithMany(p => p.VenueHallMonitors)
+                .HasForeignKey(d => d.HallId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VenueHallMonitors_VenueHalls");
         });
 
         modelBuilder.Entity<ViewParticipant>(entity =>
