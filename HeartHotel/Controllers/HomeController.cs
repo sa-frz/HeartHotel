@@ -120,6 +120,11 @@ public class HomeController : Controller
             ViewBag.ShowGMonitors = true;
         }
 
+        ViewBag.hallMonitor = await _context.VenueHallMonitors
+                                        .Where(w => w.HallId == id)
+                                        .OrderBy(o => o.MonitorId)
+                                        .ToListAsync();
+
         return View();
     }
 
@@ -417,46 +422,10 @@ public class HomeController : Controller
         return View();
     }
 
-    [Route("/ConfMonitor1")]
-    public IActionResult ConfMonitor1()
-    {
-        return View();
-    }
-    [Route("/ConfMonitor2")]
-    public IActionResult ConfMonitor2()
-    {
-        return View();
-    }
-    [Route("/ConfMonitor3")]
-    public IActionResult ConfMonitor3()
-    {
-        return View();
-    }
-    [Route("/ConfMonitor4")]
-    public IActionResult ConfMonitor4()
-    {
-        return View();
-    }
-    [Route("/ConfMonitor5")]
-    public IActionResult ConfMonitor5()
-    {
-        return View();
-    }
-
-
-
-
-
-
-
-
-
-
-
     // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         // return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-         return View(); 
+        return View();
     }
 }

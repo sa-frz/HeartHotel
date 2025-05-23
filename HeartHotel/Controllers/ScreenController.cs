@@ -225,45 +225,45 @@ public class ScreenController : Controller
         return View();
     }
 
-    public async Task<IActionResult> Monitor(int? id, int? hallId)
-    {
-        if (id == null && hallId == null)
-        {
-            // مانیتور ناشناخته
-            ViewBag.Content = "هتل قلب";
-            ViewBag.Icon = "";
-            ViewBag.Id = 0;
-            ViewBag.hallId = 0;
-        }
-        else
-        {
-            if (hallId == null)
-            {
-                // مانیتور غیر سالنی
-                var monitor = await _context.Monitors.FirstOrDefaultAsync(f => f.MonitorId == id);
-                if (monitor != null)
-                {
-                    ViewBag.Content = monitor.Text;
-                    ViewBag.Icon = monitor.Icon;
-                    ViewBag.Id = id;
-                    ViewBag.hallId = hallId;
-                }
-                else
-                {
-                    ViewBag.Content = "هتل قلب";
-                    ViewBag.Icon = "";
-                    ViewBag.Id = id;
-                    ViewBag.hallId = hallId;
-                }
-            }
-            else
-            {
-                // مانیتور سالنی
-            }
-        }
-        return View();
+    // public async Task<IActionResult> Monitor(int? id, int? hallId)
+    // {
+    //     if (id == null && hallId == null)
+    //     {
+    //         // مانیتور ناشناخته
+    //         ViewBag.Content = "هتل قلب";
+    //         ViewBag.Icon = "";
+    //         ViewBag.Id = 0;
+    //         ViewBag.hallId = 0;
+    //     }
+    //     else
+    //     {
+    //         if (hallId == null)
+    //         {
+    //             // مانیتور غیر سالنی
+    //             var monitor = await _context.Monitors.FirstOrDefaultAsync(f => f.MonitorId == id);
+    //             if (monitor != null)
+    //             {
+    //                 ViewBag.Content = monitor.Text;
+    //                 ViewBag.Icon = monitor.Icon;
+    //                 ViewBag.Id = id;
+    //                 ViewBag.hallId = hallId;
+    //             }
+    //             else
+    //             {
+    //                 ViewBag.Content = "هتل قلب";
+    //                 ViewBag.Icon = "";
+    //                 ViewBag.Id = id;
+    //                 ViewBag.hallId = hallId;
+    //             }
+    //         }
+    //         else
+    //         {
+    //             // مانیتور سالنی
+    //         }
+    //     }
+    //     return View();
+    // }
 
-    }
     public async Task<IActionResult> Monitor(int? id)
     {
         if (id == null)
@@ -288,6 +288,15 @@ public class ScreenController : Controller
                 ViewBag.Id = id;
             }
         }
+        return View();
+    }
+
+    public async Task<IActionResult> ConfMonitor(int id, int hallId)
+    {
+        ViewBag.id = id;
+        var data = await _context.VenueHallMonitors.FirstOrDefaultAsync(f => f.HallId == hallId && f.MonitorId == id);
+        ViewBag.content = data.Text;
+
         return View();
     }
 

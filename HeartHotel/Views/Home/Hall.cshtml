@@ -1,6 +1,7 @@
 ﻿@{
     string[] day = new string[] { "شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه" };
     ViewData["Active"] = "Halls";
+    string domainWithProtocol = $"{Context.Request.Scheme}://{Context.Request.Host}";
 }
 
 <h4 class="section-title">
@@ -126,13 +127,17 @@
 
     <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
         <div id="monitors" class="d-none">
-            @for (var i = 1; i <= 5; i++)
+            @for (var i = 1; i <= 10; i++)
             {
                 <div class="d-flex w-100 gap-2 align-items-center justify-content-between mb-2">
                     <div class="text-nowrap">مانیتور @i</div>
                     <input id="m@(i)" type="text" value="" class="w-100 form-control" placeholder="نام سخنران" />
                     <button class="btn btn-primary"
                         onclick="notifyGroup_confmonitor('confmonitor@(i)',$('#m@(i)').val())">نمایش</button>
+                </div>
+                <div class="ltr">
+                    URL: 
+                    <a href="/Screen/ConfMonitor/@i?hallId=@ViewBag.VenueHallID">@domainWithProtocol/Screen/ConfMonitor/@i&hallId=@ViewBag.VenueHallID</a>
                 </div>
             }
         </div>
@@ -260,6 +265,13 @@
             if ('@ViewBag.ShowGMonitors.ToString().ToLower()' == 'true') {
                 $('#monitors').removeClass('d-none');
             }
+
+            var hallMonitor =@Html.Raw(Json.Serialize(ViewBag.hallMonitor));
+            // console.log(hallMonitor);
+            $.each(hallMonitor, function (index, value) {
+                $(`#m${value.monitorId}`).val(value.text);
+            });
+
         });
 
         $('#btnDailyPrograms').on('click', function () {
@@ -362,6 +374,8 @@
                 } else {
                     console.error('Failed to send notification:', response.statusText);
                 }
+
+                await $.post(`/api/hall/monitor/?id=${groupName.replaceAll('confmonitor', '')}&VenueHallID=@ViewBag.VenueHallID&text=${contents}`);
             } catch (error) {
                 console.error('Error while sending notification:', error);
             }
@@ -400,11 +414,11 @@
                             option += `<option value="${item.id}">${item.name}</option>`;
                         });
                         $('#currentSession').html(`<div class="d-flex align-items-center justify-content-between mb-3 gap-2">از<select class="form-select">${option}</select></div>
-                                                                                                        <div class="d-flex align-items-center justify-content-between mb-3 gap-2">به<select class="form-select">${option}</select></div>
-                                                                                                        <div class="d-flex justify-content-between gap-2">
-                                                                                                            <button class="btn btn-secondary w-100" onclick="changeOK()">ادامه</button>
-                                                                                                            <button class="btn btn-primary w-100" onclick="back()">بازگشت</button>
-                                                                                                        </div>`);
+                                                                                                                    <div class="d-flex align-items-center justify-content-between mb-3 gap-2">به<select class="form-select">${option}</select></div>
+                                                                                                                    <div class="d-flex justify-content-between gap-2">
+                                                                                                                        <button class="btn btn-secondary w-100" onclick="changeOK()">ادامه</button>
+                                                                                                                        <button class="btn btn-primary w-100" onclick="back()">بازگشت</button>
+                                                                                                                    </div>`);
                     } else {
                         console.error('Response is not an array:', response);
                     }
@@ -530,13 +544,13 @@
             }
         });
 
-        function showDetails(elem, title){
+        function showDetails(elem, title) {
             $('#showDetailsModal')
-            .find('.modal-title').html(title);
+                .find('.modal-title').html(title);
 
             $('#showDetailsModal')
-            .modal('show')
-            .find('.modal-body').html($(elem).html());
+                .modal('show')
+                .find('.modal-body').html($(elem).html());
         }
     </script>
 }

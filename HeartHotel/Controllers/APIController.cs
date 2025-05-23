@@ -846,4 +846,29 @@ public class APIController : Controller
         return PartialView();
     }
 
+    [Route("/api/hall/monitor/")]
+    public async Task<IActionResult> hallmonitor(int id, int VenueHallID, string text)
+    {
+        var hallMonitor = await _context.VenueHallMonitors.FirstOrDefaultAsync(f => f.MonitorId == id && f.HallId == VenueHallID);
+        if (hallMonitor == null)
+        {
+            var newRecord = new VenueHallMonitor
+            {
+                MonitorId = id,
+                HallId = VenueHallID,
+                Text = text
+            };
+            _context.Add(newRecord);
+        }
+        else
+        {
+            hallMonitor.Text = text;
+            _context.Update(hallMonitor);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+
 }
