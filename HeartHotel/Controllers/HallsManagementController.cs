@@ -143,28 +143,23 @@ namespace HeartHotel.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(venueHall);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VenueHallExists(venueHall.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(venueHall);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["VenueId"] = new SelectList(_context.Venues, "Id", "Id", venueHall.VenueId);
-            return View(venueHall);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!VenueHallExists(venueHall.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         // GET: HallsManagement/Delete/5

@@ -242,6 +242,20 @@ public class ScreenController : Controller
         return View();
     }
 
+    public IActionResult Monitor(int? id)
+    {
+        if (id == null)
+        {
+            ViewBag.Content = "هتل قلب";
+            ViewBag.Icon = "";
+        }
+        else
+        {
+
+        }
+        return View();
+    }
+
     [Route("/Monitor1")]
     public IActionResult Monitor1(string Content)
     {
